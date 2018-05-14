@@ -1,0 +1,1 @@
+var $builtinmodule = PygameLib.event_module;

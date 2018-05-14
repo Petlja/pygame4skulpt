@@ -1,0 +1,1 @@
+var $builtinmodule = PygameLib.display_module;
