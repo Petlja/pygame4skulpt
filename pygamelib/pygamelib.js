@@ -1,6 +1,16 @@
 var PygameLib = {};
 
-PygameLib.init = function (baseURL) {
+PygameLib.eventSource = typeof window !== 'undefined' ? window : global;
+
+function keydownEventListener(event) {
+    var e = [PygameLib.constants.KEYDOWN, { key: event.key }];
+    if (event.key == "Escape")  {
+        e[0] = PygameLib.constants.QUIT;
+    }
+    PygameLib.eventQueue.unshift(e);
+}
+
+PygameLib.init = function (baseURL, canvasElement) {
     Sk.externalLibraries = Sk.externalLibraries || {};
     var pygame_modules = {
         'pygame.display': {
@@ -16,49 +26,128 @@ PygameLib.init = function (baseURL) {
     for (var k in pygame_modules) {
         Sk.externalLibraries[k] = pygame_modules[k];
     }
+    PygameLib.CanvasElement = canvasElement;
+    PygameLib.eventSource.addEventListener("keydown", keydownEventListener);
 }
 
 // pygame module
 
 function pygame_init() {
-    // ovo je mi me izgleda najelegantnije, ali još nisam našao lepšti način 
+    // ovo je mi ne izgleda najelegantnije, ali još nisam našao lepši način 
     var display_m = Sk.importModule("pygame.display", false, false);
-    var evant_m = Sk.importModule("pygame.event", false, false);
+    var event_m = Sk.importModule("pygame.event", false, false);
     var pygame_m = Sk.importModule("pygame", false, false);
     pygame_m.$d['display'] = display_m.$d['display'];
     pygame_m.$d['event'] = display_m.$d['event'];
-
+    
     // testiranja radi stavili smo nešto u queue na početku
     PygameLib.eventQueue = [
-        [PygameLib.constants.KEYDOWN, {'key':PygameLib.constants.K_SPACE}],
-        [PygameLib.constants.QUIT, {'key':''}]
+        [PygameLib.constants.KEYDOWN, {'key':PygameLib.constants.K_SPACE}]
     ];
 }
 
 PygameLib.pygame_module = function (name) {
-    var mod = PygameLib.constants;
+    var mod = {};
+    for (k in PygameLib.constants) {
+        mod[k] = Sk.ffi.remapToPy(PygameLib.constants[k]);
+    }
     mod.init = new Sk.builtin.func(pygame_init);
+    mod.Surface = Sk.misceval.buildClass(mod, surface$1, 'Surface', []);
+    PygameLib.SurfaceType = mod.Surface;
     return mod;
 }
 
 
-// pygame.display module
+// Surface([width, height])
+var init$1 = function $__init__123$(self, size) {
+    Sk.builtin.pyCheckArgs('__init__', arguments, 2, 5, false, false);
+    self.canvasElement = PygameLib.CanvasElement;
+    self.context2d = self.canvasElement.getContext("2d");
+    var _Sk$ffi$remapToJs = Sk.ffi.remapToJs(size);
+    self.width = _Sk$ffi$remapToJs[0];
+    self.height = _Sk$ffi$remapToJs[1];
+    self.canvasElement.setAttribute('width', self.width);
+    self.canvasElement.setAttribute('height', self.height);
+    if (self.width < 0 || self.height < 0) {
+      throw new PygameError('Invalid resolution for Surface');
+    }
+    return Sk.builtin.none.none$;
+};
+init$1.co_name = new Sk.builtins['str']('__init__');
+init$1.co_varnames = ['self', 'size', 'flags', 'depth', 'masks'];
+init$1.$defaults = [new Sk.builtin.int_(0), new Sk.builtin.int_(0), Sk.builtin.none.none$];
+  
+var repr$1 = function $__repr__123$(self) {
+    var width = Sk.ffi.remapToJs(self.width);
+    var height = Sk.ffi.remapToJs(self.height);
 
+    return Sk.ffi.remapToPy('<Surface(' + width + 'x' + height + 'x32 SW)>');
+};
+repr$1.co_name = new Sk.builtins['str']('__repr__');
+repr$1.co_varnames = ['self'];
+  
+function get_height(self) {
+    Sk.builtin.pyCheckArgs('get_height', arguments, 1, 1, false, false);
+
+    return self.height;
+}
+get_height.co_name = new Sk.builtins['str']('get_height');
+get_height.co_varnames = ['self'];
+  
+function get_width(self) {
+    Sk.builtin.pyCheckArgs('get_width', arguments, 1, 1, false, false);
+
+    return self.width;
+}
+get_width.co_name = new Sk.builtins['str']('get_width');
+get_width.co_varnames = ['self'];
+  
+function get_size(self) {
+    Sk.builtin.pyCheckArgs('get_size', arguments, 1, 1, false, false);
+
+    return Sk.builtin.tuple([self.width, self.height]);
+}
+get_size.co_name = new Sk.builtins['str']('get_size');
+get_size.co_varnames = ['self'];
+  
+function get_flags() {
+    Sk.builtin.pyCheckArgs('get_flags', arguments, 1, 1, false, false);
+
+    return new Sk.builtin.int_(0);
+}
+get_flags.co_name = new Sk.builtins['str']('get_flags');
+get_flags.co_varnames = ['self'];
+  
+var surface$1 = function $Surface$class_outer(gbl, loc) {
+    loc.__init__ = new Sk.builtins.function(init$1, gbl);
+    loc.__repr__ = new Sk.builtins.function(repr$1, gbl);
+
+    loc.get_width = new Sk.builtins.function(get_width, gbl);
+    loc.get_height = new Sk.builtins.function(get_height, gbl);
+    loc.get_size = new Sk.builtins.function(get_size, gbl);
+    loc.get_flags = new Sk.builtins.function(get_flags, gbl);
+
+    return;
+};
+  
+surface$1.co_name = new Sk.builtins['str']('Surface');
+
+// pygame.display module
 PygameLib.display_module = function (name) {
     var mod = {};
-    mod.set_mode = new Sk.builtin.func(function (resolution) {
+    mod.set_mode = new Sk.builtin.func(function (size) {
+        //Create Surface object and return it
+        return Sk.misceval.callsim(PygameLib.SurfaceType, size);
     });
     return mod;
 }
 
 // pygame.event module
-
-
 function event_get() {
     var list = [];
     var t,d;
     while((event = PygameLib.eventQueue.pop())!== undefined) {
-        var type = Sk.ffi.remapToJs(event[0]);
+        var type = Sk.ffi.remapToPy(event[0]);
         var dictjs =event[1];
         kvs = [];
         for (k in dictjs) {
@@ -97,8 +186,6 @@ function event_EventType_f($gbl, $loc) {
 
 }
 
-
-
 PygameLib.event_module = function (name) {
     var mod = {};
     mod.get = new Sk.builtin.func(event_get);
@@ -109,6 +196,9 @@ PygameLib.event_module = function (name) {
     });
     return mod;
 }
+
+//Colors
+
 
 // constants
 

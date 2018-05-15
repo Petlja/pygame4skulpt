@@ -7,20 +7,27 @@
   </head>
 
   <body>
-    <div id="mycanvas"  height="500" width="800"
-    style="border-style: solid;"></div>
+    <div>
+        <canvas id="mycanvas"  height="200" width="200" style="border-style: solid;">
+        </canvas>
+    </div>
 
 <textarea id="code" rows="24" cols="80">
 import turtle
 import pygame
-import pygame.event as event
-import pygame.display as display
+import time
 pygame.init()
-
+s = pygame.Surface([300, 300])
+print("sirina ", s.get_width())
+print("visina ", s.get_height())
 print("proba")
-screen = display.set_mode()
+print(s)
+screen = pygame.display.set_mode([200, 200])
+print(screen)
+print(screen.get_width())
 
-e = event.Event(5,{"key":22})
+
+e = pygame.event.Event(5,{"key":22})
 print(e.key)
 
 done = False
@@ -33,8 +40,9 @@ while not done:
                 if event.type == pygame.QUIT:
                         print("gotova petlja")
                         done = True
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                        print("otkucan razmak")
+                if event.type == pygame.KEYDOWN:
+                        print("otkucano: "+ str(event.key))
+        time.sleep(1)
 
 print("A sada malo kornjace")
 wn = turtle.Screen()
@@ -82,7 +90,7 @@ wn.exitonclick()
             }
         });
     }
-    PygameLib.init("../pygamelib");
+    PygameLib.init("../pygamelib",  document.getElementById("mycanvas"));
     (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
     Sk.configure({ read: builtinRead, output:printString });
     runCode();
