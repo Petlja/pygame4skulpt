@@ -26,8 +26,17 @@ screen = pygame.display.set_mode([200, 200])
 print(screen)
 print(screen.get_width())
 
+c = pygame.Color(1, 2, 3, 4)
+c.set_r(c.r + 4)
+print(c)
+
+r = pygame.Rect(10, 10, 20, 20)
+print(r)
+
+pygame.draw.line(screen, (255, 0, 0, 0) , [10, 10], [50, 50], 5)
 
 e = pygame.event.Event(5,{"key":22})
+print(e)
 print(e.key)
 
 done = False
