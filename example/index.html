@@ -22,19 +22,35 @@ print("sirina ", s.get_width())
 print("visina ", s.get_height())
 print("proba")
 print(s)
-screen = pygame.display.set_mode([200, 200])
+screen = pygame.display.set_mode([400, 400])
 print(screen)
 print(screen.get_width())
 
 c = pygame.Color(1, 2, 3, 4)
-c.set_r(c.r + 4)
+c.r = 5
 print(c)
 
-r = pygame.Rect(10, 10, 20, 20)
+r = pygame.Rect((10, 300), (80, 20))
+print(r)
+r = pygame.draw.rect(screen, pygame.Color('brown'), r)
 print(r)
 
-pygame.draw.line(screen, (255, 0, 0, 0) , [10, 10], [50, 50], 5)
+r = pygame.draw.line(screen, (255, 0, 0, 255) , [10, 10], [550, 50], 3)
+print(r)
+c = pygame.Color('blue')
+print(c)
+pygame.draw.line(screen, c, [150, 10], [550, 50])
 
+pygame.draw.lines(screen, (0, 0, 255, 1), True, [[0, 80], [50, 90], [200, 80], [220, 30]])
+
+r = pygame.draw.lines(screen, pygame.Color('navyblue'), True, [[300, 300], [310, 350], [350, 350]], 0)
+print(r)
+
+r = pygame.draw.polygon(screen, pygame.Color('lightsalmon2'), [[100, 300], [150, 320], [180, 300], [140, 250]])
+print("poligon r: ", r)
+
+r = pygame.draw.circle(screen, pygame.Color('red'), [200, 200], 50)
+print("krug r:", r)
 e = pygame.event.Event(5,{"key":22})
 print(e)
 print(e.key)
