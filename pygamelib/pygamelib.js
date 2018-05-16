@@ -277,8 +277,12 @@ var PygameLib = {};
         mod.rect = new Sk.builtin.func(draw_rect);
         mod.polygon = new Sk.builtin.func(draw_polygon);
         mod.circle = new Sk.builtin.func(draw_circle);
+        mod.ellipse = new Sk.builtin.func(draw_ellipse);
+        mod.arc = new Sk.builtin.func(draw_arc);
         mod.line = new Sk.builtin.func(draw_line);
         mod.lines = new Sk.builtin.func(draw_lines);
+        mod.aaline = new Sk.builtin.func(draw_aaline);
+        mod.aalines = new Sk.builtin.func(draw_aalines);
         return mod;
     }
 
@@ -357,6 +361,53 @@ var PygameLib = {};
         return bbox(center[1] - rad, center[1] + rad, center[0] - rad, center[0] + rad);
     }
 
+    //pygame.draw.arc()
+    //arc(Surface, color, Rect, start_angle, stop_angle, width=1) -> Rect
+    var draw_arc = function(surface, color, rect, start_angle, stop_angle, width = 0) {
+        return draw_oval(surface, color, rect, start_angle, stop_angle, width, false);
+    }
+
+    //pygame.draw.arg()
+    //ellipse(Surface, color, Rect, width=0) -> Rect
+    var draw_ellipse = function(surface, color, rect, width = 0) {
+        return draw_oval(surface, color, rect, 0, 2 * Math.PI, width, true);
+    }
+
+    //help function
+    var draw_oval = function(surface, color, rect, start_angle, stop_angle, width, ellipse = false) {
+        var ctx = surface.context2d;
+        var width_js = Sk.ffi.remapToJs(width);
+        var color_js = extract_color(color);
+        var left = Sk.ffi.remapToJs(Sk.abstr.gattr(rect, 'left', false));
+        var top  = Sk.ffi.remapToJs(Sk.abstr.gattr(rect, 'top', false));
+        var w = Sk.ffi.remapToJs(Sk.abstr.gattr(rect, 'width', false));
+        var h = Sk.ffi.remapToJs(Sk.abstr.gattr(rect, 'height', false));
+
+        var angles = [0, 0]
+        angles[0] = Sk.ffi.remapToJs(start_angle)
+        angles[1] = Sk.ffi.remapToJs(stop_angle)
+        var center = [0, 0]
+        center[0] = left + w / 2;
+        center[1] = top + h / 2;
+
+        ctx.beginPath();
+        if (Math.abs(angles[1] - 2 * Math.PI) < 1e-5) {
+            angles[1] = 0;
+        }
+        ctx.ellipse(center[0], center[1], w / 2, h / 2, 0, angles[0], 2 * Math.PI - angles[1], true);
+
+        if (width_js) {     
+            ctx.lineWidth = width_js;
+            ctx.strokeStyle = 'rgba(' + color_js[0] + ', ' + color_js[1] + ', ' + color_js[2] + ', ' + color_js[3] + ')';
+            ctx.stroke();
+        } else if (ellipse) {
+            ctx.fillStyle = 'rgba(' + color_js[0] + ', ' + color_js[1] + ', ' + color_js[2] + ', ' + color_js[3] + ')';
+            ctx.fill();
+        }  
+
+        return rect;
+    }
+
     //pygame.draw.line()
     //line(Surface, color, start_pos, end_pos, width=1) -> Rect
     var draw_line = function(surface, color, start_pos, end_pos, width = 1) {
@@ -412,6 +463,20 @@ var PygameLib = {};
         }
         return bbox(min_h, max_h, min_w, max_w);
     }
+
+    //pygame.draw.aaline()
+    //aaline(Surface, color, startpos, endpos, blend=1) -> Rect
+    var draw_aaline = function(surface, color, startpos, endpos, blend = 1) {
+        return draw_line(surface, color, startpos, endpos);
+    }
+
+    //pygame.draw.aalines()
+    //aalines(Surface, color, closed, pointlist, blend=1) -> Rect
+    var draw_aalines = function(surface, color, closed, pointlist, blend = 1) {
+        return draw_lines(surface, color, closed, pointlist);
+    }
+
+
 }());
 
 // constants

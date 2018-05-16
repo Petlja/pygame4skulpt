@@ -66,7 +66,7 @@ while not done:
   
     # Draw an arc as part of an ellipse. 
     # Use radians to determine what angle to draw.
-    pygame.draw.arc(screen, BLACK,[210, 75, 150, 125], 0, pi/2, 2)
+    pygame.draw.arc(screen, BLACK,[210, 75, 150, 125], 0, pi/2, 5)
     pygame.draw.arc(screen, GREEN,[210, 75, 150, 125], pi/2, pi, 2)
     pygame.draw.arc(screen, BLUE, [210, 75, 150, 125], pi,3*pi/2, 2)
     pygame.draw.arc(screen, RED,  [210, 75, 150, 125], 3*pi/2, 2*pi, 2)
