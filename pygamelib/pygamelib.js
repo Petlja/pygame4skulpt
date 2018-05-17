@@ -23,6 +23,9 @@ var PygameLib = {};
             'pygame.draw': {
                 path: baseURL + '/draw.js'
             },
+            'pygame.time': {
+                path: baseURL + '/time.js'
+            },
             'pygame': {
                 path: baseURL + '/pygame.js',
             }
@@ -41,6 +44,8 @@ var PygameLib = {};
         var event_m   = Sk.importModule("pygame.event", false, false);
         var draw_m    = Sk.importModule("pygame.draw", false, false);
         var pygame_m  = Sk.importModule("pygame", false, false);
+        var time_m    = Sk.importModule("pygame.time", false, false);
+        PygameLib.initial_time = new Date();
         pygame_m.$d['display'] = display_m.$d['display'];
         pygame_m.$d['event'] = display_m.$d['event'];
         pygame_m.$d['draw'] = display_m.$d['draw'];
@@ -50,6 +55,7 @@ var PygameLib = {};
         ];
     }
 
+    //pygame
     PygameLib.pygame_module = function (name) {
         var mod = {};
         for (k in PygameLib.constants) {
@@ -65,20 +71,34 @@ var PygameLib = {};
         return mod;
     }
 
+    //pygame.time
+    PygameLib.time_module = function(name) {
+        mod = {};
+        mod.wait = new Sk.builtin.func(function(amount) {
+            var t_m = Sk.importModule("time", false, false);
+            var sec = Sk.ffi.remapToJs(amount) / 1000;
+            return Sk.misceval.callsimOrSuspend(t_m.$d['sleep'], Sk.ffi.remapToPy(sec));
+        });
+        mod.get_ticks = new Sk.builtin.func(function() {
+            return Sk.ffi.remapToPy(new Date() - PygameLib.initial_time);
+        });
+        return mod;
+    }
 
-    // Surface([width, height])
+    // Surface((width, height))
     var init$1 = function $__init__123$(self, size) {
         Sk.builtin.pyCheckArgs('__init__', arguments, 2, 5, false, false);
-        self.canvasElement = PygameLib.CanvasElement;
-        self.context2d = self.canvasElement.getContext("2d");
         var tuple_js = Sk.ffi.remapToJs(size);
+        self.main_canvas = PygameLib.CanvasElement;
+        self.main_context = self.main_canvas.getContext("2d");
+        self.offscreen_canvas = document.createElement('canvas');
+        self.context2d = self.offscreen_canvas.getContext("2d");
         self.width = tuple_js[0];
         self.height = tuple_js[1];
-        self.canvasElement.setAttribute('width', self.width);
-        self.canvasElement.setAttribute('height', self.height);
-        if (self.width < 0 || self.height < 0) {
-        throw new PygameError('Invalid resolution for Surface');
-        }
+        self.offscreen_canvas.width = tuple_js[0];
+        self.offscreen_canvas.height = tuple_js[1];
+        self.main_canvas.setAttribute('width', self.width);
+        self.main_canvas.setAttribute('height', self.height);
         return Sk.builtin.none.none$;
     };
     init$1.co_name = new Sk.builtins['str']('__init__');
@@ -125,7 +145,17 @@ var PygameLib = {};
     var surface$1 = function $Surface$class_outer(gbl, loc) {
         loc.__init__ = new Sk.builtins.function(init$1, gbl);
         loc.__repr__ = new Sk.builtins.function(repr$1, gbl);
-
+        loc.fill = new Sk.builtin.func(function(self, color) {
+            var ctx = self.context2d;
+            var color_js = extract_color(color);
+            ctx.fillStyle = 'rgba(' + color_js[0] + ', ' + color_js[1] + ', ' + color_js[2] + ', ' + color_js[3] + ')';
+            ctx.fillRect(0, 0, self.width, self.height);
+        });
+        loc.update = new Sk.builtin.func(function(self) {
+            self.main_canvas.width = self.offscreen_canvas.width;
+            self.main_canvas.height = self.offscreen_canvas.height;
+            self.main_context.drawImage(self.offscreen_canvas, 0, 0);
+        });
         loc.get_width = new Sk.builtins.function(get_width, gbl);
         loc.get_height = new Sk.builtins.function(get_height, gbl);
         loc.get_size = new Sk.builtins.function(get_size, gbl);
@@ -141,16 +171,30 @@ var PygameLib = {};
         var mod = {};
         mod.set_mode = new Sk.builtin.func(function (size) {
             //Create Surface object and return it
-            return Sk.misceval.callsim(PygameLib.SurfaceType, size);
+            mod.surface = Sk.misceval.callsim(PygameLib.SurfaceType, size);
+            return mod.surface;
+        });
+        mod.update = new Sk.builtin.func(function() {
+            Sk.misceval.callsim(mod.surface.update, mod.surface);
         });
         return mod;
     }
 
-    // pygame.event module
-    function event_get() {
+    //pygame.event module
+    //pygame.event.get()
+    //get() -> Eventlist
+    //get(type) -> Eventlist
+    //get(typelist) -> Eventlist
+    var get_event = function(types = []) {
+        Sk.builtin.pyCheckArgs('get_event', arguments, 0, 1, false, false);
         var list = [];
         var t,d;
-        while((event = PygameLib.eventQueue.pop())!== undefined) {
+        var types_js = Sk.ffi.remapToJs(types);
+        var queue = types.length ? (Sk.abstr.typeName(types) == "list" ? PygameLib.eventQueue.filter(e => types_js.includes(e[0])) : PygameLib.eventQueue.filter(e => e[0] == types_js))
+                        : PygameLib.eventQueue;
+
+        for (var i = 0; i < queue.length; i++) {
+            var event = queue[i];
             var type = Sk.ffi.remapToPy(event[0]);
             var dictjs = event[1];
             kvs = [];
@@ -162,6 +206,8 @@ var PygameLib = {};
             var e = Sk.misceval.callsim(PygameLib.EventType, type, dict);
             list.push(e);
         }
+        queue.splice(0);
+
         return new Sk.builtin.list(list);
     }
 
@@ -172,7 +218,7 @@ var PygameLib = {};
             Sk.abstr.sattr(self, 'dict', dict, false);
             Sk.abstr.sattr(self, 'type', type, false);
             dictjs = Sk.ffi.remapToJs(dict); 
-            for(k in dictjs) {
+            for (k in dictjs) {
                 Sk.abstr.sattr(self, k, Sk.ffi.remapToPy(dictjs[k]), false);
             }
             return Sk.builtin.none.none$;
@@ -192,7 +238,7 @@ var PygameLib = {};
 
     PygameLib.event_module = function (name) {
         var mod = {};
-        mod.get = new Sk.builtin.func(event_get);
+        mod.get = new Sk.builtin.func(get_event);
         mod.EventType = Sk.misceval.buildClass(mod, event_EventType_f, "EventType",[]);
         PygameLib.EventType = mod.EventType;
         mod.Event = new Sk.builtin.func(function(type,dict) {
@@ -249,7 +295,10 @@ var PygameLib = {};
                 Sk.abstr.sattr(self, 'top', Sk.ffi.remapToPy(a_js[1]), false);
                 Sk.abstr.sattr(self, 'width', Sk.ffi.remapToPy(b_js[0]), false);
                 Sk.abstr.sattr(self, 'height', Sk.ffi.remapToPy(b_js[1]), false);
-            } else if (Sk.abstr.typeName(a) == "int" && Sk.abstr.typeName(b) == "int" && Sk.abstr.typeName(c) == "int" && Sk.abstr.typeName(d) == "int") {
+            } else if ((Sk.abstr.typeName(a) == "int" || Sk.abstr.typeName(a) == "float") && 
+                        (Sk.abstr.typeName(b) == "int" || Sk.abstr.typeName(b) == "float") && 
+                        (Sk.abstr.typeName(c) == "int" || Sk.abstr.typeName(c) == "float") && 
+                        (Sk.abstr.typeName(d) == "int" || Sk.abstr.typeName(d) == "float")) {
                 Sk.abstr.sattr(self, 'left', a, false);
                 Sk.abstr.sattr(self, 'top', b, false);
                 Sk.abstr.sattr(self, 'width', c, false);

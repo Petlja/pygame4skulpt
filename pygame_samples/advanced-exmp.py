@@ -9,9 +9,7 @@ pozadina = pg.Color('black')
 pg.init()
 prozor = pg.display.set_mode([prozor_sirina, prozor_visina])
 while not pg.event.get(pg.QUIT):
-    #print(pg.time.get_ticks())
     t = pg.time.get_ticks() / 1000 # sekundi od inicijalizacije
-    #print(t)
     x = (t * vx) % (prozor_sirina - stranica)
     y = (t * vy) % (prozor_visina - stranica)
     prozor.fill(pozadina)
@@ -19,4 +17,3 @@ while not pg.event.get(pg.QUIT):
     pg.display.update()
     pg.time.wait(50)
 pg.quit()
-
