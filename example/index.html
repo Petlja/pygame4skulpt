@@ -65,7 +65,7 @@ while not pg.event.get(pg.QUIT):
         });
     }
     PygameLib.init("../pygamelib",  document.getElementById("mycanvas"));
-    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+    //(Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
     Sk.configure({ read: builtinRead, output:printString });
     runCode();
     </script>
