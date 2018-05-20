@@ -7,10 +7,8 @@
   </head>
 
   <body>
-    <div>
-        <canvas id="mycanvas"  height="200" width="200" style="border-style: solid;">
-        </canvas>
-    </div>
+        <div id="mycanvas">
+        </div>
 
 <textarea id="code" rows="24" cols="80">
 import pygame as pg
@@ -22,8 +20,6 @@ boja = pg.Color('yellow')
 pozadina = pg.Color('black')
 pg.init()
 prozor = pg.display.set_mode([prozor_sirina, prozor_visina])
-l = pg.event.get()
-print(l)
 while not pg.event.get(pg.QUIT):
     t = 1.0 * pg.time.get_ticks() / 1000 # sekundi od inicijalizacije
     x = (t * vx) % (prozor_sirina - stranica)
@@ -64,8 +60,8 @@ while not pg.event.get(pg.QUIT):
             }
         });
     }
-    PygameLib.init("../pygamelib",  document.getElementById("mycanvas"));
-    //(Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+    PygameLib.init("../pygamelib");
+    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
     Sk.configure({ read: builtinRead, output:printString });
     runCode();
     </script>

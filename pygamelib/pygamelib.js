@@ -11,7 +11,7 @@ var PygameLib = {};
         PygameLib.eventQueue.unshift(e);
     }
 
-    PygameLib.init = function (baseURL, canvasElement) {
+    PygameLib.init = function (baseURL) {
         Sk.externalLibraries = Sk.externalLibraries || {};
         var pygame_modules = {
             'pygame.display': {
@@ -33,10 +33,9 @@ var PygameLib = {};
         for (var k in pygame_modules) {
             Sk.externalLibraries[k] = pygame_modules[k];
         }
-        PygameLib.CanvasElement = canvasElement;
         PygameLib.eventSource.addEventListener("keydown", keydownEventListener);
     }
-
+    
     // pygame module
     function pygame_init() {
         // ovo je mi ne izgleda najelegantnije, ali još nisam našao lepši način 
@@ -50,9 +49,7 @@ var PygameLib = {};
         pygame_m.$d['event'] = display_m.$d['event'];
         pygame_m.$d['draw'] = display_m.$d['draw'];
         // testiranja radi stavili smo nešto u queue na početku
-        PygameLib.eventQueue = [
-            [PygameLib.constants.KEYDOWN, {'key':PygameLib.constants.K_SPACE}]
-        ];
+        PygameLib.eventQueue = [];
     }
 
     //pygame
@@ -85,16 +82,40 @@ var PygameLib = {};
         return mod;
     }
 
+    function resetTarget() {
+        var selector = Sk.TurtleGraphics.target;
+        var target = typeof selector === "string" ?
+            document.getElementById(selector) :
+            selector;
+        // clear canvas container
+        while (target.firstChild) {
+            target.removeChild(target.firstChild);
+        }
+        return target;
+    }
+
     // Surface((width, height))
     var init$1 = function $__init__123$(self, size) {
         Sk.builtin.pyCheckArgs('__init__', arguments, 2, 5, false, false);
         var tuple_js = Sk.ffi.remapToJs(size);
-        self.main_canvas = PygameLib.CanvasElement;
+        self.width = tuple_js[0];
+        self.height = tuple_js[1];
+        self.main_canvas = document.createElement("canvas");
+        self.main_canvas.width = self.width;
+        self.main_canvas.height = self.height;
+        self.main_canvas.style.position = "relative";
+        self.main_canvas.style.display = "block";
+        // self.main_canvas.style.setProperty("margin-top",...);
+        // self.main_canvas.style.setProperty("z-index", ...);
+       
+        var currentTarget = resetTarget();
+
+        currentTarget.appendChild(self.main_canvas)
+
         self.main_context = self.main_canvas.getContext("2d");
         self.offscreen_canvas = document.createElement('canvas');
         self.context2d = self.offscreen_canvas.getContext("2d");
-        self.width = tuple_js[0];
-        self.height = tuple_js[1];
+
         self.offscreen_canvas.width = tuple_js[0];
         self.offscreen_canvas.height = tuple_js[1];
         self.main_canvas.setAttribute('width', self.width);
@@ -185,12 +206,12 @@ var PygameLib = {};
     //get() -> Eventlist
     //get(type) -> Eventlist
     //get(typelist) -> Eventlist
-    var get_event = function(types = []) {
+    var get_event = function(types) {
         Sk.builtin.pyCheckArgs('get_event', arguments, 0, 1, false, false);
         var list = [];
         var t,d;
         var types_js = Sk.ffi.remapToJs(types);
-        var queue = types.length ? (Sk.abstr.typeName(types) == "list" ? PygameLib.eventQueue.filter(e => types_js.includes(e[0])) : PygameLib.eventQueue.filter(e => e[0] == types_js))
+        var queue = types ? (Sk.abstr.typeName(types) == "list" ? PygameLib.eventQueue.filter(e => types_js.includes(e[0])) : PygameLib.eventQueue.filter(e => e[0] == types_js))
                         : PygameLib.eventQueue;
 
         for (var i = 0; i < queue.length; i++) {
