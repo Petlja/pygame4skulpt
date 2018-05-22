@@ -8,7 +8,12 @@ var PygameLib = {};
         if (event.key == "Escape")  {
             e[0] = PygameLib.constants.QUIT;
         }
-        PygameLib.eventQueue.unshift(e);
+
+        // Uncaught TypeError: Cannot read property 'unshift' of undefined
+        // Before executing the pygame_init() method
+        if(PygameLib.eventQueue){
+            PygameLib.eventQueue.unshift(e);
+        }
     }
 
     PygameLib.init = function (baseURL) {
