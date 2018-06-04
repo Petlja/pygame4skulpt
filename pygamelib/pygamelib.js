@@ -215,7 +215,7 @@ var PygameLib = {};
         Sk.builtin.pyCheckArgs('get_event', arguments, 0, 1, false, false);
         var list = [];
         var t,d;
-        var types_js = Sk.ffi.remapToJs(types);
+        var types_js = types ? Sk.ffi.remapToJs(types) : [];
         var queue = types ? (Sk.abstr.typeName(types) == "list" ? PygameLib.eventQueue.filter(e => types_js.includes(e[0])) : PygameLib.eventQueue.filter(e => e[0] == types_js))
                         : PygameLib.eventQueue;
 
@@ -372,6 +372,7 @@ var PygameLib = {};
         }
         else {
             color_js = Sk.ffi.remapToJs(color);
+            if (color_js.length == 3) color_js.push(1);
         }
         return color_js;
     }
