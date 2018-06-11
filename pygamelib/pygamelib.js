@@ -448,7 +448,7 @@ var PygameLib = {};
 
     //pygame.draw.circle()
     //circle(Surface, color, pos, radius, width=0) -> Rect
-    var draw_circle = function(surface, color, pos, radius, width = 2) {
+    var draw_circle = function(surface, color, pos, radius, width = 0) {
         var ctx = surface.context2d;
         var width_js = Sk.ffi.remapToJs(width);
         var center = Sk.ffi.remapToJs(pos);
