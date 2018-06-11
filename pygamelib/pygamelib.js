@@ -519,12 +519,22 @@ var PygameLib = {};
         var end_pos_js = Sk.ffi.remapToJs(end_pos);
         var color_js = extract_color(color);
         var ctx = surface.context2d;
-        ctx.beginPath();
-        ctx.lineWidth = width_js;
-        ctx.moveTo(start_pos_js[0], start_pos_js[1]);
-        ctx.lineTo(end_pos_js[0], end_pos_js[1]);
-        ctx.strokeStyle = 'rgba(' + color_js[0] + ', ' + color_js[1] + ', ' + color_js[2] + ', ' + color_js[3] + ')';
-        ctx.stroke();
+        var ax = start_pos_js[0];
+        var ay = start_pos_js[1];
+        var bx = end_pos_js[0];
+        var by = end_pos_js[1];
+        var points;
+        if (Math.abs(ax - bx) <= Math.abs(ay - by)) {
+            points = [Sk.builtin.tuple([ax - width_js / 2, ay]), Sk.builtin.tuple([ax + width_js / 2, ay]), 
+                                     Sk.builtin.tuple([bx + width_js / 2, by]), Sk.builtin.tuple([bx - width_js / 2, by])];
+            points = Sk.builtin.list(points);
+        } 
+        else {
+            points = [Sk.builtin.tuple([ax, ay - width_js / 2]), Sk.builtin.tuple([ax, ay + width_js / 2]), 
+                                    Sk.builtin.tuple([bx, by + width_js / 2]), Sk.builtin.tuple([bx, by - width_js / 2])];
+            points = Sk.builtin.list(points);
+        }
+        draw_polygon(surface, color, points);
         var left = Math.min(start_pos_js[0], end_pos_js[0]);
         var right = Math.max(start_pos_js[0], end_pos_js[0]);
         var top = Math.min(start_pos_js[1], end_pos_js[1]);
@@ -540,21 +550,29 @@ var PygameLib = {};
         var pointlist_js = Sk.ffi.remapToJs(pointlist);
         var color_js = extract_color(color);
         var ctx = surface.context2d;
-        ctx.beginPath();
-        ctx.lineWidth = width_js;
-        var first_point = pointlist_js[0];
-        var max_h = first_point[1], max_w = first_point[0];
-        var min_h = first_point[1], min_w = first_point[0];
-        ctx.moveTo(first_point[0], first_point[1]);
-        for (var i = 0; i < pointlist_js.length; i++) {
-            ctx.lineTo(pointlist_js[i][0], pointlist_js[i][1]);
-            max_w = Math.max(max_w, pointlist_js[i][0]);
-            min_w = Math.min(min_w, pointlist_js[i][0]);
-            max_h = Math.max(max_h, pointlist_js[i][1]);
-            min_h = Math.min(min_h, pointlist_js[i][1]);
-        }
-        if (closed_js) {
-            ctx.closePath();
+        if (!width_js) {
+            ctx.beginPath();
+            ctx.lineWidth = width_js;
+            var first_point = pointlist_js[0];
+            var max_h = first_point[1], max_w = first_point[0];
+            var min_h = first_point[1], min_w = first_point[0];
+            ctx.moveTo(first_point[0], first_point[1]);
+            for (var i = 0; i < pointlist_js.length; i++) {
+                ctx.lineTo(pointlist_js[i][0], pointlist_js[i][1]);
+                max_w = Math.max(max_w, pointlist_js[i][0]);
+                min_w = Math.min(min_w, pointlist_js[i][0]);
+                max_h = Math.max(max_h, pointlist_js[i][1]);
+                min_h = Math.min(min_h, pointlist_js[i][1]);
+            }
+            if (closed_js) {
+                ctx.closePath();
+            }
+        } 
+        else {
+            for (var i = 0; i < pointlist_js.length - 1; i++) {
+                draw_line(surface, color, Sk.builtin.tuple([pointlist_js[i][0], pointlist_js[i][1]]), Sk.builtin.tuple([pointlist_js[i + 1][0], pointlist_js[i + 1][1]]), width);
+            }
+            return bbox(0, 0, 0, 0);
         }
         
         if (width_js) {
