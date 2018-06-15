@@ -6,9 +6,13 @@ var PygameLib = {};
     function keydownEventListener(event) {
         var e = [PygameLib.constants.KEYDOWN, { key: event.key }];
         if (event.key == "Escape")  {
-            e[0] = PygameLib.constants.QUIT;
+            //e[0] = PygameLib.constants.QUIT;
+            var selector = Sk.TurtleGraphics.target;
+            var target = typeof selector === "string" ?
+                document.getElementById(selector) : selector;
+            $(target.firstChild).modal('hide');
         }
-
+        
         // Uncaught TypeError: Cannot read property 'unshift' of undefined
         // Before executing the pygame_init() method
         if(PygameLib.eventQueue){
@@ -118,8 +122,49 @@ var PygameLib = {};
         // self.main_canvas.style.setProperty("z-index", ...);
        
         var currentTarget = resetTarget();
+        var div1 = document.createElement("div");
+        currentTarget.appendChild(div1);
+        $(div1).addClass("modal test-modal");
+        var div2 = document.createElement("div");
+        $(div2).addClass("mode-dialog");
+        $(div2).attr("role", "document");
+        div1.appendChild(div2);
 
-        currentTarget.appendChild(self.main_canvas)
+        var div3 = document.createElement("div");
+        $(div3).addClass("modal-content");
+        div2.appendChild(div3);
+
+        var div4 = document.createElement("div");
+        $(div4).addClass("modal-header");
+        var div5 = document.createElement("div");
+        $(div5).addClass("modal-body");
+        var div6 = document.createElement("div");
+        $(div6).addClass("modal-footer");
+        var header = document.createElement("h5");
+        $(header).addClass("modal-title");
+        $(header).html("TITLE");
+
+        div3.appendChild(div4);
+        div3.appendChild(div5);
+        div3.appendChild(div6);
+
+        div4.appendChild(header);
+
+        div5.appendChild(self.main_canvas);
+
+        var btn1 = document.createElement("button");
+        $(btn1).addClass("btn btn-primary");
+        $(btn1).text("Close");
+        $(btn1).attr("data-dismiss", "modal");
+
+        div6.appendChild(btn1);
+        //currentTarget.appendChild(self.main_canvas)
+        $(div1).modal();
+        
+        $(div1).on('hide.bs.modal', function(e) {
+            var e = [PygameLib.constants.QUIT, { key: "Escape" }];
+            PygameLib.eventQueue.unshift(e);
+        });
 
         self.main_context = self.main_canvas.getContext("2d");
         self.offscreen_canvas = document.createElement('canvas');
@@ -214,8 +259,8 @@ var PygameLib = {};
         mod.flip = new Sk.builtin.func(function() {
             Sk.misceval.callsim(mod.surface.update, mod.surface);
         })
-        mod.set_caption = new Sk.builtin.func(function() {
-            return;
+        mod.set_caption = new Sk.builtin.func(function(caption) {
+            $('.modal-title').html(Sk.ffi.remapToJs(caption));
         });
         return mod;
     }
@@ -232,7 +277,7 @@ var PygameLib = {};
         var types_js = types ? Sk.ffi.remapToJs(types) : [];
         var queue = types ? (Sk.abstr.typeName(types) == "list" ? PygameLib.eventQueue.filter(e => types_js.includes(e[0])) : PygameLib.eventQueue.filter(e => e[0] == types_js))
                         : PygameLib.eventQueue;
-
+        console.log(queue);
         for (var i = 0; i < queue.length; i++) {
             var event = queue[i];
             var type = Sk.ffi.remapToPy(event[0]);
