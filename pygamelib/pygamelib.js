@@ -6,11 +6,7 @@ var PygameLib = {};
     function keydownEventListener(event) {
         var e = [PygameLib.constants.KEYDOWN, { key: event.key }];
         if (event.key == "Escape")  {
-            //e[0] = PygameLib.constants.QUIT;
-            var selector = Sk.TurtleGraphics.target;
-            var target = typeof selector === "string" ?
-                document.getElementById(selector) : selector;
-            $(target.firstChild).modal('hide');
+            e[0] = PygameLib.constants.QUIT;
         }
         
         // Uncaught TypeError: Cannot read property 'unshift' of undefined
@@ -75,7 +71,7 @@ var PygameLib = {};
         mod.Rect = Sk.misceval.buildClass(mod, rect_type_f, 'Rect', []);
         PygameLib.RectType = mod.Rect;
         mod.quit = new Sk.builtin.func(function () {
-            //TODO
+            $(PygameLib.modalDiv).modal('hide');
             return;
         });
         return mod;
@@ -107,6 +103,111 @@ var PygameLib = {};
         return target;
     }
 
+    function createArrows(div) {
+        var arrows = new Array(4);
+        var direction = ["left", "right", "up", "down"];
+
+        for (var i = 0; i < 4; i++) {
+            arrows[i] = document.createElement("span");
+            div.appendChild(arrows[i]);
+            $(arrows[i]).addClass("btn btn-primary");
+            var ic = document.createElement("i");
+            $(ic).addClass("fa fa-arrow-" + direction[i]);
+            arrows[i].appendChild(ic);             
+        }
+
+        var insertEvent = function(dir) {
+            var e = [];
+            switch (dir) {
+                case 0:
+                    e = [PygameLib.constants.K_LEFT, { key: "Left" }];
+                    break;
+                case 1:
+                    e = [PygameLib.constants.K_RIGHT, { key: "Right" }];
+                    break;
+                case 2:
+                    e = [PygameLib.constants.K_UP, { key: "Up" }];
+                    break;
+                case 3:
+                    e = [PygameLib.constants.K_DOWN, { key: "Down" }];
+                    break;
+            }
+            PygameLib.eventQueue.unshift(e);
+        }
+
+        var swapIcon = function(id) {
+            $(arrows[id]).click();
+            $(arrows[id].firstChild).removeClass("fa-arrow-" + direction[id]).addClass("fa-arrow-circle-" + direction[id]);        
+        }
+
+        var returnIcon = function(id) {
+            $(arrows[id].firstChild).removeClass("fa-arrow-circle-" + direction[id]).addClass("fa-arrow-" + direction[id]);
+        }
+
+        $(arrows[0]).on('mousedown', function() {
+            insertEvent(0);
+            swapIcon(0);
+        });
+        $(arrows[0]).on('mouseup', function() {
+            returnIcon(0);
+        });
+        $(arrows[1]).on('mousedown', function() {
+            insertEvent(1);
+            swapIcon(1);
+        });
+        $(arrows[1]).on('mouseup', function() {
+            returnIcon(1);
+        });
+        $(arrows[2]).on('mousedown', function() {
+            insertEvent(2);
+            swapIcon(2);
+        });
+        $(arrows[2]).on('mouseup', function() {
+            returnIcon(2);
+        });
+        $(arrows[3]).on('mousedown', function() {
+            insertEvent(3);
+            swapIcon(3);
+        });
+        $(arrows[3]).on('mouseup', function() {
+            returnIcon(3);
+        });
+
+        $(document).keydown(function(e) {
+            switch (e.which) {
+                case 37:
+                    swapIcon(0);
+                    break;
+                case 38:
+                    swapIcon(2);    
+                    break;
+                case 39:
+                    swapIcon(1);
+                    break;
+                case 40:
+                    swapIcon(3);
+                    break;
+            }
+        });
+
+        $(document).keyup(function(e) {
+            switch (e.which) {
+                case 37:
+                    returnIcon(0);
+                    break;
+                case 38:
+                    returnIcon(2);
+                    break;
+                case 39:
+                    returnIcon(1);
+                    break;
+                case 40:
+                    returnIcon(3);
+                    break;
+            }
+        });
+    }
+
     // Surface((width, height))
     var init$1 = function $__init__123$(self, size) {
         Sk.builtin.pyCheckArgs('__init__', arguments, 2, 5, false, false);
@@ -118,13 +219,44 @@ var PygameLib = {};
         self.main_canvas.height = self.height;
         self.main_canvas.style.position = "relative";
         self.main_canvas.style.display = "block";
+        $(self.main_canvas).css("border", "1px solid blue");
         // self.main_canvas.style.setProperty("margin-top",...);
         // self.main_canvas.style.setProperty("z-index", ...);
        
         var currentTarget = resetTarget();
         var div1 = document.createElement("div");
         currentTarget.appendChild(div1);
+        PygameLib.modalDiv = div1;
         $(div1).addClass("modal test-modal");
+        $(div1).width(1.1 * self.width);
+
+        var modal = $(".modal");
+        var body = $(window);
+        // Get modal size
+        var w = modal.width();
+        var h = modal.height();
+        // Get window size
+        var bw = body.width();
+        var bh = body.height();
+        
+        // Update the css and center the modal on screen
+        modal.css({
+            "position": "absolute",
+            "top": ((bh - h) / 2) + "px",
+            "left": ((bw - w) / 2) + "px"
+        });
+
+        var btn1 = document.createElement("span");
+        $(btn1).addClass("btn btn-primary pull-right");
+        var ic = document.createElement("i");
+        $(ic).addClass("fa fa-times");
+        btn1.appendChild(ic);
+
+        $(btn1).on('click', function(e) {
+            var e = [PygameLib.constants.QUIT, { key: "Escape" }];
+            PygameLib.eventQueue.unshift(e);
+        });
+
         var div2 = document.createElement("div");
         $(div2).addClass("mode-dialog");
         $(div2).attr("role", "document");
@@ -142,7 +274,7 @@ var PygameLib = {};
         $(div6).addClass("modal-footer");
         var header = document.createElement("h5");
         $(header).addClass("modal-title");
-        $(header).html("TITLE");
+        $(header).html(PygameLib.caption);
 
         div3.appendChild(div4);
         div3.appendChild(div5);
@@ -152,18 +284,13 @@ var PygameLib = {};
 
         div5.appendChild(self.main_canvas);
 
-        var btn1 = document.createElement("button");
-        $(btn1).addClass("btn btn-primary");
-        $(btn1).text("Close");
-        $(btn1).attr("data-dismiss", "modal");
+        div4.appendChild(btn1);
 
-        div6.appendChild(btn1);
-        //currentTarget.appendChild(self.main_canvas)
-        $(div1).modal();
-        
-        $(div1).on('hide.bs.modal', function(e) {
-            var e = [PygameLib.constants.QUIT, { key: "Escape" }];
-            PygameLib.eventQueue.unshift(e);
+        createArrows(div6);
+
+        $(div1).modal({
+            backdrop: 'static',
+            keyboard: false
         });
 
         self.main_context = self.main_canvas.getContext("2d");
@@ -260,7 +387,8 @@ var PygameLib = {};
             Sk.misceval.callsim(mod.surface.update, mod.surface);
         })
         mod.set_caption = new Sk.builtin.func(function(caption) {
-            $('.modal-title').html(Sk.ffi.remapToJs(caption));
+            //$('.modal-title').html(Sk.ffi.remapToJs(caption));
+            PygameLib.caption = Sk.ffi.remapToJs(caption);
         });
         return mod;
     }
@@ -277,7 +405,7 @@ var PygameLib = {};
         var types_js = types ? Sk.ffi.remapToJs(types) : [];
         var queue = types ? (Sk.abstr.typeName(types) == "list" ? PygameLib.eventQueue.filter(e => types_js.includes(e[0])) : PygameLib.eventQueue.filter(e => e[0] == types_js))
                         : PygameLib.eventQueue;
-        console.log(queue);
+                        
         for (var i = 0; i < queue.length; i++) {
             var event = queue[i];
             var type = Sk.ffi.remapToPy(event[0]);
