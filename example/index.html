@@ -6,14 +6,19 @@
     <script src="../pygamelib/pygamelib.js" type="text/javascript"></script>
     
     <script src="../js/bootstrap.js" type="text/javascript"></script>
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"> -->
+    
     <link type="text/css" rel="stylesheet" href="../css/bootstrap.css" >
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="../css/font-awesome.min.css" >
+    <!-- <link type="text/css" rel="stylesheet" href="../css/flatly.min.css" > -->
+    <link type="text/css" rel="stylesheet" href="../css/petlja.css" >
+    <!-- <link href="../fontawesome-all.css" type="text/css" rel="stylesheet"> -->
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
   </head>
 
   <body>
-        <div id="mycanvas">
+        <div id="mycanvas" class="col-md-offset-4">
         </div>
 
 <textarea id="code" rows="24" cols="80">
@@ -34,6 +39,11 @@ ekran = pg.display.set_mode((sirina, visina))
 (dx, dy) = (5, 5)
 # poluprecnik loptice
 r = 30
+
+while pg.event.wait().type != pg.QUIT:
+    pass
+
+
 
 # glavna petlja programa
 kraj = False
