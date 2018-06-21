@@ -8,7 +8,9 @@ pozadina = pg.Color('black')
 
 pg.init()
 prozor = pg.display.set_mode([prozor_sirina, prozor_visina])
-while not pg.event.get(pg.QUIT):
+
+kraj = False
+while not kraj:
     #print(pg.time.get_ticks())
     t = pg.time.get_ticks() / 1000 # sekundi od inicijalizacije
     #print(t)
