@@ -3,17 +3,39 @@ var PygameLib = {};
 (function () {
     PygameLib.eventSource = typeof window !== 'undefined' ? window : global;
     
-    function keydownEventListener(event) {
-        var e = [PygameLib.constants.KEYDOWN, { key: event.key }];
-        if (event.key == "Escape")  {
-            e[0] = PygameLib.constants.QUIT;
+    var createKeyboardEvent = function(event) {
+        var e;
+        switch (event.which) {
+            case 27:
+                e = [PygameLib.constants.QUIT, { key: PygameLib.constants.K_ESCAPE }];
+                break;
+            case 37:
+                e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_LEFT }];
+                break;
+            case 38:
+                e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_UP }];
+                break;
+            case 39:
+                e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_RIGHT }];
+                break;
+            case 40:
+                e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_DOWN }];
+                break;
+            default:
+                e = [PygameLib.constants.KEYDOWN, { key: event.which }];
         }
-        
+        return e;
+    }
+
+    function keydownEventListener(event) {
+        var e = createKeyboardEvent(event);
         // Uncaught TypeError: Cannot read property 'unshift' of undefined
         // Before executing the pygame_init() method
         if(PygameLib.eventQueue){
             PygameLib.eventQueue.unshift(e);
         }
+        console.log(PygameLib.eventQueue.length);
+        return false;
     }
 
     PygameLib.init = function (baseURL) {
@@ -100,7 +122,6 @@ var PygameLib = {};
                 PygameLib.eventTimer[event].f = function () {
                     var e = [event, { }];
                     PygameLib.eventQueue.unshift(e);
-                    console.log(e);
                 }
             }
             if (ms) {
@@ -139,16 +160,16 @@ var PygameLib = {};
             var e = [];
             switch (dir) {
                 case 0:
-                    e = [PygameLib.constants.K_LEFT, { key: "Left" }];
+                    e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_LEFT }];
                     break;
                 case 1:
-                    e = [PygameLib.constants.K_RIGHT, { key: "Right" }];
+                    e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_RIGHT }];
                     break;
                 case 2:
-                    e = [PygameLib.constants.K_UP, { key: "Up" }];
+                    e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_UP }];
                     break;
                 case 3:
-                    e = [PygameLib.constants.K_DOWN, { key: "Down" }];
+                    e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_DOWN }];
                     break;
             }
             PygameLib.eventQueue.unshift(e);
@@ -198,7 +219,7 @@ var PygameLib = {};
                     swapIcon(0);
                     break;
                 case 38:
-                    swapIcon(2);    
+                    swapIcon(2);   
                     break;
                 case 39:
                     swapIcon(1);
@@ -227,6 +248,26 @@ var PygameLib = {};
         });
     }
 
+    var mouseEventListener = function(event) {
+        var totalOffsetX = 0;
+        var totalOffsetY = 0;
+        var canvasX = 0;
+        var canvasY = 0;
+        var currentElement = this;
+
+        do{
+            totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
+            totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
+        }
+        while(currentElement = currentElement.offsetParent)
+
+        canvasX = event.pageX - totalOffsetX;
+        canvasY = event.pageY - totalOffsetY;
+
+        var e = [PygameLib.constants.MOUSEBUTTONDOWN, {key: PygameLib.constants.MOUSEBUTTONDOWN, pos: [canvasX, canvasY]}];
+        PygameLib.eventQueue.unshift(e);
+    }
+
     // Surface((width, height))
     var init$1 = function $__init__123$(self, size) {
         Sk.builtin.pyCheckArgs('__init__', arguments, 2, 5, false, false);
@@ -236,11 +277,8 @@ var PygameLib = {};
         self.main_canvas = document.createElement("canvas");
         self.main_canvas.width = self.width;
         self.main_canvas.height = self.height;
-        // self.main_canvas.style.position = "relative";
-        // self.main_canvas.style.display = "block";
+        self.main_canvas.addEventListener('click', mouseEventListener);
         $(self.main_canvas).css("border", "1px solid blue");
-        // self.main_canvas.style.setProperty("margin-top",...);
-        // self.main_canvas.style.setProperty("z-index", ...);
        
         var currentTarget = resetTarget();
         

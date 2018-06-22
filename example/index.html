@@ -26,55 +26,43 @@
 <textarea id="code" rows="24" cols="80">
 import pygame as pg
 
-# inicijalizujemo rad biblioteke PyGame
 pg.init()
+sirina, visina = 400, 400
+prozor = pg.display.set_mode([sirina, visina])
 
-# postavljamo naslov prozora
-pg.display.set_caption("Loptica")
-# ukljucujemo prozor dimenzije 400x450 piksela
-(sirina, visina) = (400, 450)
-ekran = pg.display.set_mode((sirina, visina))
+x, y = 200, 200 
+r = 50 
 
-# pozicija loptice (na pocetku je u centru ekrana)
-(x, y) = (sirina // 2, visina // 2)
-# vektor kretanja loptice
-(dx, dy) = (5, 5)
-# poluprecnik loptice
-r = 30
-pg.time.set_timer(pg.QUIT, 5000)
-
-while pg.event.wait().type != pg.QUIT:
-    pass
-#pg.time.set_timer(pg.QUIT, 0)
-
-
-# glavna petlja programa
-kraj = False
+kraj= False
+prikaz_treba_osveziti = True
+pg.time.set_timer(pg.USEREVENT, 20)
 while not kraj:
+    if prikaz_treba_osveziti:
+        prozor.fill(pg.Color("white"))
+        pg.draw.circle(prozor, pg.Color("green"), [x, y], r)
+        pg.display.update()
+        prikaz_treba_osveziti = False
 
-    # crtamo lopticu
-    ekran.fill(pg.Color("white"))
-    pg.draw.circle(ekran, pg.Color("black"), (x, y), r)
-    pg.display.update()
+    dogadjaj = pg.event.wait()
+    
+    if dogadjaj.type == pg.QUIT:
+        kraj = True
+    elif dogadjaj.type == pg.MOUSEBUTTONDOWN:
+        x, y = dogadjaj.pos
+        prikaz_treba_osveziti = True
+    elif dogadjaj.type == pg.KEYDOWN:
+        if dogadjaj.key == pg.K_LEFT:
+            x = (x - 50) % sirina
+        elif dogadjaj.key == pg.K_RIGHT:
+            x = (x + 50) % sirina
+        elif dogadjaj.key == pg.K_UP:
+            y = (y - 50) % visina
+        elif dogadjaj.key == pg.K_DOWN:
+            y = (y + 50) % visina
+    elif dogadjaj.type == pg.USEREVENT:
+        r = (r - 50 + 1) % 100 + 50
+        prikaz_treba_osveziti = True
 
-    # pomeramo lopticu
-    x += dx
-    y += dy
-    # ako je loptica ispala van ekrana, menjamo joj smer
-    if x - r < 0 or x + r > sirina:
-        dx = -dx
-    if y - r < 0 or y + r > visina:
-        dy = -dy
-
-    # cekamo 25 milisekundi
-    pg.time.wait(25)
-
-    # prekidamo petlju kada nastupi dogadjaj pg.QUIT
-    for dogadjaj in pg.event.get():
-        if dogadjaj.type == pg.QUIT:
-            kraj = True
-
-# prekidamo rad programa
 pg.quit()
  
  
