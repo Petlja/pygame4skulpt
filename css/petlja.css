@@ -10,10 +10,6 @@ body {
   padding-top: 80px;
 }
 
-canvas {
-  margin-left: 0px;
-}
-
 .footer {
   bottom: 0;
   width: 100%;
@@ -121,4 +117,20 @@ body {
 
 div.visible-ac-canvas {
   display: inline-block;
+}
+
+div.modal-header {
+  display: block;
+}
+
+.navbar>.container {
+  display: block;
+}
+
+.modal-dialog {
+  max-width: none;
+}
+
+i.fa {
+  font-family: "FontAwesome";
 }

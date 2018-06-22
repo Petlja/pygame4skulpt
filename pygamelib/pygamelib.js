@@ -2,7 +2,7 @@ var PygameLib = {};
 
 (function () {
     PygameLib.eventSource = typeof window !== 'undefined' ? window : global;
-
+    
     function keydownEventListener(event) {
         var e = [PygameLib.constants.KEYDOWN, { key: event.key }];
         if (event.key == "Escape")  {
@@ -55,6 +55,7 @@ var PygameLib = {};
         pygame_m.$d['draw'] = display_m.$d['draw'];
         // testiranja radi stavili smo nešto u queue na početku
         PygameLib.eventQueue = [];
+        PygameLib.eventTimer = {};
     }
 
     //pygame
@@ -87,6 +88,24 @@ var PygameLib = {};
         });
         mod.get_ticks = new Sk.builtin.func(function() {
             return Sk.ffi.remapToPy(new Date() - PygameLib.initial_time);
+        });
+        mod.set_timer = new Sk.builtin.func(function(eventid, milliseconds) {
+            var event = Sk.ffi.remapToJs(eventid);
+            var ms = Sk.ffi.remapToJs(milliseconds);
+            if (PygameLib.eventTimer[event]) {
+                clearInterval(PygameLib.eventTimer[event].timer);
+            }
+            else {
+                PygameLib.eventTimer[event] = {};
+                PygameLib.eventTimer[event].f = function () {
+                    var e = [event, { }];
+                    PygameLib.eventQueue.unshift(e);
+                    console.log(e);
+                }
+            }
+            if (ms) {
+                PygameLib.eventTimer[event].timer = setInterval(PygameLib.eventTimer[event].f, ms);
+            }
         });
         return mod;
     }
@@ -435,14 +454,6 @@ var PygameLib = {};
         $loc.__repr__.co_name = new Sk.builtins['str']('__repr__');
         $loc.__repr__.co_varnames = ['self'];
 
-    }
-
-    function wait(ms) {
-        var start = Date.now(),
-            now = start;
-        while (now - start < ms) {
-          now = Date.now();
-        }
     }
 
     PygameLib.event_module = function (name) {
