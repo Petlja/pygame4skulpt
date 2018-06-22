@@ -34,7 +34,6 @@ var PygameLib = {};
         if(PygameLib.eventQueue){
             PygameLib.eventQueue.unshift(e);
         }
-        console.log(PygameLib.eventQueue.length);
         return false;
     }
 
@@ -261,8 +260,10 @@ var PygameLib = {};
         }
         while(currentElement = currentElement.offsetParent)
 
-        canvasX = event.pageX - totalOffsetX;
-        canvasY = event.pageY - totalOffsetY;
+        // canvasX = event.pageX - totalOffsetX;
+        // canvasY = event.pageY - totalOffsetY;
+        canvasX = event.clientX - totalOffsetX;
+        canvasY = event.clientY - totalOffsetY;
 
         var e = [PygameLib.constants.MOUSEBUTTONDOWN, {key: PygameLib.constants.MOUSEBUTTONDOWN, pos: [canvasX, canvasY]}];
         PygameLib.eventQueue.unshift(e);
