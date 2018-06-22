@@ -290,7 +290,7 @@ var PygameLib = {};
         $(div1).css("text-align", "center");
 
         var btn1 = document.createElement("span");
-        $(btn1).addClass("btn btn-primary pull-right");
+        $(btn1).addClass("btn btn-primary btn-xs pull-right");
         var ic = document.createElement("i");
         $(ic).addClass("fa fa-times");
         btn1.appendChild(ic);
@@ -317,19 +317,24 @@ var PygameLib = {};
         $(div5).addClass("modal-body");
         var div6 = document.createElement("div");
         $(div6).addClass("modal-footer");
-        var header = document.createElement("h5");
-        $(header).addClass("modal-title");
+        var div7 = document.createElement("div");
+        $(div7).addClass("col-md-8");
+        var div8 = document.createElement("div");
+        $(div8).addClass("col-md-4");
+        var header = document.createElement("h4");
+        $(header).addClass("modal-title pull-left");
         $(header).html(PygameLib.caption);
 
         div3.appendChild(div4);
         div3.appendChild(div5);
         div3.appendChild(div6);
 
-        div4.appendChild(header);
+        div4.appendChild(div7);
+        div4.appendChild(div8);
+        div7.appendChild(header);
+        div8.appendChild(btn1);
 
         div5.appendChild(self.main_canvas);
-
-        div4.appendChild(btn1);
 
         createArrows(div6);
 
@@ -432,7 +437,7 @@ var PygameLib = {};
             Sk.misceval.callsim(mod.surface.update, mod.surface);
         })
         mod.set_caption = new Sk.builtin.func(function(caption) {
-            //$('.modal-title').html(Sk.ffi.remapToJs(caption));
+            if ($('.modal-title')) $('.modal-title').html(Sk.ffi.remapToJs(caption));
             PygameLib.caption = Sk.ffi.remapToJs(caption);
         });
         return mod;
