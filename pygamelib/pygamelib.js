@@ -38,7 +38,9 @@ var PygameLib = {};
         // Uncaught TypeError: Cannot read property 'unshift' of undefined
         // Before executing the pygame_init() method
         if(PygameLib.eventQueue){
-            PygameLib.eventQueue.unshift(e);
+            if(!('repeat' in event) || !event.repeat) { // Pygame considers autorepeat is turnd of by default
+                PygameLib.eventQueue.unshift(e);
+            }
         }
         if (PygameLib.running) event.preventDefault();
         return false;
