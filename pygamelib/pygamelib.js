@@ -3,10 +3,19 @@ var PygameLib = {};
 (function () {
     PygameLib.eventSource = typeof window !== 'undefined' ? window : global;
     PygameLib.running = false;
+    PygameLib.useModal = true;
 
     PygameLib.endProgram = function() {
         PygameLib.running = false;
         $('.modal').modal('hide');
+    }
+
+    PygameLib.hideModal = function() {
+        PygameLib.useModal = false;    
+    }
+
+    PygameLib.showModal = function() {
+        PygameLib.useModal = true;    
     }
 
     var createKeyboardEvent = function(event) {
@@ -264,14 +273,12 @@ var PygameLib = {};
         var canvasY = 0;
         var currentElement = this;
 
-        do{
+        do {
             totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
             totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
         }
         while(currentElement = currentElement.offsetParent)
 
-        // canvasX = event.pageX - totalOffsetX;
-        // canvasY = event.pageY - totalOffsetY;
         canvasX = event.clientX - totalOffsetX;
         canvasY = event.clientY - totalOffsetY;
 
@@ -293,67 +300,70 @@ var PygameLib = {};
        
         var currentTarget = resetTarget();
         
-        var div1 = document.createElement("div");
-        currentTarget.appendChild(div1);
-        PygameLib.modalDiv = div1;
-        $(div1).addClass("modal");
-        // $(currentTarget).width(self.width + 40);
-        $(div1).css("text-align", "center");
+        if (PygameLib.useModal) {
+            var div1 = document.createElement("div");
+            currentTarget.appendChild(div1);
+            PygameLib.modalDiv = div1;
+            $(div1).addClass("modal");
+            $(div1).css("text-align", "center");
 
-        var btn1 = document.createElement("span");
-        $(btn1).addClass("btn btn-primary btn-xs pull-right");
-        var ic = document.createElement("i");
-        $(ic).addClass("fa fa-times");
-        btn1.appendChild(ic);
+            var btn1 = document.createElement("span");
+            $(btn1).addClass("btn btn-primary btn-xs pull-right");
+            var ic = document.createElement("i");
+            $(ic).addClass("fa fa-times");
+            btn1.appendChild(ic);
 
-        $(btn1).on('click', function(e) {
-            var e = [PygameLib.constants.QUIT, { key: "Escape" }];
-            PygameLib.eventQueue.unshift(e);
-        });
+            $(btn1).on('click', function(e) {
+                var e = [PygameLib.constants.QUIT, { key: "Escape" }];
+                PygameLib.eventQueue.unshift(e);
+            });
 
-        var div2 = document.createElement("div");
-        $(div2).addClass("modal-dialog");
-        $(div2).css("display", "inline-block");
-        $(div2).width(self.width + 42);
-        $(div2).attr("role", "document");
-        div1.appendChild(div2);
+            var div2 = document.createElement("div");
+            $(div2).addClass("modal-dialog");
+            $(div2).css("display", "inline-block");
+            $(div2).width(self.width + 42);
+            $(div2).attr("role", "document");
+            div1.appendChild(div2);
 
-        var div3 = document.createElement("div");
-        $(div3).addClass("modal-content");
-        div2.appendChild(div3);
+            var div3 = document.createElement("div");
+            $(div3).addClass("modal-content");
+            div2.appendChild(div3);
 
-        var div4 = document.createElement("div");
-        $(div4).addClass("modal-header");
-        var div5 = document.createElement("div");
-        $(div5).addClass("modal-body");
-        var div6 = document.createElement("div");
-        $(div6).addClass("modal-footer");
-        var div7 = document.createElement("div");
-        $(div7).addClass("col-md-8");
-        var div8 = document.createElement("div");
-        $(div8).addClass("col-md-4");
-        var header = document.createElement("h4");
-        $(header).addClass("modal-title pull-left");
-        $(header).html(PygameLib.caption);
+            var div4 = document.createElement("div");
+            $(div4).addClass("modal-header");
+            var div5 = document.createElement("div");
+            $(div5).addClass("modal-body");
+            var div6 = document.createElement("div");
+            $(div6).addClass("modal-footer");
+            var div7 = document.createElement("div");
+            $(div7).addClass("col-md-8");
+            var div8 = document.createElement("div");
+            $(div8).addClass("col-md-4");
+            var header = document.createElement("h4");
+            $(header).addClass("modal-title pull-left");
+            $(header).html(PygameLib.caption);
 
-        div3.appendChild(div4);
-        div3.appendChild(div5);
-        div3.appendChild(div6);
+            div3.appendChild(div4);
+            div3.appendChild(div5);
+            div3.appendChild(div6);
 
-        div4.appendChild(div7);
-        div4.appendChild(div8);
-        div7.appendChild(header);
-        div8.appendChild(btn1);
+            div4.appendChild(div7);
+            div4.appendChild(div8);
+            div7.appendChild(header);
+            div8.appendChild(btn1);
 
-        div5.appendChild(self.main_canvas);
+            div5.appendChild(self.main_canvas);
 
-        createArrows(div6);
+            createArrows(div6);
 
-        $(div1).modal({
-            backdrop: 'static',
-            keyboard: false
-        });
-
+            $(div1).modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+        }
+        else {
+            currentTarget.appendChild(self.main_canvas);
+        }
         self.main_context = self.main_canvas.getContext("2d");
         self.offscreen_canvas = document.createElement('canvas');
         self.context2d = self.offscreen_canvas.getContext("2d");
