@@ -20,7 +20,7 @@ var PygameLib = {};
 
     var createKeyboardEvent = function(event) {
         var e;
-        console.log(event);
+        // console.log(event);
         var keyPGConstant;
         if (event.type === "keyup") {
             keyPGConstant = PygameLib.constants.KEYUP;
