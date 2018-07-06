@@ -20,29 +20,36 @@ var PygameLib = {};
 
     var createKeyboardEvent = function(event) {
         var e;
+        // console.log(event);
+        var keyPGConstant;
+        if (event.type === "keyup") {
+            keyPGConstant = PygameLib.constants.KEYUP;
+        } else {
+            keyPGConstant = PygameLib.constants.KEYDOWN;
+        }
         switch (event.which) {
             case 27:
-                e = [PygameLib.constants.QUIT, { key: PygameLib.constants.K_ESCAPE }];
+                e = [PygameLib.constants.QUIT, {key: PygameLib.constants.K_ESCAPE}];
                 break;
             case 37:
-                e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_LEFT }];
+                e = [keyPGConstant, {key: PygameLib.constants.K_LEFT}];
                 break;
             case 38:
-                e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_UP }];
+                e = [keyPGConstant, {key: PygameLib.constants.K_UP}];
                 break;
             case 39:
-                e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_RIGHT }];
+                e = [keyPGConstant, {key: PygameLib.constants.K_RIGHT}];
                 break;
             case 40:
-                e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_DOWN }];
+                e = [keyPGConstant, {key: PygameLib.constants.K_DOWN}];
                 break;
             default:
-                e = [PygameLib.constants.KEYDOWN, { key: event.which }];
+                e = [keyPGConstant, {key: event.which}];
         }
         return e;
     }
 
-    function keydownEventListener(event) {
+    function keyEventListener(event) {
         var e = createKeyboardEvent(event);
         // Uncaught TypeError: Cannot read property 'unshift' of undefined
         // Before executing the pygame_init() method
@@ -80,7 +87,8 @@ var PygameLib = {};
         for (var k in pygame_modules) {
             Sk.externalLibraries[k] = pygame_modules[k];
         }
-        PygameLib.eventSource.addEventListener("keydown", keydownEventListener);
+        PygameLib.eventSource.addEventListener("keydown", keyEventListener);
+        PygameLib.eventSource.addEventListener("keyup", keyEventListener);
     }
     
     // pygame module
