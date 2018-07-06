@@ -89,6 +89,7 @@ var PygameLib = {};
         }
         PygameLib.eventSource.addEventListener("keydown", keyEventListener);
         PygameLib.eventSource.addEventListener("keyup", keyEventListener);
+        PygameLib.imgPath = "/_images/";
     }
     
     // pygame module
@@ -903,7 +904,7 @@ var PygameLib = {};
     var load_image = function(filename) {
         return new Sk.misceval.promiseToSuspension(new Promise(function(resolve) {
                 var img = new Image();
-                img.src = Sk.ffi.remapToJs(filename);
+                img.src = PygameLib.imgPath + Sk.ffi.remapToJs(filename);
                 img.onload = function () {
                     var w = PygameLib.surface.width;
                     var h = PygameLib.surface.height;
