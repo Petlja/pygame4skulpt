@@ -40,48 +40,37 @@
 <p>Lorem ipsum</p>
 <p>Lorem ipsum</p>
 <textarea id="code" rows="24" cols="80">
-import pygame as pg
+# -*- acsection: general-init -*-
+import pygame as pg, math  
 
-pg.init()
-pg.display.set_caption("Naslovnica")
-sirina, visina = 400, 400
-prozor = pg.display.set_mode([sirina, visina])
-
-x, y = 200, 200 
-r = 50 
-
-kraj= False
-prikaz_treba_osveziti = True
-pg.time.set_timer(pg.USEREVENT, 20)
-while not kraj:
-    if prikaz_treba_osveziti:
-        prozor.fill(pg.Color("white"))
-        pg.draw.circle(prozor, pg.Color("green"), [x, y], r)
-        pg.display.update()
-        prikaz_treba_osveziti = False
-
-    dogadjaj = pg.event.wait()
+# ukljucivanje rada biblioteke PyGame
+pg.init()  
     
-    if dogadjaj.type == pg.QUIT:
-        kraj = True
-    elif dogadjaj.type == pg.MOUSEBUTTONDOWN:
-        x, y = dogadjaj.pos
-        prikaz_treba_osveziti = True
-    elif dogadjaj.type == pg.KEYDOWN:
-        if dogadjaj.key == pg.K_LEFT:
-            x = (x - 50) % sirina
-        elif dogadjaj.key == pg.K_RIGHT:
-            x = (x + 50) % sirina
-        elif dogadjaj.key == pg.K_UP:
-            y = (y - 50) % visina
-        elif dogadjaj.key == pg.K_DOWN:
-            y = (y + 50) % visina
-    elif dogadjaj.type == pg.USEREVENT:
-        r = (r - 50 + 1) % 100 + 50
-        prikaz_treba_osveziti = True
+# podesavamo naslov prozora
+pg.display.set_caption("Cat")
 
+# otvaramo prozor dimenzije 300x300
+(sirina, visina) = (300, 300)
+prozor = pg.display.set_mode((sirina, visina))
+
+# -*- acsection: main -*-
+
+# ucitavamo slicicu iz datoteke cat.png
+slika = pg.image.load("cat.png").convert()
+#slika = pg.image.load("cat.png")
+# prikazujemo slicicu na sredini ekrana
+(x, y) = ((sirina - slika.get_width()) / 2, (visina - slika.get_height()) / 2)
+prozor.blit(slika, (x, y))
+
+# -*- acsection: after-main -*-
+pg.display.update()
+
+# petlja obrade dogadjaja - cekamo dok korisnik ne iskljuci prozor
+while pg.event.wait().type != pg.QUIT:
+    pass
+
+# iskljucivanje rada biblioteke PyGame
 pg.quit()
- 
  
 </textarea>
 <pre id="output"></pre>
