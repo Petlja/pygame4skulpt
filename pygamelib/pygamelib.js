@@ -24,7 +24,7 @@ var PygameLib = {};
         var keyPGConstant;
         if (event.type === "keyup") {
             keyPGConstant = PygameLib.constants.KEYUP;
-        } else {
+        } else if (event.type === "keydown") {
             keyPGConstant = PygameLib.constants.KEYDOWN;
         }
         switch (event.which) {
@@ -295,8 +295,12 @@ var PygameLib = {};
 
         canvasX = event.clientX - totalOffsetX;
         canvasY = event.clientY - totalOffsetY;
+        if (event.type === "mousedown") {
+            var e = [PygameLib.constants.MOUSEBUTTONDOWN, {key: PygameLib.constants.MOUSEBUTTONDOWN, pos: [canvasX, canvasY]}];
+        } else if (event.type === "mouseup") {
+            var e = [PygameLib.constants.MOUSEBUTTONUP, {key: PygameLib.constants.MOUSEBUTTONUP, pos: [canvasX, canvasY]}];
+        }
 
-        var e = [PygameLib.constants.MOUSEBUTTONDOWN, {key: PygameLib.constants.MOUSEBUTTONDOWN, pos: [canvasX, canvasY]}];
         PygameLib.eventQueue.unshift(e);
     }
 
@@ -311,7 +315,8 @@ var PygameLib = {};
         self.main_canvas.height = self.height;
 
         if (main) {
-            self.main_canvas.addEventListener('click', mouseEventListener);
+            self.main_canvas.addEventListener('mousedown', mouseEventListener);
+            self.main_canvas.addEventListener('mouseup', mouseEventListener);
             $(self.main_canvas).css("border", "1px solid blue");
         
             var currentTarget = resetTarget();

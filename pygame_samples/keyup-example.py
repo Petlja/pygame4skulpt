@@ -23,12 +23,12 @@ while not kraj:
 
     if dogadjaj.type == pg.QUIT:
         kraj = True
-    elif dogadjaj.type == pg.KEYDOWN:
+    elif dogadjaj.type == pg.MOUSEBUTTONUP:
         # print("down")
         if not crno:
             crno = True
             prikaz_treba_osveziti = True
-    elif dogadjaj.type == pg.KEYUP:
+    elif dogadjaj.type == pg.MOUSEBUTTONDOWN:
         # print("UP")
         if crno:
             crno = False
