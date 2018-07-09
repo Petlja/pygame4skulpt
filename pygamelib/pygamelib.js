@@ -791,9 +791,7 @@ var PygameLib = {};
         center[1] = rect_js[1] + rect_js[3] / 2;
 
         ctx.beginPath();
-        if (Math.abs(angles[1] - 2 * Math.PI) < 1e-5) {
-            angles[1] = 0;
-        }
+       
         ctx.ellipse(center[0], center[1], rect_js[2] / 2, rect_js[3] / 2, 0, -angles[0], -angles[1], true);
 
         if (width_js) {     

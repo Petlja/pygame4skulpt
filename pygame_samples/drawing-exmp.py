@@ -44,7 +44,7 @@ r.width = 200
 r = pygame.draw.arc(screen, pygame.Color('green'), r, 0, math.pi / 3, 10)
 print("arc r: ", r)
 
-r = pygame.draw.ellipse(screen, pygame.Color('blue'), r, 2);
+r = pygame.draw.ellipse(screen, pygame.Color('blue'), r, 2)
 print("elipe r: ", r)
 
 pygame.draw.aaline(screen, c, [150, 200], [350, 200])
@@ -66,19 +66,3 @@ while not done:
         if event.type == pygame.KEYDOWN:
             print("otkucano: "+ str(event.key))
     time.sleep(1)
-
-print("A sada malo kornjace")
-wn = turtle.Screen()
-
-babbage = turtle.Turtle()
-babbage.shape("triangle")
-
-n = 8
-angle = 360/n
-
-for i in range(n):
-    babbage.right(angle)
-    babbage.forward(90)
-    babbage.stamp()
-
-wn.exitonclick()
