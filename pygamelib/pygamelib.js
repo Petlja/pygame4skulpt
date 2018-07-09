@@ -20,7 +20,7 @@ var PygameLib = {};
 
     var createKeyboardEvent = function(event) {
         var e;
-        // console.log(event);
+
         var keyPGConstant;
         if (event.type === "keyup") {
             keyPGConstant = PygameLib.constants.KEYUP;
@@ -286,7 +286,6 @@ var PygameLib = {};
         var canvasX = 0;
         var canvasY = 0;
         var currentElement = this;
-
         do {
             totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
             totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
@@ -295,11 +294,34 @@ var PygameLib = {};
 
         canvasX = event.clientX - totalOffsetX;
         canvasY = event.clientY - totalOffsetY;
+        console.log(event.buttons);
         if (event.type === "mousedown") {
             var e = [PygameLib.constants.MOUSEBUTTONDOWN, {key: PygameLib.constants.MOUSEBUTTONDOWN, pos: [canvasX, canvasY]}];
         } else if (event.type === "mouseup") {
             var e = [PygameLib.constants.MOUSEBUTTONUP, {key: PygameLib.constants.MOUSEBUTTONUP, pos: [canvasX, canvasY]}];
+        } else if (event.type === "mousemove") {
+                    var leftButton = 0;
+            var rightButton = 0;
+            var middleButton = 0;
+            if (event.buttons & (1 << 0)) {
+                leftButton = 1;
+            }
+            if (event.buttons & (1 << 1)) {
+                rightButton = 1;
+            }
+            if (event.buttons & (1 << 2)) {
+                middleButton = 1;
+            }
+            var e = [PygameLib.constants.MOUSEMOTION,
+                {
+                    key: PygameLib.constants.MOUSEMOTION,
+                    pos: [canvasX, canvasY],
+                    rel: [event.movementX, event.movementY],
+                    buttons: [leftButton, middleButton, rightButton]
+                }]
+            console.log(e);
         }
+
 
         PygameLib.eventQueue.unshift(e);
     }
@@ -317,6 +339,7 @@ var PygameLib = {};
         if (main) {
             self.main_canvas.addEventListener('mousedown', mouseEventListener);
             self.main_canvas.addEventListener('mouseup', mouseEventListener);
+            self.main_canvas.addEventListener('mousemove', mouseEventListener);
             $(self.main_canvas).css("border", "1px solid blue");
         
             var currentTarget = resetTarget();
