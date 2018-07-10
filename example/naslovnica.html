@@ -27,41 +27,40 @@
 <textarea id="code" rows="24" cols="80">
 import pygame as pg
 
+# ukljucujemo rad biblioteke PyGame
 pg.init()
-sirina, visina = 400, 400
-prozor = pg.display.set_mode([sirina, visina])
 
+# otvaramo prozor dimenzije 400x500 piksela
+(sirina, visina) = (400, 500)
+prozor = pg.display.set_mode((sirina, visina))
 
+# bojimo pozadinu prozora u belo
+prozor.fill(pg.Color("white"))
+pg.display.update()
 
 kraj = False
-prikaz_treba_osveziti = True
-crno = True
-pg.time.set_timer(pg.USEREVENT, 20)
 while not kraj:
-    if prikaz_treba_osveziti:
-        if crno:
-            prozor.fill(pg.Color("black"))
-        else:
-            prozor.fill(pg.Color("white"))
-        pg.display.update()
-        prikaz_treba_osveziti = False
-
+    # cekamo da se dogodi neki dogadjaj
     dogadjaj = pg.event.wait()
-
+    # iskljucivanje prozora
     if dogadjaj.type == pg.QUIT:
-        kraj = True
-    elif dogadjaj.type == pg.KEYDOWN:
-        # print("down")
-        if not crno:
-            crno = True
-            prikaz_treba_osveziti = True
-    elif dogadjaj.type == pg.KEYUP:
-        # print("UP")
-        if crno:
-            crno = False
-            prikaz_treba_osveziti = True
+       kraj = True
+    # pomeranje misa
+    if dogadjaj.type == pg.MOUSEMOTION:
+       # ako je pritisnuto levo dugme
+       if dogadjaj.buttons[0] == 1:
+           # polozaj misa
+           (px, py) = dogadjaj.pos
+           # pomeranje u odnosu na prethodni polozaj
+           (rx, ry) = dogadjaj.rel
+           # crtamo linijicu izmedju prethodnog i tekuceg polozaja misa
+           pg.draw.line(prozor, pg.Color("black"), (px, py), (px + rx, py + ry), 2)
+           # osvezavamo prikaz prozora
+           pg.display.update()
 
+# iskljucujemo rad biblioteke PyGame
 pg.quit()
+
 
 
  

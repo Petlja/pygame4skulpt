@@ -8,14 +8,11 @@ prozor = pg.display.set_mode([sirina, visina])
 
 kraj = False
 prikaz_treba_osveziti = True
-crno = True
+boja = "white"
 pg.time.set_timer(pg.USEREVENT, 20)
 while not kraj:
     if prikaz_treba_osveziti:
-        if crno:
-            prozor.fill(pg.Color("black"))
-        else:
-            prozor.fill(pg.Color("white"))
+        prozor.fill(pg.Color(boja))
         pg.display.update()
         prikaz_treba_osveziti = False
 
@@ -23,16 +20,14 @@ while not kraj:
 
     if dogadjaj.type == pg.QUIT:
         kraj = True
+    elif dogadjaj.type == pg.MOUSEMOTION:
+        if dogadjaj.buttons[0] == 1:
+            boja = "black"
+        prikaz_treba_osveziti = True
     elif dogadjaj.type == pg.MOUSEBUTTONUP:
-        # print("down")
-        if not crno:
-            crno = True
-            prikaz_treba_osveziti = True
-    elif dogadjaj.type == pg.MOUSEBUTTONDOWN:
-        # print("UP")
-        if crno:
-            crno = False
-            prikaz_treba_osveziti = True
+        boja = "white"
+        prikaz_treba_osveziti = True
+
 
 pg.quit()
 
