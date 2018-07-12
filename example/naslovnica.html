@@ -25,43 +25,57 @@
 <p>Lorem ipsum</p>
 
 <textarea id="code" rows="24" cols="80">
+import math, random
 import pygame as pg
 
-# ukljucujemo rad biblioteke PyGame
 pg.init()
 
-# otvaramo prozor dimenzije 400x500 piksela
+pg.display.set_caption("krugovi na dijagonali")
 (sirina, visina) = (400, 500)
 prozor = pg.display.set_mode((sirina, visina))
 
-# bojimo pozadinu prozora u belo
-prozor.fill(pg.Color("white"))
-pg.display.update()
+
+def nasumicna_boja():
+    return random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
+
+
+def crtaj():
+    r = d / (2 * n)
+    kx = sirina / (2 * n)
+    ky = visina / (2 * n)
+    prozor.fill(pg.Color("white"))
+    for i in range(n):
+        (cx, cy) = ((2 * i + 1) * kx, visina - (2 * i + 1) * ky)
+        pg.draw.circle(prozor, nasumicna_boja(), (round(cx), round(cy)), round(r), 2)
+    pg.display.update()
+
+
+d = math.sqrt(sirina ** 2 + visina ** 2)
+
+n = 5
+crtaj()
 
 kraj = False
 while not kraj:
-    # cekamo da se dogodi neki dogadjaj
     dogadjaj = pg.event.wait()
-    # iskljucivanje prozora
     if dogadjaj.type == pg.QUIT:
-       kraj = True
-    # pomeranje misa
-    if dogadjaj.type == pg.MOUSEMOTION:
-       # ako je pritisnuto levo dugme
-       if dogadjaj.buttons[0] == 1:
-           # polozaj misa
-           (px, py) = dogadjaj.pos
-           # pomeranje u odnosu na prethodni polozaj
-           (rx, ry) = dogadjaj.rel
-           # crtamo linijicu izmedju prethodnog i tekuceg polozaja misa
-           pg.draw.line(prozor, pg.Color("black"), (px, py), (px + rx, py + ry), 2)
-           # osvezavamo prikaz prozora
-           pg.display.update()
+        kraj = True
+    elif dogadjaj.type == pg.MOUSEBUTTONDOWN:
+        if dogadjaj.button == 1:
+            n += 1
+            crtaj()
+        elif dogadjaj.button == 3 and n > 1:
+            n -= 1
+            crtaj()
+    if dogadjaj.type == pg.KEYDOWN:
+        if dogadjaj.key == pg.K_UP:
+            n += 1
+            crtaj()
+        elif dogadjaj.key == pg.K_DOWN and n > 1:
+            n -= 1
+            crtaj()
 
-# iskljucujemo rad biblioteke PyGame
 pg.quit()
-
-
 
  
 </textarea>
