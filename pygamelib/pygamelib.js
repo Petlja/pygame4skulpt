@@ -160,9 +160,36 @@ var PygameLib = {};
                 PygameLib.eventTimer[event].timer = setInterval(PygameLib.eventTimer[event].f, ms);
             }
         });
+        mod.Clock = Sk.misceval.buildClass(mod, clock$1, 'Clock', []);
+        PygameLib.ClockType = mod.Clock;
         return mod;
-    }
+    };
 
+    var clock$1 = function $Surface$class_outer(gbl, loc) {
+        loc.__init__ = new Sk.builtins.function(new function() {
+            // TODO: not yet implemented
+        }, gbl);
+        loc.__repr__ = new Sk.builtins.function(new function() {
+            return Sk.ffi.remapToPy('<Clock()>');
+        }, gbl);
+        loc.tick = new Sk.builtins.function(new function() {
+            // TODO: not yet implemented
+        }, gbl);
+        loc.tick_busy_loop = new Sk.builtins.function(new function() {
+            // TODO: not yet implemented
+        }, gbl);
+        loc.get_time = new Sk.builtins.function(new function() {
+            // TODO: not yet implemented
+        }, gbl);
+        loc.get_rawtime = new Sk.builtins.function(new function() {
+            // TODO: not yet implemented
+        }, gbl);
+        loc.get_fps = new Sk.builtins.function(new function() {
+            // TODO: not yet implemented
+        }, gbl);
+    };
+
+    surface$1.co_name = new Sk.builtins['str']('Surface');
     function resetTarget() {
         var selector = Sk.TurtleGraphics.target;
         var target = typeof selector === "string" ?
