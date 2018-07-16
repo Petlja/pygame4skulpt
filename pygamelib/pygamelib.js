@@ -178,13 +178,23 @@ var PygameLib = {};
         $loc.__init__ = new Sk.builtin.func(function (self, name, size, bold, italic) {
             Sk.abstr.sattr(self, 'name', name, false);
             Sk.abstr.sattr(self, 'size', size, false);
-            Sk.abstr.sattr(self, 'bold', bold, false);
+            if (bold === undefined) {
+                Sk.abstr.sattr(self, 'bold', Sk.ffi.remapToPy(false), false);
+            } else {
+                Sk.abstr.sattr(self, 'bold', bold, false);
+            }
+            if (italic === undefined) {
+                Sk.abstr.sattr(self, 'italic', Sk.ffi.remapToPy(false), false);
+            } else {
+                Sk.abstr.sattr(self, 'italic', bold, false);
+            }
             Sk.abstr.sattr(self, 'italic', italic, false);
             return Sk.builtin.none.none$;
         }, $gbl);
         $loc.__init__.co_name = new Sk.builtins['str']('__init__');
-        $loc.__init__.co_varnames = ['self', 'name', 'size', 'bold', 'italic'];
+        $loc.__init__.co_varnames = ['bold', 'italic'];
         $loc.__init__.$defaults = [false, false];
+        // $loc.__init__.co_numargs = 5;
 
         $loc.__repr__ = new Sk.builtin.func(function (self) {
             var name = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'name', false));
@@ -194,26 +204,45 @@ var PygameLib = {};
         $loc.__repr__.co_name = new Sk.builtins['str']('__repr__');
         $loc.__repr__.co_varnames = ['self'];
 
-        $loc.render = new Sk.builtin.func(function (self, text, antialias, color, background) {
-            var msg = Sk.ffi.remapToJs(text);
-            var sz = msg.length * Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'size', false));
-            var psz = Sk.ffi.remapToPy(sz);
-            var t = Sk.builtin.tuple([10, 10]);
-            return Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
-            // console.log(s);
-            // var ctx = s.main_canvas.getContext("2d");
-            // ctx.font = "30px Arial";
-            // ctx.strokeText("Hello World", 10, 50);
-            // ctx.fillText("Hello World",10,50);
-            // return Sk.ffi.remapToPy(s);
-            // return s;
-            return Sk.builtin.none.none$;
-        }, $gbl);
+        $loc.render = new Sk.builtin.func(renderFont, $gbl);
         $loc.render.co_name = new Sk.builtins['str']('render');
         $loc.render.co_varnames = ['self', 'text', 'antialias', 'color', 'background'];
         $loc.render.$defaults = [Sk.builtin.none.none$];
     }
     font_SysFont.co_name = new Sk.builtins['str']('SysFont');
+
+    function renderFont(self, text, antialias, color, background) {
+        // TODO: antialias is ignored
+        var msg = Sk.ffi.remapToJs(text);
+        var h = 1.01 * Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'size', false));
+        var fontName = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'name', false));
+        fontName = "" + h + "px " + fontName;
+        var bold = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'bold', false));
+        if (bold) {
+            fontName = 'bold ' + fontName;
+        }
+        var italic = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'italic', false));
+        if (italic) {
+            fontName = 'italic ' + fontName;
+        }
+        var w = 300;
+
+        // Create a dummy canvas in order to exploit its measureText() method
+        var t = Sk.builtin.tuple([w, h]);
+        var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+        var ctx = s.main_canvas.getContext("2d");
+        ctx.font = fontName;
+        w = ctx.measureText(msg).width;
+
+        t = Sk.builtin.tuple([w, h]);
+        s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+        ctx = s.main_canvas.getContext("2d");
+        ctx.font = fontName;
+        var color_js = extract_color(color);
+        ctx.fillStyle = 'rgba(' + color_js[0] + ', ' + color_js[1] + ', ' + color_js[2] + ', ' + color_js[3] + ')';
+        ctx.fillText(msg, 0, h);
+        return s;
+    }
 
     function resetTarget() {
         var selector = Sk.TurtleGraphics.target;
