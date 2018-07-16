@@ -381,12 +381,24 @@ var PygameLib = {};
 
         canvasX = event.clientX - totalOffsetX;
         canvasY = event.clientY - totalOffsetY;
+        
+        var button = event.button + 1;
         if (event.type === "mousedown") {
-            var e = [PygameLib.constants.MOUSEBUTTONDOWN, {key: PygameLib.constants.MOUSEBUTTONDOWN, pos: [canvasX, canvasY]}];
+            var e = [PygameLib.constants.MOUSEBUTTONDOWN,
+                {
+                    key: PygameLib.constants.MOUSEBUTTONDOWN,
+                    pos: [canvasX, canvasY],
+                    button: button
+                }];
         } else if (event.type === "mouseup") {
-            var e = [PygameLib.constants.MOUSEBUTTONUP, {key: PygameLib.constants.MOUSEBUTTONUP, pos: [canvasX, canvasY]}];
+            var e = [PygameLib.constants.MOUSEBUTTONUP,
+                {
+                    key: PygameLib.constants.MOUSEBUTTONUP,
+                    pos: [canvasX, canvasY],
+                    button: button
+                }];
         } else if (event.type === "mousemove") {
-                    var leftButton = 0;
+            var leftButton = 0;
             var rightButton = 0;
             var middleButton = 0;
             if (event.buttons & (1 << 0)) {
