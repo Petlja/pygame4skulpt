@@ -237,6 +237,12 @@ var PygameLib = {};
         t = Sk.builtin.tuple([w, h]);
         s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
         ctx = s.main_canvas.getContext("2d");
+        if (background !== undefined) {
+            var background_js = extract_color(background);
+            ctx.fillStyle = 'rgba(' + background_js[0] + ', ' + background_js[1] + ', ' + background_js[2] + ', '
+                + background_js[3] + ')';
+            ctx.fillRect(0, 0, s.main_canvas.width, s.main_canvas.height);
+        }
         ctx.font = fontName;
         var color_js = extract_color(color);
         ctx.fillStyle = 'rgba(' + color_js[0] + ', ' + color_js[1] + ', ' + color_js[2] + ', ' + color_js[3] + ')';
