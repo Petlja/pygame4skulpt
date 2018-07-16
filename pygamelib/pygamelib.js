@@ -82,6 +82,9 @@ var PygameLib = {};
             },
             'pygame.image': {
                 path: baseURL + '/image.js'
+            },
+            'pygame.font': {
+                path: baseURL + '/font.js'
             }
         };
         for (var k in pygame_modules) {
@@ -101,6 +104,7 @@ var PygameLib = {};
         var pygame_m  = Sk.importModule("pygame", false, false);
         var time_m    = Sk.importModule("pygame.time", false, false);
         var image_m   = Sk.importModule("pygame.image", false, false);
+        var font_m    = Sk.importModule("pygame.font", false, false);
         PygameLib.initial_time = new Date();
         pygame_m.$d['display'] = display_m.$d['display'];
         pygame_m.$d['event'] = display_m.$d['event'];
@@ -161,7 +165,55 @@ var PygameLib = {};
             }
         });
         return mod;
+    };
+
+    PygameLib.font_module = function(name) {
+        mod = {};
+        mod.SysFont = Sk.misceval.buildClass(mod, font_SysFont, "SysFontType",[]);
+        PygameLib.SysFontType = mod.SysFontType;
+        return mod;
+    };
+
+    function font_SysFont($gbl, $loc) {
+        $loc.__init__ = new Sk.builtin.func(function (self, name, size, bold, italic) {
+            Sk.abstr.sattr(self, 'name', name, false);
+            Sk.abstr.sattr(self, 'size', size, false);
+            Sk.abstr.sattr(self, 'bold', bold, false);
+            Sk.abstr.sattr(self, 'italic', italic, false);
+            return Sk.builtin.none.none$;
+        }, $gbl);
+        $loc.__init__.co_name = new Sk.builtins['str']('__init__');
+        $loc.__init__.co_varnames = ['self', 'name', 'size', 'bold', 'italic'];
+        $loc.__init__.$defaults = [false, false];
+
+        $loc.__repr__ = new Sk.builtin.func(function (self) {
+            var name = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'name', false));
+            var size = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'size', false));
+            return Sk.ffi.remapToPy('<SysFont(' + name + ' ' + size + ')>');
+        });
+        $loc.__repr__.co_name = new Sk.builtins['str']('__repr__');
+        $loc.__repr__.co_varnames = ['self'];
+
+        $loc.render = new Sk.builtin.func(function (self, text, antialias, color, background) {
+            var msg = Sk.ffi.remapToJs(text);
+            var sz = msg.length * Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'size', false));
+            var psz = Sk.ffi.remapToPy(sz);
+            var t = Sk.builtin.tuple([10, 10]);
+            return Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+            // console.log(s);
+            // var ctx = s.main_canvas.getContext("2d");
+            // ctx.font = "30px Arial";
+            // ctx.strokeText("Hello World", 10, 50);
+            // ctx.fillText("Hello World",10,50);
+            // return Sk.ffi.remapToPy(s);
+            // return s;
+            return Sk.builtin.none.none$;
+        }, $gbl);
+        $loc.render.co_name = new Sk.builtins['str']('render');
+        $loc.render.co_varnames = ['self', 'text', 'antialias', 'color', 'background'];
+        $loc.render.$defaults = [Sk.builtin.none.none$];
     }
+    font_SysFont.co_name = new Sk.builtins['str']('SysFont');
 
     function resetTarget() {
         var selector = Sk.TurtleGraphics.target;
@@ -294,7 +346,6 @@ var PygameLib = {};
 
         canvasX = event.clientX - totalOffsetX;
         canvasY = event.clientY - totalOffsetY;
-        console.log(event.buttons);
         if (event.type === "mousedown") {
             var e = [PygameLib.constants.MOUSEBUTTONDOWN, {key: PygameLib.constants.MOUSEBUTTONDOWN, pos: [canvasX, canvasY]}];
         } else if (event.type === "mouseup") {
@@ -319,7 +370,7 @@ var PygameLib = {};
                     rel: [event.movementX, event.movementY],
                     buttons: [leftButton, middleButton, rightButton]
                 }]
-            console.log(e);
+
         }
 
 
@@ -513,13 +564,13 @@ var PygameLib = {};
         });
         mod.flip = new Sk.builtin.func(function() {
             Sk.misceval.callsim(mod.surface.update, mod.surface);
-        })
+        });
         mod.set_caption = new Sk.builtin.func(function(caption) {
             if ($('.modal-title')) $('.modal-title').html(Sk.ffi.remapToJs(caption));
             PygameLib.caption = Sk.ffi.remapToJs(caption);
         });
         return mod;
-    }
+    };
 
     //pygame.event module
     //pygame.event.get()

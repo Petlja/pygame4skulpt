@@ -25,41 +25,41 @@
 <p>Lorem ipsum</p>
 
 <textarea id="code" rows="24" cols="80">
+# -*- acsection: general-init -*-
 import pygame as pg
 
-# ukljucujemo rad biblioteke PyGame
+# uključivanje rada biblioteke PyGame
 pg.init()
 
-# otvaramo prozor dimenzije 400x500 piksela
-(sirina, visina) = (400, 500)
+# podešavamo naslov prozora
+pg.display.set_caption("Zdravo svete!")
+# otvaramo prozor dimenzije 300x300
+(sirina, visina) = (300, 300)
 prozor = pg.display.set_mode((sirina, visina))
+# -*- acsection: main -*-
 
-# bojimo pozadinu prozora u belo
 prozor.fill(pg.Color("white"))
+
+font = pg.font.SysFont("Arial", 40)
+
+poruka = "Zdravo svete!"
+tekst = font.render(poruka, True, pg.Color("black"))
+(sirina_teksta, visina_teksta) = (tekst.get_width(), tekst.get_height())
+(x, y) = ((sirina - sirina_teksta) / 2, (visina - visina_teksta) / 2)
+prozor.blit(tekst, (x, y))
+
+# -*- acsection: after-main -*-
+# ažuriramo prikaz sadržaja ekrana
 pg.display.update()
 
-kraj = False
-while not kraj:
-    # cekamo da se dogodi neki dogadjaj
-    dogadjaj = pg.event.wait()
-    # iskljucivanje prozora
-    if dogadjaj.type == pg.QUIT:
-       kraj = True
-    # pomeranje misa
-    if dogadjaj.type == pg.MOUSEMOTION:
-       # ako je pritisnuto levo dugme
-       if dogadjaj.buttons[0] == 1:
-           # polozaj misa
-           (px, py) = dogadjaj.pos
-           # pomeranje u odnosu na prethodni polozaj
-           (rx, ry) = dogadjaj.rel
-           # crtamo linijicu izmedju prethodnog i tekuceg polozaja misa
-           pg.draw.line(prozor, pg.Color("black"), (px, py), (px + rx, py + ry), 2)
-           # osvezavamo prikaz prozora
-           pg.display.update()
+# čekamo da korisnik isključi prozor
+#while pg.event.wait().type != pg.QUIT:
+#   pass
 
-# iskljucujemo rad biblioteke PyGame
+# isključivanje rada biblioteke PyGame
 pg.quit()
+
+
 
 
 
