@@ -163,11 +163,44 @@ var PygameLib = {};
             if (ms) {
                 PygameLib.eventTimer[event].timer = setInterval(PygameLib.eventTimer[event].f, ms);
             }
+            return mod;
         });
-        mod.Clock = Sk.misceval.buildClass(mod, clock$1, 'Clock', []);
+
+        mod.Clock = Sk.misceval.buildClass(mod, time_Clock, 'Clock', []);
         PygameLib.ClockType = mod.Clock;
         return mod;
     };
+
+    function time_Clock($gbl, $loc) {
+        $loc.__init__ = new Sk.builtin.func(function (self) {
+            Sk.abstr.sattr(self, 'startTime', Sk.builtin.none.none$, false);
+            return Sk.builtin.none.none$;
+        }, $gbl);
+        $loc.__init__.co_name = new Sk.builtins['str']('__init__');
+
+        $loc.tick = new Sk.builtin.func(function (self, framerate) {
+            var currTime = Date.now();
+            var mills = 0;
+            if (Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'startTime', false)) === null) {
+                Sk.abstr.sattr(self, 'startTime', Sk.ffi.remapToPy(currTime), false);
+            } else {
+                var startTime = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'startTime', false));
+                mills = (currTime - startTime) / 1000;
+                return Sk.ffi.remapToPy(mills);
+            }
+            if (framerate !== undefined) {
+                // var t_m = Sk.importModule("time", false, false);
+                // var timeout = 1000 / Sk.ffi.remapToJs(framerate);
+                // var sec = 10;
+                // return Sk.misceval.callsimOrSuspend(t_m.$d['sleep'], Sk.ffi.remapToPy(sec));
+            }
+            return Sk.ffi.remapToPy(mills);
+        }, $gbl);
+        $loc.tick.co_name = new Sk.builtins['str']('tick');
+        $loc.tick.co_varnames = ['framerate'];
+        $loc.tick.$defaults = [Sk.ffi.remapToPy(0)];
+    }
+    time_Clock.co_name = new Sk.builtins['str']('Clock');
 
     PygameLib.font_module = function(name) {
         mod = {};
@@ -196,7 +229,6 @@ var PygameLib = {};
         $loc.__init__.co_name = new Sk.builtins['str']('__init__');
         $loc.__init__.co_varnames = ['bold', 'italic'];
         $loc.__init__.$defaults = [false, false];
-        // $loc.__init__.co_numargs = 5;
 
         $loc.__repr__ = new Sk.builtin.func(function (self) {
             var name = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'name', false));
@@ -252,31 +284,6 @@ var PygameLib = {};
         return s;
     }
 
-    var clock$1 = function $Surface$class_outer(gbl, loc) {
-        loc.__init__ = new Sk.builtins.function(new function() {
-            // TODO: not yet implemented
-        }, gbl);
-        loc.__repr__ = new Sk.builtins.function(new function() {
-            return Sk.ffi.remapToPy('<Clock()>');
-        }, gbl);
-        loc.tick = new Sk.builtins.function(new function() {
-            // TODO: not yet implemented
-        }, gbl);
-        loc.tick_busy_loop = new Sk.builtins.function(new function() {
-            // TODO: not yet implemented
-        }, gbl);
-        loc.get_time = new Sk.builtins.function(new function() {
-            // TODO: not yet implemented
-        }, gbl);
-        loc.get_rawtime = new Sk.builtins.function(new function() {
-            // TODO: not yet implemented
-        }, gbl);
-        loc.get_fps = new Sk.builtins.function(new function() {
-            // TODO: not yet implemented
-        }, gbl);
-    };
-
-    surface$1.co_name = new Sk.builtins['str']('Surface');
     function resetTarget() {
         var selector = Sk.TurtleGraphics.target;
         var target = typeof selector === "string" ?
