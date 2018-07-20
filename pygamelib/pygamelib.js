@@ -221,9 +221,8 @@ var PygameLib = {};
             if (italic === undefined) {
                 Sk.abstr.sattr(self, 'italic', Sk.ffi.remapToPy(false), false);
             } else {
-                Sk.abstr.sattr(self, 'italic', bold, false);
+                Sk.abstr.sattr(self, 'italic', italic, false);
             }
-            Sk.abstr.sattr(self, 'italic', italic, false);
             return Sk.builtin.none.none$;
         }, $gbl);
         $loc.__init__.co_name = new Sk.builtins['str']('__init__');

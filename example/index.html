@@ -40,78 +40,47 @@
 <p>Lorem ipsum</p>
 <p>Lorem ipsum</p>
 <textarea id="code" rows="24" cols="80">
-import turtle
-import pygame
-import math
-import time
-pygame.init()
-s = pygame.Surface([300, 300])
-print("sirina ", s.get_width())
-print("visina ", s.get_height())
-print("proba")
-print(s)
-screen = pygame.display.set_mode([400, 400])
-print(screen)
-print(screen.get_width())
+# -*- acsection: general-init -*-
+import pygame as pg
 
-c = pygame.Color(1, 2, 3, 4)
-c.r = 5
-print(c)
+# uključivanje rada biblioteke PyGame
+pg.init()
 
-r = pygame.Rect((10, 300), (80, 20))
-print(r)
-r.top = 19
-print(r)
-r = pygame.draw.rect(screen, pygame.Color('brown'), r)
-print(r)
+# podešavamo naslov prozora
+pg.display.set_caption("Zdravo svete!")
+# otvaramo prozor dimenzije 300x300
+(sirina, visina) = (300, 300)
+prozor = pg.display.set_mode((sirina, visina))
+# -*- acsection: main -*-
 
-r = pygame.draw.line(screen, (255, 0, 0, 255) , [10, 10], [550, 50], 3)
-print(r)
-c = pygame.Color('blue')
-print(c)
-pygame.draw.line(screen, c, [150, 10], [550, 50])
+# bojimo pozadinu prozora u belo
+prozor.fill(pg.Color("white"))
 
-pygame.draw.lines(screen, (0, 0, 255, 1), True, [[0, 80], [50, 90], [200, 80], [220, 30]])
+# font kojim će biti prikazan tekst
+font = pg.font.SysFont("Arial", 40, False, True)
 
-r = pygame.draw.lines(screen, pygame.Color('navyblue'), True, [[300, 300], [310, 350], [350, 350]], 0)
-print(r)
+# poruka koja će se ispisivati
+poruka = "Zdravo svete!"
+# gradimo sličicu koja predstavlja tu poruku ispisanu crnom bojom
+tekst = font.render(poruka, True, pg.Color("black"))
+# određujemo veličinu tog teksta (da bismo mogli da ga centriramo)
+(sirina_teksta, visina_teksta) = (tekst.get_width(), tekst.get_height())
+# položaj određujemo tako da tekst bude centriran
+(x, y) = ((sirina - sirina_teksta) / 2, (visina - visina_teksta) / 2)
+# prikazujemo sličicu na odgovarajućem mestu na ekranu
+prozor.blit(tekst, (x, y))
 
-r = pygame.draw.polygon(screen, pygame.Color('lightsalmon2'), [[100, 300], [150, 320], [180, 300], [140, 250]])
-print("poligon r: ", r)
+# -*- acsection: after-main -*-
+# ažuriramo prikaz sadržaja ekrana
+pg.display.update()
 
-r = pygame.draw.circle(screen, pygame.Color('red'), [200, 200], 50)
-print("krug r:", r)
+# čekamo da korisnik isključi prozor
+while pg.event.wait().type != pg.QUIT:
+   pass
 
-r.width = 200
-r = pygame.draw.arc(screen, pygame.Color('green'), r, 0, math.pi, 10)
-print("arc r: ", r)
+# isključivanje rada biblioteke PyGame
+pg.quit()
 
-r = pygame.draw.arc(screen, pygame.Color('black'), r, math.pi, 2 * math.pi, 10)
-print("arc r: ", r)
-
-
-pygame.draw.aaline(screen, c, [150, 200], [350, 200])
-
-e = pygame.event.Event(5,{"key":22})
-print(e)
-print(e.key)
-
-done = False
-is_blue = True
-x = 30
-y = 30
-
-while not done:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            print("gotova petlja")
-            done = True
-        if event.type == pygame.KEYDOWN:
-            print("otkucano: "+ str(event.key))
-    time.sleep(1)
-    pygame.display.update()
-
-pygame.quit()
 
 
     
