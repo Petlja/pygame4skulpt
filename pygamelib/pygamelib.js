@@ -140,10 +140,11 @@ var PygameLib = {};
     PygameLib.time_module = function(name) {
         mod = {};
         mod.wait = new Sk.builtin.func(function(amount) {
-            var t_m = Sk.importModule("time", false, false);
+            var t_m = Sk.importModule("time", false, true);
             var sec = Sk.ffi.remapToJs(amount) / 1000;
             return Sk.misceval.callsimOrSuspend(t_m.$d['sleep'], Sk.ffi.remapToPy(sec));
         });
+
         mod.get_ticks = new Sk.builtin.func(function() {
             return Sk.ffi.remapToPy(new Date() - PygameLib.initial_time);
         });
@@ -186,13 +187,30 @@ var PygameLib = {};
             } else {
                 var startTime = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'startTime', false));
                 mills = (currTime - startTime) / 1000;
-                return Sk.ffi.remapToPy(mills);
             }
+
             if (framerate !== undefined) {
-                // var t_m = Sk.importModule("time", false, false);
-                // var timeout = 1000 / Sk.ffi.remapToJs(framerate);
-                // var sec = 10;
-                // return Sk.misceval.callsimOrSuspend(t_m.$d['sleep'], Sk.ffi.remapToPy(sec));
+                var t_m = Sk.importModule("pygame.time", false, true);
+                var sec = Sk.ffi.remapToJs(1000) / 1000;
+                // console.log(t_m.$d["time"].$d["wait"]);
+                // var k = Sk.misceval.callsimOrSuspend(t_m.$d["time"].$d["wait"], Sk.ffi.remapToPy(sec));
+                // if (k.suspension) {
+                //     return k.resume;
+                // } else {
+                //     return
+                // }
+                // function f(mills) {
+                //
+                // }
+                // Sk.misceval.callsimOrSuspend(t_m.$d["time"].$d["wait"], Sk.ffi.remapToPy(10000));
+                // console.log("ASD");
+                // Sk.setTimeout(function(){}, 1000);
+                function sleep(miliseconds) {
+                   var currentTime = new Date().getTime();
+
+                   while (currentTime + miliseconds >= new Date().getTime()) {
+                   }
+                }
             }
             return Sk.ffi.remapToPy(mills);
         }, $gbl);
@@ -735,13 +753,13 @@ var PygameLib = {};
                     }
                     else 
                         Sk.setTimeout(f, 10);
-                }
+                };
 
                 Sk.setTimeout(f, 10);
             }));
         });
         return mod;
-    }
+    };
 
     //pygame.Color
     function color_type_f($gbl, $loc) {

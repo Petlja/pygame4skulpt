@@ -26,7 +26,7 @@
 
 <textarea id="code" rows="24" cols="80" font="Lucida Console">
 import pygame as pg
-
+import time
 pg.init()
 sat = pg.time.Clock()
 kraj = False
@@ -38,14 +38,11 @@ while not (kraj):
         if dogadjaj == pg.QUIT:
             kraj = True
 
-    sat.tick(10)
-
+    sat.tick(1)
+    print("ASD")
     counter += 1
-    if counter % xx == 0:
-        print("TICK", counter / xx);
-    if counter == 100 * xx:
+    if counter == 100:
         break
-
 
 
 pg.quit()
