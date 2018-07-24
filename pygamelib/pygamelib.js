@@ -190,27 +190,19 @@ var PygameLib = {};
             }
 
             if (framerate !== undefined) {
-                var t_m = Sk.importModule("pygame.time", false, true);
-                var sec = Sk.ffi.remapToJs(1000) / 1000;
-                // console.log(t_m.$d["time"].$d["wait"]);
-                // var k = Sk.misceval.callsimOrSuspend(t_m.$d["time"].$d["wait"], Sk.ffi.remapToPy(sec));
-                // if (k.suspension) {
-                //     return k.resume;
-                // } else {
-                //     return
-                // }
-                // function f(mills) {
-                //
-                // }
-                // Sk.misceval.callsimOrSuspend(t_m.$d["time"].$d["wait"], Sk.ffi.remapToPy(10000));
-                // console.log("ASD");
-                // Sk.setTimeout(function(){}, 1000);
-                function sleep(miliseconds) {
-                   var currentTime = new Date().getTime();
-
-                   while (currentTime + miliseconds >= new Date().getTime()) {
-                   }
-                }
+                var timeout = 1000 / Sk.ffi.remapToJs(framerate);
+                return new Sk.misceval.promiseToSuspension(
+                    new Promise(function(resolve) {
+                    var f = function() {
+                        function sleep(miliseconds) {
+                           var currentTime = new Date().getTime();
+                           while (currentTime + miliseconds >= new Date().getTime()) {}
+                        }
+                        sleep(timeout);
+                        resolve(mills);
+                    };
+                    Sk.setTimeout(f, 1);
+                }));
             }
             return Sk.ffi.remapToPy(mills);
         }, $gbl);
