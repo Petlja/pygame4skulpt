@@ -38,7 +38,8 @@ while not (kraj):
         if dogadjaj == pg.QUIT:
             kraj = True
 
-    print(sat.tick(1))
+    sat.tick(1)
+    print(sat.get_fps())
 
     counter += 1
     if counter == 100:

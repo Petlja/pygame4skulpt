@@ -4,15 +4,15 @@ pg.init()
 sat = pg.time.Clock()
 kraj = False
 
-counter = 1
+counter = 0
+
 while not (kraj):
-    for dogadjaj in pg.event.get():
-        if dogadjaj == pg.QUIT:
-            kraj = True
+    sat.tick(1)
+    print(sat.get_fps())
 
-    sat.tick()
     counter += 1
-
+    if counter == 100:
+        break
 
 
 pg.quit()
