@@ -569,7 +569,9 @@ var PygameLib = {};
         var target_pos_js = Sk.ffi.remapToJs(pos);
         var otherCtx = other.main_canvas.getContext("2d");
         var img = otherCtx.getImageData(0, 0, other.width, other.height);
-        self.context2d.putImageData(img, target_pos_js[0], target_pos_js[1]);
+
+        // TODO: not sure if we want to call drawImage here
+        self.context2d.drawImage(other.main_canvas, target_pos_js[0], target_pos_js[1]);
     }
 
     function convert(self) {
