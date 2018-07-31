@@ -25,6 +25,7 @@ var PygameLib = {};
         if (event.type === "keyup") {
             keyPGConstant = PygameLib.constants.KEYUP;
         } else if (event.type === "keydown") {
+            // setTimeout(function(){ alert("Hello"); }, 3000);
             keyPGConstant = PygameLib.constants.KEYDOWN;
         }
         switch (event.which) {
@@ -53,10 +54,15 @@ var PygameLib = {};
         var e = createKeyboardEvent(event);
         // Uncaught TypeError: Cannot read property 'unshift' of undefined
         // Before executing the pygame_init() method
-        if(PygameLib.eventQueue){
-            if(!('repeat' in event) || !event.repeat) { // Pygame considers autorepeat is turnd of by default
+        if (PygameLib.eventQueue) {
+            if (PygameLib.repeatKeys) {
                 PygameLib.eventQueue.unshift(e);
+            } else {
+                if (!('repeat' in event) || !event.repeat) { // Pygame considers autorepeat is turnd of by default
+                    PygameLib.eventQueue.unshift(e);
+                }
             }
+
         }
         if (PygameLib.running) event.preventDefault();
         return false;
@@ -78,13 +84,16 @@ var PygameLib = {};
                 path: baseURL + '/time.js'
             },
             'pygame': {
-                path: baseURL + '/pygame.js',
+                path: baseURL + '/pygame.js'
             },
             'pygame.image': {
                 path: baseURL + '/image.js'
             },
             'pygame.font': {
                 path: baseURL + '/font.js'
+            },
+            'pygame.key': {
+                path: baseURL + '/key.js'
             }
         };
         for (var k in pygame_modules) {
@@ -105,6 +114,7 @@ var PygameLib = {};
         var time_m    = Sk.importModule("pygame.time", false, false);
         var image_m   = Sk.importModule("pygame.image", false, false);
         var font_m    = Sk.importModule("pygame.font", false, false);
+        var key_m     = Sk.importModule("pygame.key", false, false);
         PygameLib.initial_time = new Date();
         pygame_m.$d['display'] = display_m.$d['display'];
         pygame_m.$d['event'] = display_m.$d['event'];
@@ -114,6 +124,7 @@ var PygameLib = {};
         PygameLib.eventQueue = [];
         PygameLib.eventTimer = {};
         PygameLib.running = true;
+        PygameLib.repeatKeys = false;
     }
 
     //pygame
@@ -166,7 +177,7 @@ var PygameLib = {};
         });
         return mod;
     };
-
+    var keys_pressed = new Set();
     PygameLib.font_module = function(name) {
         mod = {};
         mod.SysFont = Sk.misceval.buildClass(mod, font_SysFont, "SysFontType",[]);
@@ -248,6 +259,20 @@ var PygameLib = {};
         ctx.fillText(msg, 0, h);
         return s;
     }
+
+    PygameLib.key_module = function(name) {
+        mod = {};
+
+        mod.set_repeat = new Sk.builtin.func(function (delay, interval) {
+            // TODO: consider a more realistic implementation where the interval is taken into account
+            if (delay !== undefined) {
+                PygameLib.repeatKeys = true;
+            } else {
+                PygameLib.repeatKeys = false;
+            }
+        });
+        return mod;
+    };
 
     function resetTarget() {
         var selector = Sk.TurtleGraphics.target;

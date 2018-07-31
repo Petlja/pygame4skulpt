@@ -6,7 +6,7 @@ pg.init()
 
 # podešavamo događaje tastaturom - prvi događaj se generiše nakon
 # 50ms, a svaki naredni nakon 25ms
-# pg.key.set_repeat(50, 25)
+pg.key.set_repeat(50, 25)
 
 # postavljamo naslov prozora
 pg.display.set_caption("setanje broda")
