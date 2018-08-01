@@ -158,6 +158,7 @@ var PygameLib = {};
         mod.get_ticks = new Sk.builtin.func(function() {
             return Sk.ffi.remapToPy(new Date() - PygameLib.initial_time);
         });
+        // TODO: mod.delay
         mod.set_timer = new Sk.builtin.func(function(eventid, milliseconds) {
             var event = Sk.ffi.remapToJs(eventid);
             var ms = Sk.ffi.remapToJs(milliseconds);
@@ -270,6 +271,10 @@ var PygameLib = {};
             } else {
                 PygameLib.repeatKeys = false;
             }
+        });
+
+        mod.get_focused = new Sk.builtin.func(function (name) {
+            return Sk.ffi.remapToPy(document.hasFocus());
         });
         return mod;
     };
