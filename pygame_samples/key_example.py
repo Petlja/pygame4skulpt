@@ -3,7 +3,7 @@ import pygame as pg
 pg.init()
 prozor = pg.display.set_mode((400, 400))
 while True:
-    pg.time.delay(1000)
-    print(pg.key.get_focused())
-
-pg.quit()
+    print(pg.key.get_repeat())
+    pg.key.set_repeat(20, 50)
+    print(pg.key.get_repeat())
+    pg.quit()

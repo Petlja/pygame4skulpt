@@ -178,7 +178,6 @@ var PygameLib = {};
         });
         return mod;
     };
-    var keys_pressed = new Set();
     PygameLib.font_module = function(name) {
         mod = {};
         mod.SysFont = Sk.misceval.buildClass(mod, font_SysFont, "SysFontType",[]);
@@ -272,7 +271,13 @@ var PygameLib = {};
                 PygameLib.repeatKeys = false;
             }
         });
-
+        mod.get_repeat = new Sk.builtin.func(function() {
+            if (PygameLib.repeatKeys) {
+                return Sk.builtin.tuple([1, 1]);
+            } else {
+                return Sk.builtin.tuple([0, 0]);
+            }
+        });
         mod.get_focused = new Sk.builtin.func(function (name) {
             return Sk.ffi.remapToPy(document.hasFocus());
         });
