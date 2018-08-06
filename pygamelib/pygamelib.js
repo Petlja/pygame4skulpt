@@ -794,6 +794,98 @@ var PygameLib = {};
         $loc.__repr__.co_name = new Sk.builtins['str']('__repr__');
         $loc.__repr__.co_varnames = ['self'];
 
+        var cmy_getter = new Sk.builtin.func(function (self) {
+            var r = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'r', false));
+            var g = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'g', false));
+            var b = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'b', false));
+            return Sk.builtin.tuple([1.0 - r / 255, 1.0 - g / 255, 1.0 - b / 255]);
+        });
+        var cmy_setter = new Sk.builtin.func(function (self, val) {
+            var cmy = Sk.ffi.remapToJs(val);
+            Sk.abstr.sattr(self, 'r', Sk.ffi.remapToPy(255 - cmy[0] * 255), false);
+            Sk.abstr.sattr(self, 'g', Sk.ffi.remapToPy(255 - cmy[1] * 255), false);
+            Sk.abstr.sattr(self, 'b', Sk.ffi.remapToPy(255 - cmy[2] * 255), false);
+        });
+        // this is a way of creating an equivalent of property()
+        $loc.cmy = Sk.misceval.callsimOrSuspend(Sk.builtins.property, cmy_getter, cmy_setter);
+
+        var hsva_getter = new Sk.builtin.func(function (self) {
+            // https://stackoverflow.com/a/8023734
+            var rr, gg, bb,
+                r = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'r', false)) / 255,
+                g = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'g', false)) / 255,
+                b = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'b', false)) / 255,
+                h, s,
+                v = Math.max(r, g, b),
+                diff = v - Math.min(r, g, b),
+                diffc = function (c) {
+                    return (v - c) / 6 / diff + 1 / 2;
+                };
+
+            if (diff == 0) {
+                h = s = 0;
+            } else {
+                s = diff / v;
+                rr = diffc(r);
+                gg = diffc(g);
+                bb = diffc(b);
+
+                if (r === v) {
+                    h = bb - gg;
+                } else if (g === v) {
+                    h = (1 / 3) + rr - bb;
+                } else if (b === v) {
+                    h = (2 / 3) + gg - rr;
+                }
+                if (h < 0) {
+                    h += 1;
+                } else if (h > 1) {
+                    h -= 1;
+                }
+            }
+            var a = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'a', false));
+            console.log(a);
+            a = Math.round(a / 255 * 100);
+            return Sk.builtin.tuple([Math.round(h * 360), Math.round(s * 100), Math.round(v * 100), a]);
+        });
+        var hsva_setter = new Sk.builtin.func(function (self, val) {
+            // https://stackoverflow.com/a/17243070
+            var r, g, b, i, f, p, q, t;
+            var hsva = Sk.ffi.remapToJs(val);
+            var h = hsva[0] / 360;
+            var s = hsva[1] / 100;
+            var v = hsva[2] / 100;
+            i = Math.floor(h * 6);
+            f = h * 6 - i;
+            p = v * (1 - s);
+            q = v * (1 - f * s);
+            t = v * (1 - (1 - f) * s);
+            switch (i % 6) {
+                case 0:
+                    r = v, g = t, b = p;
+                    break;
+                case 1:
+                    r = q, g = v, b = p;
+                    break;
+                case 2:
+                    r = p, g = v, b = t;
+                    break;
+                case 3:
+                    r = p, g = q, b = v;
+                    break;
+                case 4:
+                    r = t, g = p, b = v;
+                    break;
+                case 5:
+                    r = v, g = p, b = q;
+                    break;
+            }
+            Sk.abstr.sattr(self, 'r', Sk.ffi.remapToPy(Math.round(r * 255)), false);
+            Sk.abstr.sattr(self, 'g', Sk.ffi.remapToPy(Math.round(g * 255)), false);
+            Sk.abstr.sattr(self, 'b', Sk.ffi.remapToPy(Math.round(b * 255)), false);
+            Sk.abstr.sattr(self, 'a', Sk.ffi.remapToPy(Math.round(hsva[3] / 100 * 255)), false);
+        });
+        $loc.hsva = Sk.misceval.callsimOrSuspend(Sk.builtins.property, hsva_getter, hsva_setter);
     }
 
     //pygame.Rect
