@@ -765,6 +765,7 @@ var PygameLib = {};
 
     //pygame.Color
     function color_type_f($gbl, $loc) {
+        // https://gist.github.com/mjackson/5311256
         $loc.__init__ = new Sk.builtin.func(function(self, r, g, b, a) {
             Sk.builtin.pyCheckArgs('__init__', arguments, 2, 5, false, false);
             var r_js = Sk.ffi.remapToJs(r);
@@ -779,6 +780,7 @@ var PygameLib = {};
             Sk.abstr.sattr(self, 'g', g, false);
             Sk.abstr.sattr(self, 'b', b, false);
             Sk.abstr.sattr(self, 'a', a, false);
+            Sk.abstr.sattr(self, 'len', Sk.ffi.remapToPy(4), false);
             return Sk.builtin.none.none$;
         });
         $loc.__init__.co_name = new Sk.builtins['str']('__init__');
@@ -886,6 +888,138 @@ var PygameLib = {};
             Sk.abstr.sattr(self, 'a', Sk.ffi.remapToPy(Math.round(hsva[3] / 100 * 255)), false);
         });
         $loc.hsva = Sk.misceval.callsimOrSuspend(Sk.builtins.property, hsva_getter, hsva_setter);
+
+        var hsla_getter = new Sk.builtin.func(function (self) {
+            var r = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'r', false));
+            var g = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'g', false));
+            var b = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'b', false));
+            var a = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'a', false));
+            r /= 255;
+            g /= 255;
+            b /= 255;
+            a /= 255;
+
+            var max = Math.max(r, g, b), min = Math.min(r, g, b);
+            var h, s, l = (max + min) / 2;
+
+            if (max == min) {
+                h = s = 0; // achromatic
+            } else {
+                var d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+                switch (max) {
+                    case r:
+                        h = (g - b) / d + (g < b ? 6 : 0);
+                        break;
+                    case g:
+                        h = (b - r) / d + 2;
+                        break;
+                    case b:
+                        h = (r - g) / d + 4;
+                        break;
+                }
+
+                h /= 6;
+            }
+            h *= 360;
+            s *= 100;
+            l *= 100;
+            a *= 100;
+            return Sk.builtin.tuple([h, s, l, a]);
+        });
+        var hsla_setter = new Sk.builtin.func(function (self, val) {
+            var hsla = Sk.ffi.remapToJs(val);
+            var h = hsla[0] / 360;
+            var s = hsla[1] / 100;
+            var l = hsla[2] / 100;
+            var a = hsla[3] / 100;
+            var r, g, b;
+
+            if (s == 0) {
+                r = g = b = l; // achromatic
+            } else {
+                function hue2rgb(p, q, t) {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1 / 6) return p + (q - p) * 6 * t;
+                    if (t < 1 / 2) return q;
+                    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                    return p;
+                }
+
+                var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                var p = 2 * l - q;
+
+                r = hue2rgb(p, q, h + 1 / 3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1 / 3);
+            }
+            Sk.abstr.sattr(self, 'r', Sk.ffi.remapToPy(Math.round(r * 255)), false);
+            Sk.abstr.sattr(self, 'g', Sk.ffi.remapToPy(Math.round(g * 255)), false);
+            Sk.abstr.sattr(self, 'b', Sk.ffi.remapToPy(Math.round(b * 255)), false);
+            Sk.abstr.sattr(self, 'a', Sk.ffi.remapToPy(Math.round(a * 255)), false);
+        });
+        $loc.hsla = Sk.misceval.callsimOrSuspend(Sk.builtins.property, hsla_getter, hsla_setter);
+
+        var i1i2i3_getter = new Sk.builtin.func(function (self) {
+            var r = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'r', false));
+            var g = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'g', false));
+            var b = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'b', false));
+            r /= 255;
+            g /= 255;
+            b /= 255;
+            var i1 = (r + g + b) / 3;
+            var i2 = (r - b) / 2;
+            var i3 = (2 * g - r - b) / 4;
+            return Sk.builtin.tuple([i1, i2, i3]);
+        });
+        var i1i2i3_setter = new Sk.builtin.func(function (self, val) {
+            var i1i2i3 = Sk.ffi.remapToJs(val);
+            var i1 = i1i2i3[0];
+            var i2 = i1i2i3[1];
+            var i3 = i1i2i3[2];
+            var r = i1 + i2 - 2 * i3 / 3;
+            var g = i1 + 4 * i3 / 3;
+            var b = i1 - i2 - 2 * i3 / 3;
+            Sk.abstr.sattr(self, 'r', Sk.ffi.remapToPy(Math.round(r * 255)), false);
+            Sk.abstr.sattr(self, 'g', Sk.ffi.remapToPy(Math.round(g * 255)), false);
+            Sk.abstr.sattr(self, 'b', Sk.ffi.remapToPy(Math.round(b * 255)), false);
+        });
+        $loc.i1i2i3 = Sk.misceval.callsimOrSuspend(Sk.builtins.property, i1i2i3_getter, i1i2i3_setter);
+
+        $loc.normalize = new Sk.builtin.func(function(self) {
+            var r = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'r', false));
+            var g = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'g', false));
+            var b = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'b', false));
+            var a = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'a', false));
+            return Sk.builtin.tuple([r / 255, g / 255, b / 255, a / 255]);
+        });
+
+        $loc.correct_gamma = new Sk.builtin.func(function(self, val) {
+            var gamma = Sk.ffi.remapToJs(val);
+            var r = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'r', false));
+            var g = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'g', false));
+            var b = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'b', false));
+            var a = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'a', false));
+            r = Math.round(Math.pow(r / 255, gamma) * 255);
+            g = Math.round(Math.pow(g / 255, gamma) * 255);
+            b = Math.round(Math.pow(b / 255, gamma) * 255);
+            a = Math.round(Math.pow(a / 255, gamma) * 255);
+            Sk.abstr.sattr(self, 'r', Sk.ffi.remapToPy(r), false);
+            Sk.abstr.sattr(self, 'g', Sk.ffi.remapToPy(g), false);
+            Sk.abstr.sattr(self, 'b', Sk.ffi.remapToPy(b), false);
+            Sk.abstr.sattr(self, 'a', Sk.ffi.remapToPy(a), false);
+            return Sk.builtin.tuple([r, g, b, a])
+        });
+
+        $loc.set_length = new Sk.builtin.func(function(self, val) {
+            Sk.abstr.sattr(self, 'len', val, false);
+        });
+
+        $loc.__len__ = new Sk.builtin.func(function(self) {
+            return Sk.abstr.gattr(self, 'len', false);
+        })
     }
 
     //pygame.Rect
