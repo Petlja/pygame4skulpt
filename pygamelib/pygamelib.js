@@ -158,7 +158,11 @@ var PygameLib = {};
         mod.get_ticks = new Sk.builtin.func(function() {
             return Sk.ffi.remapToPy(new Date() - PygameLib.initial_time);
         });
-        // TODO: mod.delay
+        mod.delay = new Sk.builtin.func(function(amount) {
+            var t_m = Sk.importModule("time", false, false);
+            var sec = Sk.ffi.remapToJs(amount) / 1000;
+            return Sk.misceval.callsimOrSuspend(t_m.$d['sleep'], Sk.ffi.remapToPy(sec));
+        });
         mod.set_timer = new Sk.builtin.func(function(eventid, milliseconds) {
             var event = Sk.ffi.remapToJs(eventid);
             var ms = Sk.ffi.remapToJs(milliseconds);
