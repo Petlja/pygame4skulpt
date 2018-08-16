@@ -33,8 +33,8 @@ prozor.blit(tekst, (x, y))
 pg.display.update()
 
 # čekamo da korisnik isključi prozor
-#while pg.event.wait().type != pg.QUIT:
-#   pass
+while pg.event.wait().type != pg.QUIT:
+  pass
 
 # isključivanje rada biblioteke PyGame
 pg.quit()

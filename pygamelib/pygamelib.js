@@ -119,7 +119,7 @@ var PygameLib = {};
         pygame_m.$d['display'] = display_m.$d['display'];
         pygame_m.$d['event'] = display_m.$d['event'];
         pygame_m.$d['draw'] = display_m.$d['draw'];
-        pygame_m.$d['image'] = display_m.$d['image']
+        pygame_m.$d['image'] = display_m.$d['image'];
         // testiranja radi stavili smo nešto u queue na početku
         PygameLib.eventQueue = [];
         PygameLib.eventTimer = {};
@@ -180,8 +180,22 @@ var PygameLib = {};
     };
     PygameLib.font_module = function(name) {
         mod = {};
+        mod.__is_initialized = false;
         mod.SysFont = Sk.misceval.buildClass(mod, font_SysFont, "SysFontType",[]);
         PygameLib.SysFontType = mod.SysFontType;
+        mod.init = new Sk.builtin.func(function () {
+            mod.__is_initialized = true;
+        });
+        mod.quit = new Sk.builtin.func(function () {
+            mod.__is_initialized = false;
+        });
+        mod.get_init = new Sk.builtin.func(function () {
+            if (mod.__is_initialized) {
+                return Sk.ffi.remapToPy(true);
+            }
+            return Sk.ffi.remapToPy(false);
+        });
+
         return mod;
     };
 
