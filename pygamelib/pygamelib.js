@@ -208,10 +208,9 @@ var PygameLib = {};
                     new Promise(function(resolve) {
                     var f = function() {
                         Sk.abstr.sattr(self, 'rawTime', Sk.ffi.remapToPy(Date.now() - currTime), false);
-                        while (currTime + timeout >= Date.now()) {}
                         resolve(mills);
                     };
-                    Sk.setTimeout(f, 1);
+                    Sk.setTimeout(f, timeout);
                 }));
             }
             Sk.abstr.sattr(self, 'rawTime', Sk.ffi.remapToPy(Date.now() - currTime), false);
@@ -222,7 +221,6 @@ var PygameLib = {};
         $loc.tick.$defaults = [Sk.ffi.remapToPy(0)];
 
         $loc.tick_busy_loop = new Sk.builtin.func(function (self, framerate) {
-            // TODO: Should this method have a different implementation?
             var currTime = Date.now();
             var mills = 0;
             if (Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'prevTime', false)) !== null) {
@@ -238,10 +236,9 @@ var PygameLib = {};
                     new Promise(function(resolve) {
                     var f = function() {
                         Sk.abstr.sattr(self, 'rawTime', Sk.ffi.remapToPy(Date.now() - currTime), false);
-                        while (currTime + timeout >= Date.now()) {}
                         resolve(mills);
                     };
-                    Sk.setTimeout(f, 1);
+                    Sk.setTimeout(f, timeout);
                 }));
             }
             Sk.abstr.sattr(self, 'rawTime', Sk.ffi.remapToPy(Date.now() - currTime), false);
