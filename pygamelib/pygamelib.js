@@ -187,6 +187,7 @@ var PygameLib = {};
         mod.__is_initialized = false;
         mod.SysFont = Sk.misceval.buildClass(mod, font_SysFont, "SysFontType",[]);
         PygameLib.SysFontType = mod.SysFontType;
+        // TODO: Font class
         mod.init = new Sk.builtin.func(function () {
             mod.__is_initialized = true;
         });
@@ -199,7 +200,17 @@ var PygameLib = {};
             }
             return Sk.ffi.remapToPy(false);
         });
-
+        mod.get_default_font = new Sk.builtin.func(function () {
+           return Sk.ffi.remapToPy('arial');
+        });
+        mod.get_fonts = new Sk.builtin.func(function () {
+            return Sk.ffi.remapToPy(['arial', 'helvetica', 'times', 'courier']);
+            // TODO: maybe we should extend this list
+        });
+        mod.match_font = new Sk.builtin.func(function() {
+            return Sk.builtin.none.none$;
+            // TODO: how do we browse the filesystem from JS?
+        });
         return mod;
     };
 
@@ -217,6 +228,7 @@ var PygameLib = {};
             } else {
                 Sk.abstr.sattr(self, 'italic', italic, false);
             }
+            Sk.abstr.sattr(self, 'underline', Sk.ffi.remapToPy(false), false);
             return Sk.builtin.none.none$;
         }, $gbl);
         $loc.__init__.co_name = new Sk.builtins['str']('__init__');
@@ -236,11 +248,36 @@ var PygameLib = {};
         $loc.render.co_name = new Sk.builtins['str']('render');
         $loc.render.co_varnames = ['self', 'text', 'antialias', 'color', 'background'];
         $loc.render.$defaults = [Sk.builtin.none.none$];
+
+        // TODO: method name cannot be 'size'?
+        $loc.size = new Sk.builtin.func(fontSize, $gbl);
+        $loc.size.co_name = new Sk.builtins['str']('size');
+
+        $loc.set_underline = new Sk.builtin.func(function (self, bool) {
+            Sk.abstr.sattr(self, 'underline', bool, false);
+        }, $gbl);
+        $loc.get_underline = new Sk.builtin.func(function (self) {
+            return Sk.abstr.gattr(self, 'underline', false);
+        }, $gbl);
+
+        $loc.set_italic = new Sk.builtin.func(function (self, bool) {
+            Sk.abstr.sattr(self, 'italic', bool, false);
+        }, $gbl);
+        $loc.get_italic = new Sk.builtin.func(function (self) {
+            return Sk.abstr.gattr(self, 'italic', false);
+        }, $gbl);
+
+        $loc.set_bold = new Sk.builtin.func(function (self, bool) {
+            Sk.abstr.sattr(self, 'bold', bool, false);
+        }, $gbl);
+        $loc.get_bold = new Sk.builtin.func(function (self) {
+            return Sk.abstr.gattr(self, 'bold', false);
+        }, $gbl);
     }
     font_SysFont.co_name = new Sk.builtins['str']('SysFont');
 
-    function renderFont(self, text, antialias, color, background) {
-        // TODO: antialias is ignored
+    function fontSize(self, text) {
+        // debugger;
         var msg = Sk.ffi.remapToJs(text);
         var h = 1.01 * Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'size', false));
         var fontName = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'name', false));
@@ -253,6 +290,33 @@ var PygameLib = {};
         if (italic) {
             fontName = 'italic ' + fontName;
         }
+        var w = 300;
+
+        // Create a dummy canvas in order to exploit its measureText() method
+        var t = Sk.builtin.tuple([w, h]);
+        var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+        var ctx = s.main_canvas.getContext("2d");
+        ctx.font = fontName;
+        return new Sk.builtin.tuple([ctx.measureText(msg).width, h]);
+    }
+
+    function renderFont(self, text, antialias, color, background) {
+        // TODO: antialias is ignored
+        var msg = Sk.ffi.remapToJs(text);
+        var STRETCH_CONST = 1.1;
+        var h = STRETCH_CONST * Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'size', false));
+        var fontName = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'name', false));
+        fontName = "" + h + "px " + fontName;
+        var bold = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'bold', false));
+        if (bold) {
+            fontName = 'bold ' + fontName;
+        }
+        var italic = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'italic', false));
+        if (italic) {
+            fontName = 'italic ' + fontName;
+        }
+        var underline = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'underline', false));
+
         var w = 300;
 
         // Create a dummy canvas in order to exploit its measureText() method
@@ -274,7 +338,14 @@ var PygameLib = {};
         ctx.font = fontName;
         var color_js = extract_color(color);
         ctx.fillStyle = 'rgba(' + color_js[0] + ', ' + color_js[1] + ', ' + color_js[2] + ', ' + color_js[3] + ')';
-        ctx.fillText(msg, 0, h);
+        ctx.fillText(msg, 0, 1 / STRETCH_CONST * h);
+        if (underline) {
+            ctx.strokeStyle = 'rgba(' + color_js[0] + ', ' + color_js[1] + ', ' + color_js[2] + ', ' + color_js[3] + ')';
+            ctx.lineWidth = 1;
+            ctx.moveTo(0, h-1);
+            ctx.lineTo(w, h-1);
+            ctx.stroke();
+        }
         return s;
     }
 
