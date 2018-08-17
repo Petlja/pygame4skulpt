@@ -94,6 +94,9 @@ var PygameLib = {};
             },
             'pygame.key': {
                 path: baseURL + '/key.js'
+            },
+            'pygame.version': {
+                path: baseURL + '/version.js'
             }
         };
         for (var k in pygame_modules) {
@@ -115,6 +118,7 @@ var PygameLib = {};
         var image_m   = Sk.importModule("pygame.image", false, false);
         var font_m    = Sk.importModule("pygame.font", false, false);
         var key_m     = Sk.importModule("pygame.key", false, false);
+        var version_m = Sk.importModule("pygame.version", false, false);
         PygameLib.initial_time = new Date();
         pygame_m.$d['display'] = display_m.$d['display'];
         pygame_m.$d['event'] = display_m.$d['event'];
@@ -1169,6 +1173,20 @@ var PygameLib = {};
         $loc.__repr__.co_varnames = ['self'];
     }
 
+    // pygame.version
+    PygameLib.version_module = function(name) {
+        mod = {};
+        mod.ver = Sk.builtin.func(function () {
+            return Sk.ffi.remapToPy("1.9.3");
+        });
+        mod.vernum = Sk.builtin.func(function () {
+            return Sk.builtin.tuple([1, 9, 3]);
+        });
+        mod.rev = Sk.builtin.func(function () {
+            return Sk.builtin.none.none$;
+        });
+        return mod;
+    };
     //pygame.draw
     PygameLib.draw_module = function(name) {
         mod = {};
