@@ -15,5 +15,5 @@ fnt.set_italic(True)
 print(fnt.get_bold())
 print(fnt.get_underline())
 print(fnt.get_italic())
-
-print(fnt.metrics("asdf"))
+print(fnt.size("ASD"))
+# print(fnt.metrics("asdf"))

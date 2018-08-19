@@ -186,6 +186,8 @@ var PygameLib = {};
         });
         return mod;
     };
+
+    // pygame.font
     PygameLib.font_module = function(name) {
         mod = {};
         mod.__is_initialized = false;
@@ -221,7 +223,7 @@ var PygameLib = {};
     function font_SysFont($gbl, $loc) {
         $loc.__init__ = new Sk.builtin.func(function (self, name, size, bold, italic) {
             Sk.abstr.sattr(self, 'name', name, false);
-            Sk.abstr.sattr(self, 'size', size, false);
+            Sk.abstr.sattr(self, 'sz', size, false);
             if (bold === undefined) {
                 Sk.abstr.sattr(self, 'bold', Sk.ffi.remapToPy(false), false);
             } else {
@@ -242,7 +244,7 @@ var PygameLib = {};
 
         $loc.__repr__ = new Sk.builtin.func(function (self) {
             var name = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'name', false));
-            var size = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'size', false));
+            var size = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'sz', false));
             return Sk.ffi.remapToPy('<SysFont(' + name + ' ' + size + ')>');
         });
         $loc.__repr__.co_name = new Sk.builtins['str']('__repr__');
@@ -253,7 +255,6 @@ var PygameLib = {};
         $loc.render.co_varnames = ['self', 'text', 'antialias', 'color', 'background'];
         $loc.render.$defaults = [Sk.builtin.none.none$];
 
-        // TODO: method name cannot be 'size'?
         $loc.size = new Sk.builtin.func(fontSize, $gbl);
         $loc.size.co_name = new Sk.builtins['str']('size');
 
@@ -281,9 +282,8 @@ var PygameLib = {};
     font_SysFont.co_name = new Sk.builtins['str']('SysFont');
 
     function fontSize(self, text) {
-        // debugger;
         var msg = Sk.ffi.remapToJs(text);
-        var h = 1.01 * Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'size', false));
+        var h = 1.01 * Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'sz', false));
         var fontName = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'name', false));
         fontName = "" + h + "px " + fontName;
         var bold = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'bold', false));
@@ -308,7 +308,7 @@ var PygameLib = {};
         // TODO: antialias is ignored
         var msg = Sk.ffi.remapToJs(text);
         var STRETCH_CONST = 1.1;
-        var h = STRETCH_CONST * Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'size', false));
+        var h = STRETCH_CONST * Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'sz', false));
         var fontName = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'name', false));
         fontName = "" + h + "px " + fontName;
         var bold = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'bold', false));
