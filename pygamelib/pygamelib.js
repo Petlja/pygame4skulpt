@@ -1179,7 +1179,7 @@ var PygameLib = {};
             return Sk.misceval.callsim(PygameLib.RectType,
                 Sk.builtin.tuple([left, top]), Sk.builtin.tuple([width, height]))
         }, $gbl);
-
+        // https://github.com/pygame/pygame/blob/master/src_c/rect.c
         var x_getter = new Sk.builtin.func(function (self) {
             return Sk.abstr.gattr(self, 'left', false);
         });
@@ -1392,6 +1392,240 @@ var PygameLib = {};
             set_height(self, Sk.ffi.remapToJs(val));
         });
         $loc.h = Sk.misceval.callsimOrSuspend(Sk.builtins.property, h_getter, h_setter);
+
+        $loc.move = new Sk.builtin.func(function (self, x, y) {
+            var newLeft = get_left(self) + Sk.ffi.remapToJs(x);
+            var newTop = get_top(self) + Sk.ffi.remapToJs(y);
+            return Sk.misceval.callsim(PygameLib.RectType,
+                Sk.builtin.tuple([newLeft, newTop]), Sk.builtin.tuple([get_width(self), get_height(self)]))
+        });
+        $loc.move_ip = new Sk.builtin.func(function (self, x, y) {
+            set_left(self, get_left(self) + Sk.ffi.remapToJs(x));
+            set_top(self, get_top(self) + Sk.ffi.remapToJs(y));
+            return Sk.builtin.none.none$;
+        });
+        $loc.inflate = new Sk.builtin.func(function (self, x, y) {
+            x = Sk.ffi.remapToJs(x);
+            y = Sk.ffi.remapToJs(y);
+            var newLeft = get_left(self) - Math.floor(x / 2);
+            var newTop = get_top(self) - Math.floor(y / 2);
+            return Sk.misceval.callsim(PygameLib.RectType,
+                Sk.builtin.tuple([newLeft, newTop]), Sk.builtin.tuple([get_width(self) + x, get_height(self) + y]));
+        });
+        $loc.inflate_ip = new Sk.builtin.func(function (self, x, y) {
+            x = Sk.ffi.remapToJs(x);
+            y = Sk.ffi.remapToJs(y);
+            var newLeft = get_left(self) - Math.floor(x / 2);
+            var newTop = get_top(self) - Math.floor(y / 2);
+            set_left(self, newLeft);
+            set_top(self, newTop);
+            set_width(self, get_width(self) + x);
+            set_height(self, get_height(self) + y);
+        });
+        $loc.clamp = new Sk.builtin.func(function (self, argrect) {
+            var argx = get_left(argrect);
+            var argy = get_top(argrect);
+            var argw = get_width(argrect);
+            var argh = get_height(argrect);
+            var selfx = get_left(self);
+            var selfy = get_top(self);
+            var selfw = get_width(self);
+            var selfh = get_height(self);
+            var x, y;
+            if (selfw >= argw) {
+                x = argx + argw / 2 - selfw / 2;
+            }
+            else if (selfx < argx) {
+
+                x = argx;
+            }
+            else if (selfx + selfw > argx + argw) {
+                x = argx + argw - selfw;
+            }
+            else {
+                x = selfx;
+            }
+
+            if (selfh >= argh) {
+                y = argy + argh / 2 - selfh / 2;
+            }
+            else if (selfy < argy) {
+                y = argy;
+            }
+            else if (selfy + selfh > argy + argh) {
+                y = argy + argh - selfh;
+            }
+            else {
+                y = selfy;
+            }
+            return Sk.misceval.callsim(PygameLib.RectType,
+                Sk.builtin.tuple([x, y]), Sk.builtin.tuple([selfw, selfh]));
+        });
+        $loc.clamp_ip = new Sk.builtin.func(function (self, argrect) {
+            var argx = get_left(argrect);
+            var argy = get_top(argrect);
+            var argw = get_width(argrect);
+            var argh = get_height(argrect);
+            var selfx = get_left(self);
+            var selfy = get_top(self);
+            var selfw = get_width(self);
+            var selfh = get_height(self);
+            var x, y;
+            if (selfw >= argw) {
+                x = argx + argw / 2 - selfw / 2;
+            }
+            else if (selfx < argx) {
+
+                x = argx;
+            }
+            else if (selfx + selfw > argx + argw) {
+                x = argx + argw - selfw;
+            }
+            else {
+                x = selfx;
+            }
+
+            if (selfh >= argh) {
+                y = argy + argh / 2 - selfh / 2;
+            }
+            else if (selfy < argy) {
+                y = argy;
+            }
+            else if (selfy + selfh > argy + argh) {
+                y = argy + argh - selfh;
+            }
+            else {
+                y = selfy;
+            }
+            set_left(self, x);
+            set_top(self, y);
+        });
+        // TODO: rect.clip
+        // TODO: rect.clip_ip
+        $loc.union = new Sk.builtin.func(function (self, argrect) {
+            var argx = get_left(argrect);
+            var argy = get_top(argrect);
+            var argw = get_width(argrect);
+            var argh = get_height(argrect);
+            var selfx = get_left(self);
+            var selfy = get_top(self);
+            var selfw = get_width(self);
+            var selfh = get_height(self);
+            var x, y, w, h;
+            x = Math.min(argx, selfx);
+            y = Math.min(argy, selfy);
+            w = Math.max(selfx + selfw, argx + argw) - x;
+            h = Math.max(selfy + selfh, argy + argh) - y;
+            return Sk.misceval.callsim(PygameLib.RectType,
+                Sk.builtin.tuple([x, y]), Sk.builtin.tuple([w, h]));
+        });
+        $loc.union_ip = new Sk.builtin.func(function (self, argrect) {
+            var argx = get_left(argrect);
+            var argy = get_top(argrect);
+            var argw = get_width(argrect);
+            var argh = get_height(argrect);
+            var selfx = get_left(self);
+            var selfy = get_top(self);
+            var selfw = get_width(self);
+            var selfh = get_height(self);
+            var x, y, w, h;
+            x = Math.min(argx, selfx);
+            y = Math.min(argy, selfy);
+            w = Math.max(selfx + selfw, argx + argw) - x;
+            h = Math.max(selfy + selfh, argy + argh) - y;
+            set_left(self, x);
+            set_top(self, y);
+            set_width(self, w);
+            set_height(self, h);
+        });
+        $loc.unionall = new Sk.builtin.func(function (self, list) {
+            var l = get_left(self);
+            var t = get_top(self);
+            var r = l + get_width(self);
+            var b = t + get_height(self);
+            for (var i = 0; i < list.v.length; i++) {
+                l = Math.min(l, get_left(list.v[i]));
+                t = Math.min(t, get_top(list.v[i]));
+                r = Math.max(r, get_right(list.v[i]));
+                b = Math.max(b, get_bottom(list.v[i]));
+            }
+            return Sk.misceval.callsim(PygameLib.RectType,
+                Sk.builtin.tuple([l, t]), Sk.builtin.tuple([r - l, b - t]));
+        });
+        $loc.unionall_ip = new Sk.builtin.func(function (self, list) {
+            var l = get_left(self);
+            var t = get_top(self);
+            var r = l + get_width(self);
+            var b = t + get_height(self);
+            for (var i = 0; i < list.v.length; i++) {
+                l = Math.min(l, get_left(list.v[i]));
+                t = Math.min(t, get_top(list.v[i]));
+                r = Math.max(r, get_right(list.v[i]));
+                b = Math.max(b, get_bottom(list.v[i]));
+            }
+            set_left(self, l);
+            set_top(self, t);
+            set_width(self, r - l);
+            set_height(self, b - t);
+        });
+        $loc.fit = new Sk.builtin.func(function (self, argrect) {
+            var argx = get_left(argrect);
+            var argy = get_top(argrect);
+            var argw = get_width(argrect);
+            var argh = get_height(argrect);
+            var selfx = get_left(self);
+            var selfy = get_top(self);
+            var selfw = get_width(self);
+            var selfh = get_height(self);
+            var x, y, w, h;
+            var xratio, yratio, maxratio;
+            xratio = selfw / argw;
+            yratio = selfh / argh;
+            maxratio = (xratio > yratio) ? xratio : yratio;
+
+            w = Math.round(selfw / maxratio);
+            h = Math.round(selfh / maxratio);
+
+            x = argx + Math.floor((argw - w) / 2);
+            y = argy + Math.floor((argh - h) / 2);
+            return Sk.misceval.callsim(PygameLib.RectType,
+                Sk.builtin.tuple([x, y]), Sk.builtin.tuple([w, h]));
+        });
+        $loc.normalize = new Sk.builtin.func(function (self) {
+            var selfx = get_left(self);
+            var selfy = get_top(self);
+            var selfw = get_width(self);
+            var selfh = get_height(self);
+            if (selfw < 0) {
+                selfx += selfw;
+                selfw = -selfw;
+            }
+            if (selfh < 0) {
+                selfy += selfh;
+                selfh = -selfh;
+            }
+            set_left(self, selfx);
+            set_width(self, selfw);
+            set_top(self, selfy);
+            set_height(self, selfh);
+        });
+        $loc.contains = new Sk.builtin.func(function (self, argrect) {
+            var argx = get_left(argrect);
+            var argy = get_top(argrect);
+            var argw = get_width(argrect);
+            var argh = get_height(argrect);
+            var selfx = get_left(self);
+            var selfy = get_top(self);
+            var selfw = get_width(self);
+            var selfh = get_height(self);
+            var contained = (selfx <= argx) && (selfy <= argy) &&
+                (selfx + selfw >= argx + argw) &&
+                (selfy + selfh >= argy + argh) &&
+                (selfx + selfw > argx) &&
+                (selfy + selfh > argy);
+            return Sk.ffi.remapToPy(contained);
+        });
+
     }
 
     // pygame.version
