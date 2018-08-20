@@ -151,7 +151,34 @@ var PygameLib = {};
         PygameLib.RectType = mod.Rect;
         mod.quit = new Sk.builtin.func(function () {
             PygameLib.endProgram();
-            return;
+        });
+        mod.error = new Sk.builtin.func(function (description) {
+            if (Sk.abstr.typeName(description) !== "str") {
+                throw new Sk.builtin.TypeError("Error description should be a string");
+            }
+            mod.lastError = description;
+            return Sk.builtin.RuntimeError(description);
+        });
+        mod.get_error = new Sk.builtin.func(function () {
+           throw new Sk.builtin.NotImplementedError("Not yet implemented");
+        });
+        mod.set_error = new Sk.builtin.func(function () {
+           throw new Sk.builtin.NotImplementedError("Not yet implemented");
+        });
+        mod.get_sdl_version = new Sk.builtin.func(function () {
+           return Sk.builtin.tuple([1, 2, 15])
+        });
+        mod.get_sdl_byteorder = new Sk.builtin.func(function () {
+            return Sk.ffi.remapToPy(PygameLib.constants.LIL_ENDIAN);
+        });
+        mod.register_quit = new Sk.builtin.func(function () {
+            throw new Sk.builtin.NotImplementedError("Not yet implemented");
+        });
+        mod.encode_string = new Sk.builtin.func(function () {
+            throw new Sk.builtin.NotImplementedError("Not yet implemented");
+        });
+        mod.encode_file_path = new Sk.builtin.func(function () {
+            throw new Sk.builtin.NotImplementedError("Not yet implemented");
         });
         return mod;
     }
@@ -2051,6 +2078,12 @@ var PygameLib = {};
     PygameLib.image_module = function(name) {
         mod = {};
         mod.load = new Sk.builtin.func(load_image);
+        mod.get_extended = new Sk.builtin.func(function () {
+            return Sk.ffi.remapToPy(false);
+        });
+        mod.save = new Sk.builtin.func(function (surf, filename) {
+
+        });
         return mod;
     }
 
@@ -2068,7 +2101,6 @@ var PygameLib = {};
                     resolve(s);
                 }
             }));
-
     }
 
 }());
