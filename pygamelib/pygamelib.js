@@ -48,7 +48,7 @@ var PygameLib = {};
                 e = [keyPGConstant, {key: event.which}];
         }
         return e;
-    }
+    };
 
     function keyEventListener(event) {
         var e = createKeyboardEvent(event);
@@ -97,6 +97,9 @@ var PygameLib = {};
             },
             'pygame.version': {
                 path: baseURL + '/version.js'
+            },
+            'pygame.mouse': {
+                path: baseURL + '/mouse.js'
             }
         };
         for (var k in pygame_modules) {
@@ -119,6 +122,7 @@ var PygameLib = {};
         var font_m    = Sk.importModule("pygame.font", false, false);
         var key_m     = Sk.importModule("pygame.key", false, false);
         var version_m = Sk.importModule("pygame.version", false, false);
+        var mouse_m   = Sk.importModule("pygame.mouse", false, false);
         PygameLib.initial_time = new Date();
         pygame_m.$d['display'] = display_m.$d['display'];
         pygame_m.$d['event'] = display_m.$d['event'];
@@ -129,6 +133,7 @@ var PygameLib = {};
         PygameLib.eventTimer = {};
         PygameLib.running = true;
         PygameLib.repeatKeys = false;
+        PygameLib.mouseData = {"button": [0, 0, 0], "pos": [0, 0], "rel": [0, 0]};
     }
 
     //pygame
@@ -551,6 +556,7 @@ var PygameLib = {};
                     pos: [canvasX, canvasY],
                     button: button
                 }];
+            PygameLib.mouseData["button"][button] = 1;
         } else if (event.type === "mouseup") {
             var e = [PygameLib.constants.MOUSEBUTTONUP,
                 {
@@ -558,6 +564,7 @@ var PygameLib = {};
                     pos: [canvasX, canvasY],
                     button: button
                 }];
+            PygameLib.mouseData["button"][button] = 0;
         } else if (event.type === "mousemove") {
             var leftButton = 0;
             var rightButton = 0;
@@ -577,13 +584,12 @@ var PygameLib = {};
                     pos: [canvasX, canvasY],
                     rel: [event.movementX, event.movementY],
                     buttons: [leftButton, middleButton, rightButton]
-                }]
-
+                }];
+            PygameLib.mouseData["pos"] = [canvasX, canvasY];
+            PygameLib.mouseData["rel"] = [event.movementX, event.movementY];
         }
-
-
         PygameLib.eventQueue.unshift(e);
-    }
+    };
 
     // Surface((width, height))
     var init$1 = function $__init__123$(self, size, main = true) {
@@ -749,14 +755,13 @@ var PygameLib = {};
             ctx.fillStyle = 'rgba(' + color_js[0] + ', ' + color_js[1] + ', ' + color_js[2] + ', ' + color_js[3] + ')';
             ctx.fillRect(0, 0, self.width, self.height);
         });
+        loc.blit = new Sk.builtins.function(blit, gbl);
+        loc.convert = new Sk.builtins.function(convert, gbl);
         loc.update = new Sk.builtins.function(update, gbl);
         loc.get_width = new Sk.builtins.function(get_width, gbl);
         loc.get_height = new Sk.builtins.function(get_height, gbl);
         loc.get_size = new Sk.builtins.function(get_size, gbl);
         loc.get_flags = new Sk.builtins.function(get_flags, gbl);
-        loc.blit = new Sk.builtins.function(blit, gbl);
-        loc.convert = new Sk.builtins.function(convert, gbl);
-        return;
     };
 
     surface$1.co_name = new Sk.builtins['str']('Surface');
@@ -1749,6 +1754,49 @@ var PygameLib = {};
         });
 
     }
+    // pygame.mouse
+    PygameLib.mouse_module = function (name) {
+        mod = {};
+        mod.get_pressed = new Sk.builtin.func(function () {
+            return Sk.ffi.remapToPy(PygameLib.mouseData["button"]);
+        });
+        mod.get_pos = new Sk.builtin.func(function () {
+            return Sk.ffi.remapToPy(PygameLib.mouseData["pos"]);
+        });
+        mod.get_rel = new Sk.builtin.func(function () {
+            return Sk.ffi.remapToPy(PygameLib.mouseData["rel"]);
+        });
+        mod.set_pos = new Sk.builtin.func(function (x, y) {
+            if (Sk.abstr.typeName(x) === "tuple" && y === undefined) {
+                var xy = Sk.ffi.remapToJs(x);
+                x = xy[0];
+                y = xy[1];
+            } else if (Sk.abstr.typeName(x) === "int" && Sk.abstr.typeName(y) === "int") {
+                x = Sk.ffi.remapToJs(x);
+                y = Sk.ffi.remapToJs(y);
+            } else {
+                throw new Sk.builtin.TypeError("invalid position argument for set_pos");
+            }
+            PygameLib.mouseData["pos"] = [x, y];
+        });
+        mod.set_visible = new Sk.builtin.func(function (b) {
+            if (Sk.ffi.remapToJs(b)) {
+                document.body.style.cursor = '';
+            } else {
+                document.body.style.cursor = 'none';
+            }
+        });
+        mod.get_focused = new Sk.builtin.func(function () {
+            return Sk.ffi.remapToPy(document.hasFocus());
+        });
+        mod.set_cursor = new Sk.builtin.func(function () {
+            throw new Sk.builtin.NotImplementedError("Not yet implemented");
+        });
+        mod.get_cursor = new Sk.builtin.func(function () {
+            throw new Sk.builtin.NotImplementedError("Not yet implemented");
+        });
+        return mod;
+    };
 
     // pygame.version
     PygameLib.version_module = function(name) {
