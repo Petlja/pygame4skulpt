@@ -9,7 +9,7 @@ pg.init()
 pg.key.set_repeat(50, 25)
 
 # postavljamo naslov prozora
-pg.display.set_caption("Setanje broda tastaturom")
+pg.display.set_caption("setanje broda")
 
 # otvaramo prozor dimenzije 400x400 piksela
 (sirina, visina) = (400, 400)

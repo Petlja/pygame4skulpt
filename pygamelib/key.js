@@ -1,0 +1,1 @@
+var $builtinmodule = PygameLib.key_module;
