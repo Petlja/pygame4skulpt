@@ -1,73 +1,88 @@
 <html>
-<head>
-
+  <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="../skulpt_dist/skulpt.min.js" type="text/javascript"></script>
     <script src="../skulpt_dist/skulpt-stdlib.js" type="text/javascript"></script>
     <script src="../pygamelib/pygamelib.js" type="text/javascript"></script>
-
+    
     <!-- <script src="../js/bootstrap.js" type="text/javascript"></script> -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
-          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    
     <!-- <link type="text/css" rel="stylesheet" href="../css/bootstrap.css" > -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"
-          type="text/css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" type="text/css">
     <!-- <link type="text/css" rel="stylesheet" href="../css/font-awesome.min.css" > -->
     <!-- <link type="text/css" rel="stylesheet" href="../css/flatly.min.css" > -->
-    <link type="text/css" rel="stylesheet" href="../css/petlja.css">
+    <link type="text/css" rel="stylesheet" href="../css/petlja.css" >
     <!-- <link href="../fontawesome-all.css" type="text/css" rel="stylesheet"> -->
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-</head>
+  </head>
 
-<body>
-<div id="mycanvas" class="col-md-offset-4">
-</div>
+  <body>
+        <div id="mycanvas" class="col-md-offset-4">
+        </div>
 <p>Lorem ipsum</p>
 
-<textarea id="code" rows="24" cols="80">
+<textarea id="code" rows="24" cols="80" font="Lucida Console">
+import pygame as pg
+import time
+pg.init()
+sat = pg.time.Clock()
+kraj = False
 
+xx = 1000
+counter = 0
+while not (kraj):
+    for dogadjaj in pg.event.get():
+        if dogadjaj == pg.QUIT:
+            kraj = True
+
+    sat.tick(1)
+    print(sat.get_fps())
+
+    counter += 1
+    if counter == 100:
+        break
+
+
+pg.quit()
 </textarea>
 <pre id="output"></pre>
 
-<script>
-    function printString(text) {
+    <script>
+    function printString(text)
+    {
         var output = document.getElementById("output");
         text = text.replace(/</g, '&lt;');
         output.innerHTML = output.innerHTML + text;
     }
 
     function clearOutput() {
-        var output = document.getElementById("output");
-        output.innerHTML = '';
+       var output = document.getElementById("output");
+       output.innerHTML = '';
     }
 
     function builtinRead(x) {
-        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-            throw "File not found: '" + x + "'";
-        return Sk.builtinFiles["files"][x];
-    }
-
+	    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+		    throw "File not found: '" + x + "'";
+	    return Sk.builtinFiles["files"][x];
+	}
     function runCode() {
         var prog = $("#code").text();
-        Sk.misceval.asyncToPromise(function () {
+        Sk.misceval.asyncToPromise(function() {
             try {
-                return Sk.importMainWithBody("<stdin>", false, prog, true);
-            } catch (e) {
+                return Sk.importMainWithBody("<stdin>",false,prog,true);
+            } catch(e) {
                 alert(e)
             }
         });
     }
-
     PygameLib.init("../pygamelib");
     (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
-    Sk.configure({read: builtinRead, output: printString});
-    $("#code").load("../pygame_samples/" + window.location.search.substring(1), function () {
-        runCode();
-    });
-</script>
-</body>
+    Sk.configure({ read: builtinRead, output:printString });
+    runCode();
+    </script>
+  </body>
 </html>
 
