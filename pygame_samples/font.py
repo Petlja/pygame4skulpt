@@ -7,7 +7,7 @@ pg.init()
 # podešavamo naslov prozora
 pg.display.set_caption("Zdravo svete!")
 # otvaramo prozor dimenzije 300x300
-(sirina, visina) = (600, 600)
+(sirina, visina) = (300, 300)
 prozor = pg.display.set_mode((sirina, visina))
 # -*- acsection: main -*-
 
@@ -15,14 +15,12 @@ prozor = pg.display.set_mode((sirina, visina))
 prozor.fill(pg.Color("white"))
 
 # font kojim će biti prikazan tekst
-font = pg.font.SysFont("consolas", 40)
-font.set_underline(True)
+font = pg.font.SysFont("Arial", 40)
 
 # poruka koja će se ispisivati
 poruka = "Zdravo svete!"
 # gradimo sličicu koja predstavlja tu poruku ispisanu crnom bojom
 tekst = font.render(poruka, True, pg.Color("black"))
-
 # određujemo veličinu tog teksta (da bismo mogli da ga centriramo)
 (sirina_teksta, visina_teksta) = (tekst.get_width(), tekst.get_height())
 # položaj određujemo tako da tekst bude centriran
@@ -35,8 +33,8 @@ prozor.blit(tekst, (x, y))
 pg.display.update()
 
 # čekamo da korisnik isključi prozor
-while pg.event.wait().type != pg.QUIT:
-  pass
+#while pg.event.wait().type != pg.QUIT:
+#   pass
 
 # isključivanje rada biblioteke PyGame
 pg.quit()
