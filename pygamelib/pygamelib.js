@@ -140,11 +140,10 @@ var PygameLib = {};
     PygameLib.time_module = function(name) {
         mod = {};
         mod.wait = new Sk.builtin.func(function(amount) {
-            var t_m = Sk.importModule("time", false, true);
+            var t_m = Sk.importModule("time", false, false);
             var sec = Sk.ffi.remapToJs(amount) / 1000;
             return Sk.misceval.callsimOrSuspend(t_m.$d['sleep'], Sk.ffi.remapToPy(sec));
         });
-
         mod.get_ticks = new Sk.builtin.func(function() {
             return Sk.ffi.remapToPy(new Date() - PygameLib.initial_time);
         });
@@ -164,11 +163,7 @@ var PygameLib = {};
             if (ms) {
                 PygameLib.eventTimer[event].timer = setInterval(PygameLib.eventTimer[event].f, ms);
             }
-            return mod;
         });
-
-        mod.Clock = Sk.misceval.buildClass(mod, time_Clock, 'Clock', []);
-        PygameLib.ClockType = mod.Clock;
         return mod;
     };
 
@@ -298,6 +293,7 @@ var PygameLib = {};
         $loc.__init__.co_name = new Sk.builtins['str']('__init__');
         $loc.__init__.co_varnames = ['bold', 'italic'];
         $loc.__init__.$defaults = [false, false];
+        // $loc.__init__.co_numargs = 5;
 
         $loc.__repr__ = new Sk.builtin.func(function (self) {
             var name = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'name', false));
@@ -805,13 +801,13 @@ var PygameLib = {};
                     }
                     else 
                         Sk.setTimeout(f, 10);
-                };
+                }
 
                 Sk.setTimeout(f, 10);
             }));
         });
         return mod;
-    };
+    }
 
     //pygame.Color
     function color_type_f($gbl, $loc) {
