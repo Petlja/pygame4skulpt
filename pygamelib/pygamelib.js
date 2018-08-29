@@ -565,13 +565,13 @@ var PygameLib = {};
     function createArrows(div) {
         var arrows = new Array(4);
         var direction = ["left", "right", "up", "down"];
-
+        $(div).addClass("d-flex justify-content-center");
         for (var i = 0; i < 4; i++) {
             arrows[i] = document.createElement("span");
             div.appendChild(arrows[i]);
             $(arrows[i]).addClass("btn btn-primary btn-arrow");
             var ic = document.createElement("i");
-            $(ic).addClass("fa fa-arrow-" + direction[i]);
+            $(ic).addClass("fas fa-arrow-" + direction[i]);
             arrows[i].appendChild(ic);
         }
 
@@ -751,9 +751,9 @@ var PygameLib = {};
                 $(div1).css("text-align", "center");
 
                 var btn1 = document.createElement("span");
-                $(btn1).addClass("btn btn-primary btn-xs pull-right");
+                $(btn1).addClass("btn btn-primary btn-sm float-right");
                 var ic = document.createElement("i");
-                $(ic).addClass("fa fa-times");
+                $(ic).addClass("fas fa-times");
                 btn1.appendChild(ic);
 
                 $(btn1).on('click', function(e) {
@@ -762,7 +762,7 @@ var PygameLib = {};
                 });
 
                 var div2 = document.createElement("div");
-                $(div2).addClass("modal-dialog");
+                $(div2).addClass("modal-dialog modal-lg");
                 $(div2).css("display", "inline-block");
                 $(div2).width(self.width + 42);
                 $(div2).attr("role", "document");
@@ -773,7 +773,7 @@ var PygameLib = {};
                 div2.appendChild(div3);
 
                 var div4 = document.createElement("div");
-                $(div4).addClass("modal-header");
+                $(div4).addClass("modal-header d-flex justify-content-between");
                 var div5 = document.createElement("div");
                 $(div5).addClass("modal-body");
                 var div6 = document.createElement("div");
@@ -782,18 +782,18 @@ var PygameLib = {};
                 $(div7).addClass("col-md-8");
                 var div8 = document.createElement("div");
                 $(div8).addClass("col-md-4");
-                var header = document.createElement("h4");
-                $(header).addClass("modal-title pull-left");
+                var header = document.createElement("h5");
+                $(header).addClass("modal-title");
                 $(header).html(PygameLib.caption);
 
                 div3.appendChild(div4);
                 div3.appendChild(div5);
                 div3.appendChild(div6);
 
-                div4.appendChild(div7);
-                div4.appendChild(div8);
-                div7.appendChild(header);
-                div8.appendChild(btn1);
+                div4.appendChild(header);
+                div4.appendChild(btn1);
+                // div7.appendChild(header);
+                // div8.appendChild(btn1);
 
                 div5.appendChild(self.main_canvas);
 
