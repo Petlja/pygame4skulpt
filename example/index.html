@@ -110,9 +110,6 @@ pg.quit()
 	}
     function runCode() {
         var prog = $("#code").text();
-        delete Sk.builtin['func_globals'];
-        delete Sk.builtin['func_code'];
-        delete Sk.builtin['func_closure'];
         return Sk.misceval.asyncToPromise(function() {
             try {
                 return Sk.importMainWithBody("<stdin>",false,prog,true);
