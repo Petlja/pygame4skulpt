@@ -11,7 +11,8 @@ font.set_underline(False)
 poruka = "Zdravo svete!"
 tekst1 = font.render(poruka, True, pg.Color("black"))
 tekst2 = font.render(poruka, True, pg.Color("yellow"))
-# tekst1.blit(tekst2, (0, 0))
+tekst2.convert_alpha()
+tekst1.blit(tekst2, (0, 0))
 
 (sirina_teksta, visina_teksta) = (tekst1.get_width(), tekst1.get_height())
 print(sirina_teksta, visina_teksta)

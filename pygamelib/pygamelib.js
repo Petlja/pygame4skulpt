@@ -877,8 +877,9 @@ var PygameLib = {};
 
     function blit(self, other, pos) {
         var target_pos_js = Sk.ffi.remapToJs(pos);
-
         self.context2d.drawImage(other.offscreen_canvas, target_pos_js[0], target_pos_js[1]);
+        return Sk.misceval.callsim(PygameLib.RectType,
+            Sk.builtin.tuple([0, 0]), Sk.builtin.tuple([other.offscreen_canvas.width, other.offscreen_canvas.height]))
     }
 
     function convert(self) {
@@ -896,6 +897,7 @@ var PygameLib = {};
         });
         loc.blit = new Sk.builtins.function(blit, gbl);
         loc.convert = new Sk.builtins.function(convert, gbl);
+        loc.convert_alpha = new Sk.builtins.function(convert, gbl);
         loc.update = new Sk.builtins.function(update, gbl);
         loc.get_width = new Sk.builtins.function(get_width, gbl);
         loc.get_height = new Sk.builtins.function(get_height, gbl);
