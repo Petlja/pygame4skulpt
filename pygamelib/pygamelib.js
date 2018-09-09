@@ -903,6 +903,14 @@ var PygameLib = {};
         loc.get_height = new Sk.builtins.function(get_height, gbl);
         loc.get_size = new Sk.builtins.function(get_size, gbl);
         loc.get_flags = new Sk.builtins.function(get_flags, gbl);
+        loc.copy = new Sk.builtin.func(function (self) {
+            var size = Sk.builtin.tuple([self.offscreen_canvas.width, self.offscreen_canvas.width]);
+            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, size, false);
+            ret.offscreen_canvas.width = self.offscreen_canvas.width;
+            ret.offscreen_canvas.height = self.offscreen_canvas.height;
+            ret.context2d.drawImage(self.offscreen_canvas, 0, 0);
+            return ret;
+        }, gbl);
     };
 
     surface$1.co_name = new Sk.builtins['str']('Surface');
