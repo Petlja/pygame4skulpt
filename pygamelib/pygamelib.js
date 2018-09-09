@@ -911,6 +911,12 @@ var PygameLib = {};
             ret.context2d.drawImage(self.offscreen_canvas, 0, 0);
             return ret;
         }, gbl);
+        loc.scroll = new Sk.builtin.func(function (self, dx, dy) {
+            var x = Sk.ffi.remapToJs(dx);
+            var y = Sk.ffi.remapToJs(dy);
+            self.context2d.drawImage(self.offscreen_canvas, x, y);
+            return Sk.builtin.none.none$;
+        }, gbl);
     };
 
     surface$1.co_name = new Sk.builtins['str']('Surface');

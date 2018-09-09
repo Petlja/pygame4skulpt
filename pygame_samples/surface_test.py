@@ -8,6 +8,7 @@ prozor = pg.display.set_mode((sirina, visina))
 font = pg.font.SysFont("consolas", 40)
 font.set_underline(False)
 
+
 poruka = "Zdravo svete!"
 tekst1 = font.render(poruka, True, pg.Color("black"))
 tekst2 = font.render(poruka, True, pg.Color("yellow"))
@@ -21,8 +22,12 @@ print(sirina_teksta, visina_teksta)
 prozor.blit(tekst1, (x, y))
 
 pg.display.update()
+pg.time.set_timer(pg.USEREVENT, 1000 // 50)
 
 while True:
+    pg.time.wait(1000)
+    print(prozor.scroll(10, 0))
+    pg.display.update()
     d = pg.event.wait()
     if d == pg.QUIT:
         break
