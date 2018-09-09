@@ -438,7 +438,7 @@ var PygameLib = {};
         // Create a dummy canvas in order to exploit its measureText() method
         var t = Sk.builtin.tuple([w, h]);
         var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
-        var ctx = s.main_canvas.getContext("2d");
+        var ctx = s.offscreen_canvas.getContext("2d");
         ctx.font = fontName;
         return new Sk.builtin.tuple([ctx.measureText(msg).width, h]);
     }
@@ -465,18 +465,18 @@ var PygameLib = {};
         // Create a dummy canvas in order to exploit its measureText() method
         var t = Sk.builtin.tuple([w, h]);
         var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
-        var ctx = s.main_canvas.getContext("2d");
+        var ctx = s.offscreen_canvas.getContext("2d");
         ctx.font = fontName;
         w = ctx.measureText(msg).width;
 
         t = Sk.builtin.tuple([w, h]);
         s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
-        ctx = s.main_canvas.getContext("2d");
+        ctx = s.offscreen_canvas.getContext("2d");
         if (background !== undefined) {
             var background_js = extract_color(background);
             ctx.fillStyle = 'rgba(' + background_js[0] + ', ' + background_js[1] + ', ' + background_js[2] + ', '
                 + background_js[3] + ')';
-            ctx.fillRect(0, 0, s.main_canvas.width, s.main_canvas.height);
+            ctx.fillRect(0, 0, s.offscreen_canvas.width, s.offscreen_canvas.height);
         }
         ctx.font = fontName;
         var color_js = extract_color(color);
@@ -726,7 +726,7 @@ var PygameLib = {};
     };
 
     // Surface((width, height))
-    var init$1 = function $__init__123$(self, size, main = true) {
+    var init$1 = function $__init__123$(self, size, main = false) {
         Sk.builtin.pyCheckArgs('__init__', arguments, 2, 5, false, false);
         var tuple_js = Sk.ffi.remapToJs(size);
         self.width = tuple_js[0];
@@ -803,21 +803,29 @@ var PygameLib = {};
                     backdrop: 'static',
                     keyboard: false
                 });
-            }
-            else {
+            } else {
                 currentTarget.appendChild(self.main_canvas);
             }
-            self.main_context = self.main_canvas.getContext("2d");
-            self.offscreen_canvas = document.createElement('canvas');
-            self.context2d = self.offscreen_canvas.getContext("2d");
-
-            self.offscreen_canvas.width = tuple_js[0];
-            self.offscreen_canvas.height = tuple_js[1];
         }
+        self.main_context = self.main_canvas.getContext("2d");
+
+        self.offscreen_canvas = document.createElement('canvas');
+        self.context2d = self.offscreen_canvas.getContext("2d");
+
+        self.offscreen_canvas.width = tuple_js[0];
+        self.offscreen_canvas.height = tuple_js[1];
         self.main_canvas.setAttribute('width', self.width);
         self.main_canvas.setAttribute('height', self.height);
+        fillBlack(self.main_context, self.main_canvas.width, self.main_canvas.height);
+        fillBlack(self.context2d, tuple_js[0], tuple_js[1]);
         return Sk.builtin.none.none$;
     };
+    function fillBlack(ctx, w, h) {
+        ctx.beginPath();
+        ctx.rect(0, 0, w, h);
+        ctx.fillStyle = "black";
+        ctx.fill();
+    }
     init$1.co_name = new Sk.builtins['str']('__init__');
     init$1.co_varnames = ['self', 'size', 'flags', 'depth', 'masks'];
     init$1.$defaults = [new Sk.builtin.int_(0), new Sk.builtin.int_(0), Sk.builtin.none.none$];
@@ -869,11 +877,8 @@ var PygameLib = {};
 
     function blit(self, other, pos) {
         var target_pos_js = Sk.ffi.remapToJs(pos);
-        var otherCtx = other.main_canvas.getContext("2d");
-        var img = otherCtx.getImageData(0, 0, other.width, other.height);
 
-        // TODO: not sure if we want to call drawImage here
-        self.context2d.drawImage(other.main_canvas, target_pos_js[0], target_pos_js[1]);
+        self.context2d.drawImage(other.offscreen_canvas, target_pos_js[0], target_pos_js[1]);
     }
 
     function convert(self) {
@@ -904,7 +909,7 @@ var PygameLib = {};
     PygameLib.display_module = function (name) {
         var mod = {};
         mod.set_mode = new Sk.builtin.func(function (size) {
-            mod.surface = Sk.misceval.callsim(PygameLib.SurfaceType, size);
+            mod.surface = Sk.misceval.callsim(PygameLib.SurfaceType, size, true);
             PygameLib.surface = mod.surface;
             return mod.surface;
         });
@@ -2203,7 +2208,7 @@ var PygameLib = {};
                     var h = PygameLib.surface.height;
                     var t = Sk.builtin.tuple([img.width, img.height]);
                     var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
-                    var ctx = s.main_canvas.getContext("2d");
+                    var ctx = s.offscreen_canvas.getContext("2d");
                     ctx.drawImage(img, 0, 0);
                     resolve(s);
                 }
