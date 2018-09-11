@@ -910,13 +910,43 @@ var PygameLib = {};
             ret.offscreen_canvas.height = self.offscreen_canvas.height;
             ret.context2d.drawImage(self.offscreen_canvas, 0, 0);
             return ret;
-        }, gbl);
+        });
         loc.scroll = new Sk.builtin.func(function (self, dx, dy) {
             var x = Sk.ffi.remapToJs(dx);
             var y = Sk.ffi.remapToJs(dy);
             self.context2d.drawImage(self.offscreen_canvas, x, y);
             return Sk.builtin.none.none$;
-        }, gbl);
+        });
+        loc.get_at = new Sk.builtin.func(function (self, coordinates) {
+            if (Sk.abstr.typeName(coordinates) !== "tuple") {
+                throw new Sk.builtin.TypeError("argument must be a pair");
+            }
+            var x = Sk.ffi.remapToJs(coordinates.v[0]);
+            var y = Sk.ffi.remapToJs(coordinates.v[1]);
+            var data = self.context2d.getImageData(x, y, 1, 1).data;
+            return Sk.builtin.tuple([data[0], data[1], data[2], data[3]]);
+        });
+        loc.set_at = new Sk.builtin.func(function (self, coordinates, clr) {
+            if (Sk.abstr.typeName(coordinates) !== "tuple") {
+                throw new Sk.builtin.TypeError("the first argument must be a pair");
+            }
+            if (Sk.abstr.typeName(clr) !== "Color") {
+                throw new Sk.builtin.TypeError("the second argument must be a Pygame color");
+            }
+            var rgba = extract_color(clr);
+            self.context2d.fillStyle = "rgba(" + rgba[0] + "," + rgba[1] + "," + rgba[2] + "," + (rgba[3] / 255) + ")";
+            var x = Sk.ffi.remapToJs(coordinates.v[0]);
+            var y = Sk.ffi.remapToJs(coordinates.v[1]);
+            self.context2d.fillRect(x, y, 1, 1);
+        });
+        loc.get_rect = new Sk.builtin.func(function (self) {
+            return Sk.misceval.callsim(PygameLib.RectType,
+                Sk.builtin.tuple([0, 0]), Sk.builtin.tuple([self.offscreen_canvas.width, self.offscreen_canvas.height]))
+        });
+        loc.get_bounding_rect = new Sk.builtin.func(function (self) {
+            return Sk.misceval.callsim(PygameLib.RectType,
+                Sk.builtin.tuple([0, 0]), Sk.builtin.tuple([self.offscreen_canvas.width, self.offscreen_canvas.height]))
+        })
     };
 
     surface$1.co_name = new Sk.builtins['str']('Surface');
