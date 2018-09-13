@@ -25,11 +25,15 @@ print(sirina_teksta, visina_teksta)
 prozor.blit(tekst1, (x, y))
 
 pg.display.update()
-pg.time.set_timer(pg.USEREVENT, 1000 // 50)
-while True:
+
+kraj = False
+while not kraj:
     pg.time.wait(1000)
     print(prozor.scroll(10, 0))
     pg.display.update()
-    d = pg.event.wait()
-    if d == pg.QUIT:
-        break
+    dogadjaj = pg.event.wait()
+    # isključivanje prozora
+    if dogadjaj.type == pg.QUIT:
+        kraj = True
+
+pg.quit()
