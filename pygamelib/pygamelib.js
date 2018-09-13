@@ -366,8 +366,7 @@ var PygameLib = {};
            return Sk.ffi.remapToPy('arial');
         });
         mod.get_fonts = new Sk.builtin.func(function () {
-            return Sk.ffi.remapToPy(['arial', 'helvetica', 'times', 'courier']);
-            // TODO: maybe we should extend this list
+            return Sk.ffi.remapToPy(fonts_osx);
         });
         mod.match_font = new Sk.builtin.func(function() {
             return Sk.builtin.none.none$;
@@ -3166,3 +3165,52 @@ var keyboardModifierKeys = [PygameLib.constants.K_LSHIFT, PygameLib.constants.K_
     PygameLib.constants.K_LCTRL, PygameLib.constants.K_RCTRL, PygameLib.constants.K_LALT, PygameLib.constants.K_RALT,
     PygameLib.constants.K_LMETA, PygameLib.constants.K_RMETA, 0, PygameLib.constants.K_CAPSLOCK,
     PygameLib.constants.K_NUMLOCK, PygameLib.constants.K_MODE];
+
+var fonts_osx = ['applecoloremojiui', 'cochin', 'raanana', 'franklingothicmedium', 'signpainter', 'iowanoldstyle',
+    'corbel', 'avenir', 'birchstd', 'bitstreamverasansmono', 'sfcompacttext', 'albayan', 'applesdgothicneo',
+    'damascus', 'malayalammn', 'kohinoortelugu', 'minionpro', 'estrangelomidyat', 'lucidagrandeui',
+    'hiraginokakugothicpro', 'diwankufi', 'calibri', 'arialnarrow', 'applesdgothicneoi', 'gillsans',
+    'stixsizefoursym', 'adobehebrew', 'farisi', 'ptsanscaption', 'hiraginomarugothicpron', 'avenirnextcondensed',
+    'couriernew', 'myriadhebrew', 'hiraginominchopron', 'laomn', 'estrangeloantioch', 'damascuspua', 'hiraginosans',
+    'avenirnext', 'gohatibebzemen', 'altarikhpua', 'arial', 'itfdevanagari', 'hiraginokakugothicstd',
+    'adobegaramondpro', 'oratorstd', 'kozukagothicpro', 'skia', 'chaparralpro', 'sfnsdisplaycondensed', 'geezapro',
+    'lithospro', 'heitisc', 'gujaratimt', 'corsivahebrew', 'hoeflertext', 'athelas', 'lucidagrande', 'timesnewroman',
+    'decotypenaskhpua', 'webdings', 'inaimathi', 'myriadarabic', 'lettergothicstd', 'kozukagothicpr6n',
+    'lucidasansunicode', 'geezaprointerface', 'kozukaminchopr6n', 'luminari', 'helveticaneue', 'kailasa', 'helvetica',
+    'systemfont', 'shreedevanagari714', 'gillsansmt', 'applebraille', 'adobedevanagari', 'krungthep', 'stixgeneral',
+    'verdana', 'sfcompactdisplay', 'baskerville', 'sertomalankara', 'rockwell', 'newpeninimmt', 'malayalamsangammn',
+    'palatinolinotype', 'mspmincho', 'euphemiaucas', 'gurmukhisangammn', 'ptsansnarrow', 'trattatello', 'consolas',
+    'mishafigold', 'arialhebrewscholar', 'pingfangtc', 'symbol', 'ptserif', 'ayuthaya', 'notonastaliqurduui',
+    'stixintegralsd', 'kohinoordevanagari', 'sertomardin', 'notonastaliqurdu', 'stixnonunicode', 'adobekaitistd',
+    'pingfangsc', 'pingfanghk', 'stencilstd', 'trebuchetms', 'heititc', 'times', 'kohinoorbangla', 'marlett', 'seravek',
+    'tamilmn', 'andalemono', 'kufistandardgkpua', 'estrangelotalada', 'meiryo', 'banglasangammn', 'adobeheitistd',
+    'alnilepua', 'cambria', 'sukhumvitset', 'msmincho', 'marion', 'cooperstd', 'brushscriptmt', 'charter',
+    'comicsansms', 'sinhalasangammn', 'mingliuhkscs', 'palatino', 'arialroundedmtbold', 'estrangeloquenneshrin',
+    'ptsans', 'kefa', 'chalkboard', 'arabicuidisplay', 'laosangammn', 'impact', 'luxisans', 'menlo', 'bigcaslon',
+    'simhei', 'helveticaneuedeskinterface', 'myriadpro', 'snellroundhand', 'stixintegralsup', 'bitstreamverasans',
+    'arialhebrewdeskinterface', 'adobesongstd', 'stixsizeonesym', 'adobefanheitistd', 'superclarendon',
+    'sfcompactrounded', 'chalkboardse', 'muna', 'perpetua', 'hiraginokakugothicinterface', 'dinalternate',
+    'adobenaskh', 'stixintegralssm', 'tahoma', 'luxiserif', 'sertojerusalemoutline', 'telugusangammn', 'arabicuitext',
+    'sfnstextcondensed', 'adobemingstd', 'twcenmt', 'ptserifcaption', 'kannadasangammn', 'candara',
+    'americantypewriter', 'msreferencesansserif', 'papyrus', 'hiraginokakugothicpron', 'mishafi', 'futura',
+    'estrangeloedessa', 'sinhalamn', 'kozukaminchopro', 'albayanpua', 'adobecaslonpro', 'gujaratisangammn', 'trajanpro',
+    'constantia', 'myanmarsangammn', 'copperplate', 'teamviewer12', 'lucidaconsole', 'chalkduster', 'microsoftyibaiti',
+    'khmersangammn', 'songtitc', 'microsofttaile', 'bodoni72smallcaps', 'itfdevanagarimarathi',
+    'hiraginokakugothicstdn', 'oriyamn', 'georgia', 'pmingliuextb', 'nadeempua', 'tektonpro', 'applesymbols',
+    'markerfelt', 'nuevastd', 'songtisc', 'herculanum', 'optima', 'kufistandardgk', 'ptmono', 'bodoni72', 'adobearabic',
+    'giddyupstd', 'luximono', 'applechancery', 'khmermn', 'arialunicodems', 'bitstreamveraserif', 'eastsyriacadiabene',
+    'mspgothic', 'mingliu', 'bodoni72oldstyle', 'devanagarimt', 'sertobatnan', 'aquakana', 'hiraginosansgbinterface',
+    'mshtakan', 'msgothic', 'blackoakstd', 'bradleyhand', 'estrangelonisibin', 'prestigeelitestd', 'wingdings3',
+    'wingdings2', 'myanmarmn', 'sertokharput', 'stixsizefivesym', 'gurmukhimn', 'kannadamn', 'munapua',
+    'devanagarisangammn', 'wingdings', 'dincondensed', 'nadeem', 'sanapua', 'thonburi', 'applemyungjo', 'arialhebrew',
+    'beirutpua', 'baghdadpua', 'gurmukhimt', 'savoyeletcc', 'geezapropua', 'zapfino', 'telugumn', 'banglamn', 'waseem',
+    'arialblack', 'sertourhoy', 'charlemagnestd', 'microsoftsansserif', 'gulim', 'savoyelet', 'decotypenaskh', 'batang',
+    'stsong', 'ocrastd', 'franklingothicbook', 'didot', 'applegothic', 'altarikh', 'adobefangsongstd', 'stixvariants',
+    'zapfdingbats', 'hiraginosansgb', 'farah', 'baghdad', 'gb18030bitmap', 'kokonor', 'sertojerusalem', 'silom',
+    'estrangeloturabdin', 'bookshelfsymbol7', 'noteworthy', 'stixsizetwosym', 'oriyasangammn', 'tamilsangammn',
+    'alnile', 'phosphate', 'cambriamath', 'sana', 'stixintegralsupd', 'simsun', 'sathu', 'estrangelonisibinoutline',
+    'mingliuextb', 'simsunextb', 'beirut', 'farahpua', 'brushscriptstd', 'eastsyriacctesiphon', 'diwankufipua',
+    'rosewoodstd', 'mongolianbaiti', 'diwanthuluth', 'stixintegralsupsm', 'gabriola', 'mingliuhkscsextb',
+    'adobemyungjostd', 'msreferencespecialty', 'keyboard', 'microsofthimalaya', 'mesquitestd', 'poplarstd',
+    'hiraginomarugothicpro', 'hiraginominchopro', 'hobostd', 'stixsizethreesym', 'bodoniornaments', 'lastresort',
+    'pmingliu', 'applecoloremoji', 'plantagenetcherokee', 'adobegothicstd'];
