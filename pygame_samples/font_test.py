@@ -1,6 +1,8 @@
 import pygame as pg
 pg.init()
 
+print(pg.font.Font(None, 10))
+print(pg.font.SysFont("asdf", 10))
 print(pg.font.get_fonts())
 print(pg.font.get_default_font())
 print(pg.font.match_font('arial'))
