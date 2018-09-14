@@ -437,13 +437,9 @@ var PygameLib = {};
 
         // Create a dummy canvas in order to exploit its measureText() method
         var t = Sk.builtin.tuple([w, h]);
-<<<<<<< Updated upstream
         var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
         var ctx = s.offscreen_canvas.getContext("2d");
-=======
-        var s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
-        var ctx = s.main_canvas.getContext("2d");
->>>>>>> Stashed changes
+
         ctx.font = fontName;
         return new Sk.builtin.tuple([ctx.measureText(msg).width, h]);
     }
@@ -469,24 +465,15 @@ var PygameLib = {};
 
         // Create a dummy canvas in order to exploit its measureText() method
         var t = Sk.builtin.tuple([w, h]);
-<<<<<<< Updated upstream
         var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
         var ctx = s.offscreen_canvas.getContext("2d");
-=======
-        var s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
-        var ctx = s.main_canvas.getContext("2d");
->>>>>>> Stashed changes
+
         ctx.font = fontName;
         w = ctx.measureText(msg).width;
 
         t = Sk.builtin.tuple([w, h]);
-<<<<<<< Updated upstream
         s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
         ctx = s.offscreen_canvas.getContext("2d");
-=======
-        s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
-        ctx = s.main_canvas.getContext("2d");
->>>>>>> Stashed changes
         if (background !== undefined) {
             var background_js = extract_color(background);
             ctx.fillStyle = 'rgba(' + background_js[0] + ', ' + background_js[1] + ', ' + background_js[2] + ', '
@@ -833,12 +820,12 @@ var PygameLib = {};
         self.offscreen_canvas = document.createElement('canvas');
         self.context2d = self.offscreen_canvas.getContext("2d");
 
-        self.offscreen_canvas.width = tuple_js[0];
-        self.offscreen_canvas.height = tuple_js[1];
+        self.offscreen_canvas.width = self.width;
+        self.offscreen_canvas.height = self.height;
         self.main_canvas.setAttribute('width', self.width);
         self.main_canvas.setAttribute('height', self.height);
         fillBlack(self.main_context, self.main_canvas.width, self.main_canvas.height);
-        fillBlack(self.context2d, tuple_js[0], tuple_js[1]);
+        fillBlack(self.context2d, self.width, self.height);
         return Sk.builtin.none.none$;
     };
     function fillBlack(ctx, w, h) {
@@ -2297,13 +2284,8 @@ var PygameLib = {};
                     var w = PygameLib.surface.width;
                     var h = PygameLib.surface.height;
                     var t = Sk.builtin.tuple([img.width, img.height]);
-<<<<<<< Updated upstream
                     var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
                     var ctx = s.offscreen_canvas.getContext("2d");
-=======
-                    var s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
-                    var ctx = s.main_canvas.getContext("2d");
->>>>>>> Stashed changes
                     ctx.drawImage(img, 0, 0);
                     resolve(s);
                 }
