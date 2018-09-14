@@ -748,6 +748,16 @@ var PygameLib = {};
                 $(self.main_canvas).css("top", "0");
                 $(self.main_canvas).css("left", "0");
                 document.body.appendChild(self.main_canvas);
+                window.onresize = function(event) {
+                    self.width = window.innerWidth;
+                    self.height = window.innerHeight;
+                    self.main_canvas.width = self.width;
+                    self.main_canvas.height = self.height;
+                    self.main_context.drawImage(self.offscreen_canvas, 0, 0);
+                    self.offscreen_canvas.width = self.width;
+                    self.offscreen_canvas.height = self.height;
+                    self.context2d.drawImage(self.main_canvas, 0, 0);
+                };
             } else {
                 $(self.main_canvas).css("border", "1px solid blue");
                 var currentTarget = resetTarget();

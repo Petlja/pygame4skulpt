@@ -13,7 +13,7 @@ pg.display.set_caption("setanje broda")
 
 # otvaramo prozor dimenzije 400x400 piksela
 (sirina, visina) = (400, 400)
-prozor = pg.display.set_mode((sirina, visina))
+prozor = pg.display.set_mode((sirina, visina), pg.FULLSCREEN)
 
 # -*- acsection: main -*-
 # učitavamo sliku svemirskog broda
