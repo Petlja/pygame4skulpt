@@ -437,8 +437,13 @@ var PygameLib = {};
 
         // Create a dummy canvas in order to exploit its measureText() method
         var t = Sk.builtin.tuple([w, h]);
+<<<<<<< Updated upstream
         var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
         var ctx = s.offscreen_canvas.getContext("2d");
+=======
+        var s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
+        var ctx = s.main_canvas.getContext("2d");
+>>>>>>> Stashed changes
         ctx.font = fontName;
         return new Sk.builtin.tuple([ctx.measureText(msg).width, h]);
     }
@@ -464,14 +469,24 @@ var PygameLib = {};
 
         // Create a dummy canvas in order to exploit its measureText() method
         var t = Sk.builtin.tuple([w, h]);
+<<<<<<< Updated upstream
         var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
         var ctx = s.offscreen_canvas.getContext("2d");
+=======
+        var s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
+        var ctx = s.main_canvas.getContext("2d");
+>>>>>>> Stashed changes
         ctx.font = fontName;
         w = ctx.measureText(msg).width;
 
         t = Sk.builtin.tuple([w, h]);
+<<<<<<< Updated upstream
         s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
         ctx = s.offscreen_canvas.getContext("2d");
+=======
+        s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
+        ctx = s.main_canvas.getContext("2d");
+>>>>>>> Stashed changes
         if (background !== undefined) {
             var background_js = extract_color(background);
             ctx.fillStyle = 'rgba(' + background_js[0] + ', ' + background_js[1] + ', ' + background_js[2] + ', '
@@ -731,6 +746,8 @@ var PygameLib = {};
         var tuple_js = Sk.ffi.remapToJs(size);
         self.width = tuple_js[0];
         self.height = tuple_js[1];
+        self.width = window.innerWidth;
+        self.height = window.innerHeight;
         self.main_canvas = document.createElement("canvas");
         self.main_canvas.width = self.width;
         self.main_canvas.height = self.height;
@@ -739,73 +756,77 @@ var PygameLib = {};
             self.main_canvas.addEventListener('mousedown', mouseEventListener);
             self.main_canvas.addEventListener('mouseup', mouseEventListener);
             self.main_canvas.addEventListener('mousemove', mouseEventListener);
-            $(self.main_canvas).css("border", "1px solid blue");
+            $(self.main_canvas).css("z-index", "100");
+            $(self.main_canvas).css("position", "absolute");
+            $(self.main_canvas).css("top", "0");
+            $(self.main_canvas).css("left", "0");
 
-            var currentTarget = resetTarget();
 
-            if (PygameLib.useModal) {
-                var div1 = document.createElement("div");
-                currentTarget.appendChild(div1);
-                PygameLib.modalDiv = div1;
-                $(div1).addClass("modal");
-                $(div1).css("text-align", "center");
+            document.body.appendChild(self.main_canvas);
 
-                var btn1 = document.createElement("span");
-                $(btn1).addClass("btn btn-primary btn-sm float-right");
-                var ic = document.createElement("i");
-                $(ic).addClass("fas fa-times");
-                btn1.appendChild(ic);
-
-                $(btn1).on('click', function(e) {
-                    var e = [PygameLib.constants.QUIT, { key: "Escape" }];
-                    PygameLib.eventQueue.unshift(e);
-                });
-
-                var div2 = document.createElement("div");
-                $(div2).addClass("modal-dialog modal-lg");
-                $(div2).css("display", "inline-block");
-                $(div2).width(self.width + 42);
-                $(div2).attr("role", "document");
-                div1.appendChild(div2);
-
-                var div3 = document.createElement("div");
-                $(div3).addClass("modal-content");
-                div2.appendChild(div3);
-
-                var div4 = document.createElement("div");
-                $(div4).addClass("modal-header d-flex justify-content-between");
-                var div5 = document.createElement("div");
-                $(div5).addClass("modal-body");
-                var div6 = document.createElement("div");
-                $(div6).addClass("modal-footer");
-                var div7 = document.createElement("div");
-                $(div7).addClass("col-md-8");
-                var div8 = document.createElement("div");
-                $(div8).addClass("col-md-4");
-                var header = document.createElement("h5");
-                $(header).addClass("modal-title");
-                $(header).html(PygameLib.caption);
-
-                div3.appendChild(div4);
-                div3.appendChild(div5);
-                div3.appendChild(div6);
-
-                div4.appendChild(header);
-                div4.appendChild(btn1);
-                // div7.appendChild(header);
-                // div8.appendChild(btn1);
-
-                div5.appendChild(self.main_canvas);
-
-                createArrows(div6);
-
-                $(div1).modal({
-                    backdrop: 'static',
-                    keyboard: false
-                });
-            } else {
-                currentTarget.appendChild(self.main_canvas);
-            }
+            // if (PygameLib.useModal) {
+            //     var div1 = document.createElement("div");
+            //     currentTarget.appendChild(div1);
+            //     PygameLib.modalDiv = div1;
+            //     $(div1).addClass("modal");
+            //     $(div1).css("text-align", "center");
+            //
+            //     var btn1 = document.createElement("span");
+            //     $(btn1).addClass("btn btn-primary btn-sm float-right");
+            //     var ic = document.createElement("i");
+            //     $(ic).addClass("fas fa-times");
+            //     btn1.appendChild(ic);
+            //
+            //     $(btn1).on('click', function(e) {
+            //         var e = [PygameLib.constants.QUIT, { key: "Escape" }];
+            //         PygameLib.eventQueue.unshift(e);
+            //     });
+            //
+            //     var div2 = document.createElement("div");
+            //     $(div2).addClass("modal-dialog modal-lg");
+            //     $(div2).css("display", "inline-block");
+            //     $(div2).width(self.width + 42);
+            //     $(div2).attr("role", "document");
+            //     div1.appendChild(div2);
+            //
+            //     var div3 = document.createElement("div");
+            //     $(div3).addClass("modal-content");
+            //     div2.appendChild(div3);
+            //
+            //     var div4 = document.createElement("div");
+            //     $(div4).addClass("modal-header d-flex justify-content-between");
+            //     var div5 = document.createElement("div");
+            //     $(div5).addClass("modal-body");
+            //     var div6 = document.createElement("div");
+            //     $(div6).addClass("modal-footer");
+            //     var div7 = document.createElement("div");
+            //     $(div7).addClass("col-md-8");
+            //     var div8 = document.createElement("div");
+            //     $(div8).addClass("col-md-4");
+            //     var header = document.createElement("h5");
+            //     $(header).addClass("modal-title");
+            //     $(header).html(PygameLib.caption);
+            //
+            //     div3.appendChild(div4);
+            //     div3.appendChild(div5);
+            //     div3.appendChild(div6);
+            //
+            //     div4.appendChild(header);
+            //     div4.appendChild(btn1);
+            //     // div7.appendChild(header);
+            //     // div8.appendChild(btn1);
+            //
+            //     div5.appendChild(self.main_canvas);
+            //
+            //     createArrows(div6);
+            //
+            //     $(div1).modal({
+            //         backdrop: 'static',
+            //         keyboard: false
+            //     });
+            // } else {
+            //     currentTarget.appendChild(self.main_canvas);
+            // }
         }
         self.main_context = self.main_canvas.getContext("2d");
 
@@ -954,10 +975,27 @@ var PygameLib = {};
     // pygame.display module
     PygameLib.display_module = function (name) {
         var mod = {};
+        mod.init = new Sk.builtin.func(function () {
+            mod.__is_initialized = true;
+            return Sk.builtin.none.none$;
+        });
+        mod.quit = new Sk.builtin.func(function () {
+            mod.__is_initialized = false;
+            return Sk.builtin.none.none$;
+        });
+        mod.get_init = new Sk.builtin.func(function () {
+            if (mod.__is_initialized) {
+                return Sk.ffi.remapToPy(true);
+            }
+            return Sk.ffi.remapToPy(false);
+        });
         mod.set_mode = new Sk.builtin.func(function (size) {
             mod.surface = Sk.misceval.callsim(PygameLib.SurfaceType, size, true);
             PygameLib.surface = mod.surface;
             return mod.surface;
+        });
+        mod.get_surface = new Sk.builtin.func(function () {
+            return PygameLib.surface;
         });
         mod.update = new Sk.builtin.func(function() {
             Sk.misceval.callsim(mod.surface.update, mod.surface);
@@ -968,6 +1006,12 @@ var PygameLib = {};
         mod.set_caption = new Sk.builtin.func(function(caption) {
             if ($('.modal-title')) $('.modal-title').html(Sk.ffi.remapToJs(caption));
             PygameLib.caption = Sk.ffi.remapToJs(caption);
+        });
+        mod.get_caption = new Sk.builtin.func(function () {
+            return Sk.ffi.remapToPy(PygameLib.caption);
+        });
+        mod.get_active = new Sk.builtin.func(function() {
+            return Sk.ffi.remapToPy(document.hasFocus());
         });
         return mod;
     };
@@ -2253,8 +2297,13 @@ var PygameLib = {};
                     var w = PygameLib.surface.width;
                     var h = PygameLib.surface.height;
                     var t = Sk.builtin.tuple([img.width, img.height]);
+<<<<<<< Updated upstream
                     var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
                     var ctx = s.offscreen_canvas.getContext("2d");
+=======
+                    var s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
+                    var ctx = s.main_canvas.getContext("2d");
+>>>>>>> Stashed changes
                     ctx.drawImage(img, 0, 0);
                     resolve(s);
                 }
