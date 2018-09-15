@@ -100,6 +100,9 @@ var PygameLib = {};
             },
             'pygame.mouse': {
                 path: baseURL + '/mouse.js'
+            },
+            'pygame.transform': {
+                path: baseURL + '/transform.js'
             }
         };
         for (var k in pygame_modules) {
@@ -114,15 +117,16 @@ var PygameLib = {};
     function pygame_init() {
         // ovo je mi ne izgleda najelegantnije, ali još nisam našao lepši način 
         var display_m = Sk.importModule("pygame.display", false, false);
-        var event_m   = Sk.importModule("pygame.event", false, false);
-        var draw_m    = Sk.importModule("pygame.draw", false, false);
-        var pygame_m  = Sk.importModule("pygame", false, false);
-        var time_m    = Sk.importModule("pygame.time", false, false);
-        var image_m   = Sk.importModule("pygame.image", false, false);
-        var font_m    = Sk.importModule("pygame.font", false, false);
-        var key_m     = Sk.importModule("pygame.key", false, false);
+        var event_m = Sk.importModule("pygame.event", false, false);
+        var draw_m = Sk.importModule("pygame.draw", false, false);
+        var pygame_m = Sk.importModule("pygame", false, false);
+        var time_m = Sk.importModule("pygame.time", false, false);
+        var image_m = Sk.importModule("pygame.image", false, false);
+        var font_m = Sk.importModule("pygame.font", false, false);
+        var key_m = Sk.importModule("pygame.key", false, false);
         var version_m = Sk.importModule("pygame.version", false, false);
-        var mouse_m   = Sk.importModule("pygame.mouse", false, false);
+        var mouse_m = Sk.importModule("pygame.mouse", false, false);
+        var transform_m = Sk.importModule("pygame.transform", false, false);
         PygameLib.initial_time = new Date();
         pygame_m.$d['display'] = display_m.$d['display'];
         pygame_m.$d['event'] = display_m.$d['event'];
@@ -729,8 +733,8 @@ var PygameLib = {};
     var init$1 = function $__init__123$(self, size, main = false) {
         Sk.builtin.pyCheckArgs('__init__', arguments, 2, 5, false, false);
         var tuple_js = Sk.ffi.remapToJs(size);
-        self.width = tuple_js[0];
-        self.height = tuple_js[1];
+        self.width = Math.round(tuple_js[0]);
+        self.height = Math.round(tuple_js[1]);
         self.main_canvas = document.createElement("canvas");
         self.main_canvas.width = self.width;
         self.main_canvas.height = self.height;
@@ -812,12 +816,12 @@ var PygameLib = {};
         self.offscreen_canvas = document.createElement('canvas');
         self.context2d = self.offscreen_canvas.getContext("2d");
 
-        self.offscreen_canvas.width = tuple_js[0];
-        self.offscreen_canvas.height = tuple_js[1];
+        self.offscreen_canvas.width = self.width;
+        self.offscreen_canvas.height = self.height;
         self.main_canvas.setAttribute('width', self.width);
         self.main_canvas.setAttribute('height', self.height);
         fillBlack(self.main_context, self.main_canvas.width, self.main_canvas.height);
-        fillBlack(self.context2d, tuple_js[0], tuple_js[1]);
+        fillBlack(self.context2d, self.width, self.height);
         return Sk.builtin.none.none$;
     };
     function fillBlack(ctx, w, h) {
@@ -2261,6 +2265,31 @@ var PygameLib = {};
             }));
     }
 
+    //pygame.transform_module
+    PygameLib.transform_module = function(name) {
+        mod = {};
+        mod.flip = new Sk.builtin.func(function(surf, xbool, ybool) {
+            if (Sk.abstr.typeName(surf) !== "Surface") {
+                throw new Sk.builtin.TypeError("Wrong arguments");
+            }
+            if (Sk.abstr.typeName(xbool) !== "bool" || Sk.abstr.typeName(ybool) !== "bool") {
+                throw new Sk.builtin.TypeError("Wrong arguments");
+            }
+            var t = Sk.builtin.tuple([surf.width, surf.height]);
+            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+            ret.context2d.save();
+            var xb = Sk.ffi.remapToJs(xbool);
+            var xflip = xb ? -1 : 1;
+            var yb = Sk.ffi.remapToJs(ybool);
+            var yflip = yb ? -1 : 1;
+            ret.context2d.scale(xflip, yflip);
+            console.log(surf.width, surf.offscreen_canvas.width);
+            ret.context2d.drawImage(surf.offscreen_canvas, -surf.width, 0, surf.width, surf.height);
+            ret.context2d.restore();
+            return ret;
+        });
+        return mod;
+    }
 }());
 
 // constants
