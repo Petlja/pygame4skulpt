@@ -4,6 +4,20 @@ pg.init()
 
 prozor = pg.display.set_mode((400, 400))
 
+petit_font = pg.font.SysFont("arial", 10)
+tekst = petit_font.render("!", True, pg.Color("yellow"))
+w, h = tekst.get_size()
+prozor.fill(pg.Color("black"))
+prozor.blit(tekst, (0, 0))
+pg.display.update()
+for i in range(20):
+    d = pg.event.wait()
+    if d.type == pg.KEYDOWN:
+        tekst = pg.transform.scale2x(tekst)
+        prozor.fill(pg.Color("black"))
+        prozor.blit(tekst, (0, 0))
+        pg.display.update()
+
 font = pg.font.SysFont("arial", 100)
 
 tekst = font.render("rotzoom", True, pg.Color("yellow"))
