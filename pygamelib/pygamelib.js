@@ -2316,6 +2316,44 @@ var PygameLib = {};
             }
             return ret;
         });
+        mod.rotate = new Sk.builtin.func(function(surf, angle) {
+            if (Sk.abstr.typeName(surf) !== "Surface") {
+                throw new Sk.builtin.TypeError("Wrong arguments");
+            }
+            var a = Sk.ffi.remapToJs(angle);
+            var w = surf.width;
+            var h = surf.height;
+            var t = Sk.builtin.tuple([1.5 * w, 1.5 * h]);
+            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+            ret.context2d.save();
+            ret.context2d.translate(w / 2, h / 2);
+            ret.context2d.rotate(-a * Math.PI / 180);
+            ret.context2d.translate(-w / 2, -h / 2);
+            ret.context2d.drawImage(surf.offscreen_canvas, 0, 0);
+            ret.context2d.restore();
+            return ret;
+        });
+        mod.rotozoom = new Sk.builtin.func(function(surf, angle, sc) {
+            if (Sk.abstr.typeName(surf) !== "Surface") {
+                throw new Sk.builtin.TypeError("Wrong arguments");
+            }
+            var scale = Sk.ffi.remapToJs(sc);
+            var a = Sk.ffi.remapToJs(angle);
+            var w = surf.width;
+            var h = surf.height;
+            var t = Sk.builtin.tuple([2 * scale * w, 2 * scale * h]);
+            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+            ret.context2d.save();
+            ret.context2d.scale(scale, scale);
+            w *= scale;
+            h *= scale;
+            ret.context2d.translate(w / 2, h / 2);
+            ret.context2d.rotate(-a * Math.PI / 180);
+            ret.context2d.translate(-w / 2, -h / 2);
+            ret.context2d.drawImage(surf.offscreen_canvas, 0, 0);
+            ret.context2d.restore();
+            return ret;
+        });
         return mod;
     }
 }());
