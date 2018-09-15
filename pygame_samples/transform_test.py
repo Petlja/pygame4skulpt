@@ -4,16 +4,31 @@ pg.init()
 
 prozor = pg.display.set_mode((400, 400))
 
-font = pg.font.SysFont("arial", 28)
-tekst = font.render("asdf", True, pg.Color("yellow"))
-prozor.blit(tekst, (0, 0))
+font = pg.font.SysFont("arial", 100)
 
+tekst = font.render("123", True, pg.Color("yellow"))
+w, h = tekst.get_size()
+prozor.blit(tekst, (0, 0))
 pg.display.update()
-while True:
+for i in range(30):
     d = pg.event.wait()
-    if d.type == pg.KEYDOWN or d.type == pg.KEYUP:
+    if d.type == pg.KEYDOWN:
         tekst = pg.transform.flip(tekst, True, False)
         prozor.fill(pg.Color("black"))
         prozor.blit(tekst, (0, 0))
         pg.display.update()
-    # pg.time.wait(1000)
+
+tekst = font.render("scale", True, pg.Color("yellow"))
+w, h = tekst.get_size()
+prozor.fill(pg.Color("black"))
+prozor.blit(tekst, (0, 0))
+pg.display.update()
+while True:
+    d = pg.event.wait()
+    if d.type == pg.KEYDOWN:
+        w = int(w * 0.95)
+        h = int(h * 0.95)
+        tekst = pg.transform.scale(tekst, (w, h))
+        prozor.fill(pg.Color("black"))
+        prozor.blit(tekst, (0, 0))
+        pg.display.update()

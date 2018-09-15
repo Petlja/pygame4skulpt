@@ -2283,9 +2283,37 @@ var PygameLib = {};
             var yb = Sk.ffi.remapToJs(ybool);
             var yflip = yb ? -1 : 1;
             ret.context2d.scale(xflip, yflip);
-            console.log(surf.width, surf.offscreen_canvas.width);
             ret.context2d.drawImage(surf.offscreen_canvas, -surf.width, 0, surf.width, surf.height);
             ret.context2d.restore();
+            return ret;
+        });
+        mod.scale = new Sk.builtin.func(function(surf, size, dest) {
+            if (Sk.abstr.typeName(surf) !== "Surface") {
+                throw new Sk.builtin.TypeError("Wrong arguments");
+            }
+            if (Sk.abstr.typeName(size) !== "tuple") {
+                throw new Sk.builtin.TypeError("Wrong arguments");
+            }
+            var sz = Sk.ffi.remapToJs(size);
+            var w = Math.round(sz[0]);
+            var h = Math.round(sz[1]);
+            if (w === 0 || h === 0) {
+                if (dest !== undefined && dest !== Sk.builtins.none.none$) {
+                    dest.context2d.drawImage(surf.offscreen_canvas, 0, 0);
+                }
+                return surf;
+            }
+            var t = Sk.builtin.tuple([w, h]);
+            var xs = w / surf.width;
+            var ys = h / surf.height;
+            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+            ret.context2d.save();
+            ret.context2d.scale(xs, ys);
+            ret.context2d.drawImage(surf.offscreen_canvas, 0, 0);
+            ret.context2d.restore();
+            if (dest !== undefined && dest !== Sk.builtins.none.none$) {
+                dest.context2d.drawImage(ret.offscreen_canvas, 0, 0);
+            }
             return ret;
         });
         return mod;
