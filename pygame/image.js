@@ -3,7 +3,7 @@ var $builtinmodule = function (name) {
     mod.load = new Sk.builtin.func(function (filename) {
         return new Sk.misceval.promiseToSuspension(new Promise(function (resolve) {
             var img = new Image();
-            img.src = PygameLib.imgPath + Sk.ffi.remapToJs(filename);
+            img.src = Sk.ffi.remapToJs(filename);
             img.onload = function () {
                 var t = Sk.builtin.tuple([img.width, img.height]);
                 var s = Sk.misceval.callsim(PygameLib.SurfaceType, t);

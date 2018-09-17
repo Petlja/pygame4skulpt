@@ -138,7 +138,6 @@ PygameLib.init = function (baseURL) {
     }
     PygameLib.eventSource.addEventListener("keydown", keyEventListener);
     PygameLib.eventSource.addEventListener("keyup", keyEventListener);
-    PygameLib.imgPath = "/_images/";
 };
 
 
@@ -1103,7 +1102,6 @@ PygameLib.keyboardModifierKeys = [PygameLib.constants.K_LSHIFT, PygameLib.consta
     PygameLib.constants.K_NUMLOCK, PygameLib.constants.K_MODE];
 
 
-PygameLib.init("../pygame"); // TODO: get rid of this!
 var $builtinmodule = function (name) {
     var mod = {};
     for (k in PygameLib.constants) {

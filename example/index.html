@@ -1,8 +1,8 @@
 <html>
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="../skulpt_dist/skulpt.min.js" type="text/javascript"></script>
-    <script src="../skulpt_dist/skulpt-stdlib.js" type="text/javascript"></script>
+    <script src="skulpt_dist/skulpt.min.js" type="text/javascript"></script>
+    <script src="skulpt_dist/skulpt-stdlib.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -14,11 +14,44 @@
 <pre id="output"></pre>
 
 <script>
-     Sk.externalLibraries = {
-         pygame: {
-             path: '../pygame/__init__.js',
-         },
-     };
+    var basePath = 'https://rawgit.com/Petlja/pygame4skulpt/refaktorizacija/pygame/';
+    Sk.externalLibraries = {
+        'pygame': {
+            path: basePath + '__init__.js',
+        },
+        'pygame.display': {
+            path: basePath + 'display.js',
+        },
+        'pygame.draw': {
+            path: basePath + 'draw.js',
+        },
+        'pygame.event': {
+            path: basePath + 'event.js',
+        },
+        'pygame.font': {
+            path: basePath + 'font.js',
+        },
+        'pygame.image': {
+            path: basePath + 'image.js',
+        },
+        'pygame.key': {
+            path: basePath + 'key.js',
+        },
+        'pygame.mouse': {
+            path: basePath + 'mouse.js',
+        },
+        'pygame.time': {
+            path: basePath + 'time.js',
+        },
+        'pygame.transform': {
+            path: basePath + 'transform.js',
+        },
+        'pygame.version': {
+            path: basePath + 'version.js',
+        },
+
+    };
+
     function printString(text) {
         var output = document.getElementById("output");
         text = text.replace(/</g, '&lt;');
