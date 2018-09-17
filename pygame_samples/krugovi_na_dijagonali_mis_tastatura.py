@@ -5,7 +5,7 @@ pg.init()
 
 pg.display.set_caption("krugovi na dijagonali")
 (sirina, visina) = (400, 500)
-prozor = pg.display.set_mode((sirina, visina))
+prozor = pg.display.set_mode((sirina, visina), pg.FULLSCREEN)
 
 
 def nasumicna_boja():

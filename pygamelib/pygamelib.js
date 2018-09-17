@@ -445,8 +445,9 @@ var PygameLib = {};
 
         // Create a dummy canvas in order to exploit its measureText() method
         var t = Sk.builtin.tuple([w, h]);
-        var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+        var s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
         var ctx = s.offscreen_canvas.getContext("2d");
+
         ctx.font = fontName;
         return new Sk.builtin.tuple([ctx.measureText(msg).width, h]);
     }
@@ -472,13 +473,14 @@ var PygameLib = {};
 
         // Create a dummy canvas in order to exploit its measureText() method
         var t = Sk.builtin.tuple([w, h]);
-        var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+        var s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
         var ctx = s.offscreen_canvas.getContext("2d");
+
         ctx.font = fontName;
         w = ctx.measureText(msg).width;
 
         t = Sk.builtin.tuple([w, h]);
-        s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+        s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
         ctx = s.offscreen_canvas.getContext("2d");
         if (background !== undefined) {
             var background_js = extract_color(background);
@@ -734,87 +736,110 @@ var PygameLib = {};
     };
 
     // Surface((width, height))
-    var init$1 = function $__init__123$(self, size, main = false) {
+    var init$1 = function $__init__123$(self, size, fullscreen = false, main = false) {
         Sk.builtin.pyCheckArgs('__init__', arguments, 2, 5, false, false);
         var tuple_js = Sk.ffi.remapToJs(size);
         self.width = Math.round(tuple_js[0]);
         self.height = Math.round(tuple_js[1]);
         self.main_canvas = document.createElement("canvas");
-        self.main_canvas.width = self.width;
-        self.main_canvas.height = self.height;
+
 
         if (main) {
             self.main_canvas.addEventListener('mousedown', mouseEventListener);
             self.main_canvas.addEventListener('mouseup', mouseEventListener);
             self.main_canvas.addEventListener('mousemove', mouseEventListener);
-            $(self.main_canvas).css("border", "1px solid blue");
 
-            var currentTarget = resetTarget();
-
-            if (PygameLib.useModal) {
-                var div1 = document.createElement("div");
-                currentTarget.appendChild(div1);
-                PygameLib.modalDiv = div1;
-                $(div1).addClass("modal");
-                $(div1).css("text-align", "center");
-
-                var btn1 = document.createElement("span");
-                $(btn1).addClass("btn btn-primary btn-sm float-right");
-                var ic = document.createElement("i");
-                $(ic).addClass("fas fa-times");
-                btn1.appendChild(ic);
-
-                $(btn1).on('click', function (e) {
-                    var e = [PygameLib.constants.QUIT, {key: "Escape"}];
-                    PygameLib.eventQueue.unshift(e);
-                });
-
-                var div2 = document.createElement("div");
-                $(div2).addClass("modal-dialog modal-lg");
-                $(div2).css("display", "inline-block");
-                $(div2).width(self.width + 42);
-                $(div2).attr("role", "document");
-                div1.appendChild(div2);
-
-                var div3 = document.createElement("div");
-                $(div3).addClass("modal-content");
-                div2.appendChild(div3);
-
-                var div4 = document.createElement("div");
-                $(div4).addClass("modal-header d-flex justify-content-between");
-                var div5 = document.createElement("div");
-                $(div5).addClass("modal-body");
-                var div6 = document.createElement("div");
-                $(div6).addClass("modal-footer");
-                var div7 = document.createElement("div");
-                $(div7).addClass("col-md-8");
-                var div8 = document.createElement("div");
-                $(div8).addClass("col-md-4");
-                var header = document.createElement("h5");
-                $(header).addClass("modal-title");
-                $(header).html(PygameLib.caption);
-
-                div3.appendChild(div4);
-                div3.appendChild(div5);
-                div3.appendChild(div6);
-
-                div4.appendChild(header);
-                div4.appendChild(btn1);
-                // div7.appendChild(header);
-                // div8.appendChild(btn1);
-
-                div5.appendChild(self.main_canvas);
-
-                createArrows(div6);
-
-                $(div1).modal({
-                    backdrop: 'static',
-                    keyboard: false
-                });
+            if (fullscreen) {
+                self.width = window.innerWidth;
+                self.height = window.innerHeight;
+                $(self.main_canvas).css("z-index", "100");
+                $(self.main_canvas).css("position", "absolute");
+                $(self.main_canvas).css("top", "0");
+                $(self.main_canvas).css("left", "0");
+                document.body.appendChild(self.main_canvas);
+                window.onresize = function(event) {
+                    self.width = window.innerWidth;
+                    self.height = window.innerHeight;
+                    self.main_canvas.width = self.width;
+                    self.main_canvas.height = self.height;
+                    self.main_context.drawImage(self.offscreen_canvas, 0, 0);
+                    self.offscreen_canvas.width = self.width;
+                    self.offscreen_canvas.height = self.height;
+                    self.context2d.drawImage(self.main_canvas, 0, 0);
+                };
             } else {
-                currentTarget.appendChild(self.main_canvas);
+                $(self.main_canvas).css("border", "1px solid blue");
+                var currentTarget = resetTarget();
+                if (PygameLib.useModal) {
+
+                    var div1 = document.createElement("div");
+                    currentTarget.appendChild(div1);
+                    PygameLib.modalDiv = div1;
+                    $(div1).addClass("modal");
+                    $(div1).css("text-align", "center");
+
+                    var btn1 = document.createElement("span");
+                    $(btn1).addClass("btn btn-primary btn-sm float-right");
+                    var ic = document.createElement("i");
+                    $(ic).addClass("fas fa-times");
+                    btn1.appendChild(ic);
+
+                    $(btn1).on('click', function(e) {
+                        var e = [PygameLib.constants.QUIT, { key: "Escape" }];
+                        PygameLib.eventQueue.unshift(e);
+                    });
+
+                    var div2 = document.createElement("div");
+                    $(div2).addClass("modal-dialog modal-lg");
+                    $(div2).css("display", "inline-block");
+                    $(div2).width(self.width + 42);
+                    $(div2).attr("role", "document");
+                    div1.appendChild(div2);
+
+                    var div3 = document.createElement("div");
+                    $(div3).addClass("modal-content");
+                    div2.appendChild(div3);
+
+                    var div4 = document.createElement("div");
+                    $(div4).addClass("modal-header d-flex justify-content-between");
+                    var div5 = document.createElement("div");
+                    $(div5).addClass("modal-body");
+                    var div6 = document.createElement("div");
+                    $(div6).addClass("modal-footer");
+                    var div7 = document.createElement("div");
+                    $(div7).addClass("col-md-8");
+                    var div8 = document.createElement("div");
+                    $(div8).addClass("col-md-4");
+                    var header = document.createElement("h5");
+                    $(header).addClass("modal-title");
+                    $(header).html(PygameLib.caption);
+
+                    div3.appendChild(div4);
+                    div3.appendChild(div5);
+                    div3.appendChild(div6);
+
+                    div4.appendChild(header);
+                    div4.appendChild(btn1);
+                    // div7.appendChild(header);
+                    // div8.appendChild(btn1);
+
+                    div5.appendChild(self.main_canvas);
+
+                    createArrows(div6);
+
+                    $(div1).modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                } else {
+                    currentTarget.appendChild(self.main_canvas);
+                }
             }
+
+
         }
+        self.main_canvas.width = self.width;
+        self.main_canvas.height = self.height;
         self.main_context = self.main_canvas.getContext("2d");
 
         self.offscreen_canvas = document.createElement('canvas');
@@ -920,7 +945,7 @@ var PygameLib = {};
         loc.get_flags = new Sk.builtins.function(get_flags, gbl);
         loc.copy = new Sk.builtin.func(function (self) {
             var size = Sk.builtin.tuple([self.offscreen_canvas.width, self.offscreen_canvas.width]);
-            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, size, false);
+            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, size);
             ret.offscreen_canvas.width = self.offscreen_canvas.width;
             ret.offscreen_canvas.height = self.offscreen_canvas.height;
             ret.context2d.drawImage(self.offscreen_canvas, 0, 0);
@@ -969,12 +994,38 @@ var PygameLib = {};
     // pygame.display module
     PygameLib.display_module = function (name) {
         var mod = {};
-        mod.set_mode = new Sk.builtin.func(function (size) {
-            mod.surface = Sk.misceval.callsim(PygameLib.SurfaceType, size, true);
+        mod.init = new Sk.builtin.func(function () {
+            mod.__is_initialized = true;
+            return Sk.builtin.none.none$;
+        });
+        mod.quit = new Sk.builtin.func(function () {
+            mod.__is_initialized = false;
+            return Sk.builtin.none.none$;
+        });
+        mod.get_init = new Sk.builtin.func(function () {
+            if (mod.__is_initialized) {
+                return Sk.ffi.remapToPy(true);
+            }
+            return Sk.ffi.remapToPy(false);
+        });
+        mod.set_mode = new Sk.builtin.func(function (size, flags) {
+            var f = 0;
+            if (flags !== undefined) {
+                f = Sk.ffi.remapToJs(flags);
+            }
+            if (f & PygameLib.constants.FULLSCREEN) {
+                mod.surface = Sk.misceval.callsim(PygameLib.SurfaceType, size, true, true);
+            } else {
+                mod.surface = Sk.misceval.callsim(PygameLib.SurfaceType, size, false, true);
+            }
+
             PygameLib.surface = mod.surface;
             return mod.surface;
         });
-        mod.update = new Sk.builtin.func(function () {
+        mod.get_surface = new Sk.builtin.func(function () {
+            return PygameLib.surface;
+        });
+        mod.update = new Sk.builtin.func(function() {
             Sk.misceval.callsim(mod.surface.update, mod.surface);
         });
         mod.flip = new Sk.builtin.func(function () {
@@ -983,6 +1034,12 @@ var PygameLib = {};
         mod.set_caption = new Sk.builtin.func(function (caption) {
             if ($('.modal-title')) $('.modal-title').html(Sk.ffi.remapToJs(caption));
             PygameLib.caption = Sk.ffi.remapToJs(caption);
+        });
+        mod.get_caption = new Sk.builtin.func(function () {
+            return Sk.ffi.remapToPy(PygameLib.caption);
+        });
+        mod.get_active = new Sk.builtin.func(function() {
+            return Sk.ffi.remapToPy(document.hasFocus());
         });
         return mod;
     };
@@ -2274,18 +2331,73 @@ var PygameLib = {};
             return Sk.ffi.remapToPy(false);
         });
         mod.save = new Sk.builtin.func(function (surf, filename) {
+            var fname = 'surface';
+            if (filename !== undefined) {
+                fname = Sk.ffi.remapToJs(filename);
+            }
+            // https://stackoverflow.com/a/34707543
+            saveAsPNG(surf.offscreen_canvas, fname);
+            function saveAsPNG(image, filename) { // No IE <11 support. Chrome URL bug for large images may crash
+                var anchorElement, event, blob;
 
+                function image2Canvas(image) {  // converts an image to canvas
+                    function createCanvas(width, height) {  // creates a canvas of width height
+                        var can = document.createElement("canvas");
+                        can.width = width;
+                        can.height = height;
+                        return can;
+                    };
+                    var newImage = canvas(img.width, img.height); // create new image
+                    newImage.ctx = newImage.getContext("2d");  // get image context
+                    newImage.ctx.drawImage(image, 0, 0); // draw the image onto the canvas
+                    return newImage;  // return the new image
+                }
+
+                if (image.toDataURL === undefined) {    // does the image have the toDataURL function
+                    image = image2Canvas(image);  // No then convert to canvas
+                }
+                // if msToBlob and msSaveBlob then use them to save. IE >= 10
+                // As suggested by Kaiido
+                if (image.msToBlob !== undefined && navigator.msSaveBlob !== undefined) {
+                    blob = image.msToBlob();
+                    navigator.msSaveBlob(blob, filename + ".png");
+                    return;
+                }
+                anchorElement = document.createElement('a');  // Create a download link
+                anchorElement.href = image.toDataURL();   // attach the image data URL
+                // check for download attribute
+                if (anchorElement.download !== undefined) {
+                    anchorElement.download = filename + ".png";  // set the download filename
+                    if (typeof MouseEvent === "function") {   // does the browser support the object MouseEvent
+                        event = new MouseEvent(   // yes create a new mouse click event
+                            "click", {
+                                view: window,
+                                bubbles: true,
+                                cancelable: true,
+                                ctrlKey: false,
+                                altKey: false,
+                                shiftKey: false,
+                                metaKey: false,
+                                button: 0,
+                                buttons: 1,
+                            }
+                        );
+                        anchorElement.dispatchEvent(event); // simulate a click on the download link.
+                    } else if (anchorElement.fireEvent) {    // if no MouseEvent object try fireEvent
+                        anchorElement.fireEvent("onclick");
+                    }
+                }
+            }
         });
         return mod;
-    }
+    };
 
-    var load_image = function (filename) {
+
+    var load_image = function(filename) {
         return new Sk.misceval.promiseToSuspension(new Promise(function (resolve) {
             var img = new Image();
             img.src = PygameLib.imgPath + Sk.ffi.remapToJs(filename);
             img.onload = function () {
-                var w = PygameLib.surface.width;
-                var h = PygameLib.surface.height;
                 var t = Sk.builtin.tuple([img.width, img.height]);
                 var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
                 var ctx = s.offscreen_canvas.getContext("2d");
@@ -2293,7 +2405,7 @@ var PygameLib = {};
                 resolve(s);
             }
         }));
-    }
+    };
 
     //pygame.transform_module
     PygameLib.transform_module = function (name) {
