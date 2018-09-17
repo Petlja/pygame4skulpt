@@ -1,6 +1,5 @@
 var PygameLib = {};
 
-PygameLib.eventSource = typeof window !== 'undefined' ? window : global;
 PygameLib.running = false;
 PygameLib.useModal = false;
 
@@ -95,50 +94,6 @@ function keyEventListener(event) {
     if (PygameLib.running) event.preventDefault();
     return false;
 }
-
-PygameLib.init = function (baseURL) {
-    Sk.externalLibraries = Sk.externalLibraries || {};
-    var pygame_modules = {
-        'pygame.display': {
-            path: baseURL + '/display.js'
-        },
-        'pygame.event': {
-            path: baseURL + '/event.js'
-        },
-        'pygame.draw': {
-            path: baseURL + '/draw.js'
-        },
-        'pygame.time': {
-            path: baseURL + '/time.js'
-        },
-        'pygame': {
-            path: baseURL + '/__init__.js'
-        },
-        'pygame.image': {
-            path: baseURL + '/image.js'
-        },
-        'pygame.font': {
-            path: baseURL + '/font.js'
-        },
-        'pygame.key': {
-            path: baseURL + '/key.js'
-        },
-        'pygame.version': {
-            path: baseURL + '/version.js'
-        },
-        'pygame.mouse': {
-            path: baseURL + '/mouse.js'
-        },
-        'pygame.transform': {
-            path: baseURL + '/transform.js'
-        }
-    };
-    for (var k in pygame_modules) {
-        Sk.externalLibraries[k] = pygame_modules[k];
-    }
-    PygameLib.eventSource.addEventListener("keydown", keyEventListener);
-    PygameLib.eventSource.addEventListener("keyup", keyEventListener);
-};
 
 
 // constants
@@ -1364,7 +1319,8 @@ var init$1 = function $__init__123$(self, size, fullscreen = false, main = false
         self.main_canvas.addEventListener('mousedown', mouseEventListener);
         self.main_canvas.addEventListener('mouseup', mouseEventListener);
         self.main_canvas.addEventListener('mousemove', mouseEventListener);
-
+        window.addEventListener("keydown", keyEventListener);
+        window.addEventListener("keyup", keyEventListener);
         if (fullscreen) {
             self.width = window.innerWidth;
             self.height = window.innerHeight;

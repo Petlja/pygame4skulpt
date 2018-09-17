@@ -1,8 +1,8 @@
 <html>
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="skulpt_dist/skulpt.min.js" type="text/javascript"></script>
-    <script src="skulpt_dist/skulpt-stdlib.js" type="text/javascript"></script>
+    <script src="../skulpt_dist/skulpt.min.js" type="text/javascript"></script>
+    <script src="../skulpt_dist/skulpt-stdlib.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -14,7 +14,7 @@
 <pre id="output"></pre>
 
 <script>
-    var basePath = 'https://rawgit.com/Petlja/pygame4skulpt/refaktorizacija/pygame/';
+    var basePath = '../pygame/';
     Sk.externalLibraries = {
         'pygame': {
             path: basePath + '__init__.js',
@@ -82,7 +82,7 @@
 
     (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
     Sk.configure({read: builtinRead, output: printString});
-    $("#code").load("../test/" + window.location.search.substring(1), function () {
+    $("#code").load(window.location.search.substring(1), function () {
         runCode();
     });
 </script>
