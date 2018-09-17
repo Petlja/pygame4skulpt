@@ -835,8 +835,6 @@ var PygameLib = {};
                     currentTarget.appendChild(self.main_canvas);
                 }
             }
-
-
         }
         self.main_canvas.width = self.width;
         self.main_canvas.height = self.height;
@@ -2399,7 +2397,7 @@ var PygameLib = {};
             img.src = PygameLib.imgPath + Sk.ffi.remapToJs(filename);
             img.onload = function () {
                 var t = Sk.builtin.tuple([img.width, img.height]);
-                var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+                var s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
                 var ctx = s.offscreen_canvas.getContext("2d");
                 ctx.drawImage(img, 0, 0);
                 resolve(s);
@@ -2418,7 +2416,7 @@ var PygameLib = {};
                 throw new Sk.builtin.TypeError("Wrong arguments");
             }
             var t = Sk.builtin.tuple([surf.width, surf.height]);
-            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
             ret.context2d.save();
             var xb = Sk.ffi.remapToJs(xbool);
             var xflip = xb ? -1 : 1;
@@ -2449,7 +2447,7 @@ var PygameLib = {};
             var t = Sk.builtin.tuple([w, h]);
             var xs = w / surf.width;
             var ys = h / surf.height;
-            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
             ret.context2d.save();
             ret.context2d.scale(xs, ys);
             ret.context2d.drawImage(surf.offscreen_canvas, 0, 0);
@@ -2470,7 +2468,7 @@ var PygameLib = {};
             var w = surf.width;
             var h = surf.height;
             var t = Sk.builtin.tuple([1.5 * w, 1.5 * h]);
-            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
             ret.context2d.save();
             ret.context2d.translate(w / 2, h / 2);
             ret.context2d.rotate(-a * Math.PI / 180);
@@ -2488,7 +2486,7 @@ var PygameLib = {};
             var w = surf.width;
             var h = surf.height;
             var t = Sk.builtin.tuple([2 * scale * w, 2 * scale * h]);
-            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
             ret.context2d.save();
             ret.context2d.scale(scale, scale);
             w *= scale;
@@ -2507,7 +2505,7 @@ var PygameLib = {};
             var w = surf.width;
             var h = surf.height;
             var t = Sk.builtin.tuple([2 * w, 2 * h]);
-            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
             ret.context2d.save();
             ret.context2d.scale(2, 2);
             ret.context2d.drawImage(surf.offscreen_canvas, 0, 0);
@@ -2534,7 +2532,7 @@ var PygameLib = {};
             var rw = w - x2;
             var rh = h - y2;
             var t = Sk.builtin.tuple([w, h]);
-            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
+            var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
             ret.context2d.drawImage(surf.offscreen_canvas, 0, 0, x1, y1, 0, 0, x1, y1);
             ret.context2d.drawImage(surf.offscreen_canvas, 0, y2, x1, rh, 0, y1, x1, rh);
             ret.context2d.drawImage(surf.offscreen_canvas, x2, 0, rw, y1, x1, 0, rw, y1);
