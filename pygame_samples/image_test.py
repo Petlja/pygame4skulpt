@@ -6,5 +6,5 @@ pg.init()
 prozor = pg.display.set_mode((sirina, visina))
 
 brod = pg.image.load('spaceship.png')
-pg.image.save(brod, 'asdf.png')
+pg.image.save(brod, 'my_custom_filename')
 
