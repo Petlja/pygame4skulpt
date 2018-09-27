@@ -1,71 +1,63 @@
 <html>
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"
+            integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
+            crossorigin="anonymous"></script>
     <script src="skulpt_dist/skulpt.min.js" type="text/javascript"></script>
     <script src="skulpt_dist/skulpt-stdlib.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css"
+          integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+    <link type="text/css" rel="stylesheet" href="css/petlja.css">
 </head>
 
 <body>
 <div id="mycanvas" class="col-md-offset-4">
 </div>
 <textarea id="code" rows="24" cols="80">
-import math, random
-import pygame as pg
-
-pg.init()
-
-pg.display.set_caption("krugovi na dijagonali")
-(sirina, visina) = (400, 500)
-prozor = pg.display.set_mode((sirina, visina), pg.FULLSCREEN)
-
-
-def nasumicna_boja():
-    return random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
-
-
-def crtaj():
-    r = d / (2 * n)
-    kx = sirina / (2 * n)
-    ky = visina / (2 * n)
-    prozor.fill(pg.Color("white"))
-    for i in range(n):
-        (cx, cy) = ((2 * i + 1) * kx, visina - (2 * i + 1) * ky)
-        pg.draw.circle(prozor, nasumicna_boja(), (round(cx), round(cy)), round(r), 2)
-    pg.display.update()
-
-
-d = math.sqrt(sirina ** 2 + visina ** 2)
-
-n = 5
-crtaj()
-
-kraj = False
-while not kraj:
-    dogadjaj = pg.event.wait()
-    if dogadjaj.type == pg.QUIT:
-        kraj = True
-    elif dogadjaj.type == pg.MOUSEBUTTONDOWN:
-        if dogadjaj.button == 1:
-            n += 1
-            crtaj()
-        elif dogadjaj.button == 3 and n > 1:
-            n -= 1
-            crtaj()
-    if dogadjaj.type == pg.KEYDOWN:
-        if dogadjaj.key == pg.K_UP:
-            n += 1
-            crtaj()
-        elif dogadjaj.key == pg.K_DOWN and n > 1:
-            n -= 1
-            crtaj()
-
-pg.quit()
+import pygame
+import random, sys
+pygame.init()
+def collide(x1, x2, y1, y2, w1, w2, h1, h2):
+	if x1+w1>x2 and x1 < x2+w2 and y1+h1>y2 and y1 < y2+h2:return True
+	else:return False
+def die(screen, score):
+	f=pygame.font.SysFont('Arial', 30);t=f.render('Your score was: '+str(score), True, (0, 0, 0));screen.blit(t, (10, 270));pygame.display.update();pygame.time.wait(2000);sys.exit(0)
+xs = [290, 290, 290, 290, 290];ys = [290, 270, 250, 230, 210];dirs = 0;score = 0;applepos = (random.randint(0, 590), random.randint(0, 590));pygame.init();s=pygame.display.set_mode((600, 600));pygame.display.set_caption('Snake');appleimage = pygame.Surface((10, 10));appleimage.fill((0, 255, 0));img = pygame.Surface((20, 20));img.fill((255, 0, 0));f = pygame.font.SysFont('Arial', 20);clock = pygame.time.Clock()
+while True:
+	clock.tick(10)
+	for e in pygame.event.get():
+		if e.type == QUIT:
+			sys.exit(0)
+		elif e.type == KEYDOWN:
+			if e.key == K_UP and dirs != 0:dirs = 2
+			elif e.key == K_DOWN and dirs != 2:dirs = 0
+			elif e.key == K_LEFT and dirs != 1:dirs = 3
+			elif e.key == K_RIGHT and dirs != 3:dirs = 1
+	i = len(xs)-1
+	while i >= 2:
+		if collide(xs[0], xs[i], ys[0], ys[i], 20, 20, 20, 20):die(s, score)
+		i-= 1
+	if collide(xs[0], applepos[0], ys[0], applepos[1], 20, 10, 20, 10):score+=1;xs.append(700);ys.append(700);applepos=(random.randint(0,590),random.randint(0,590))
+	if xs[0] < 0 or xs[0] > 580 or ys[0] < 0 or ys[0] > 580: die(s, score)
+	i = len(xs)-1
+	while i >= 1:
+		xs[i] = xs[i-1];ys[i] = ys[i-1];i -= 1
+	if dirs==0:ys[0] += 20
+	elif dirs==1:xs[0] += 20
+	elif dirs==2:ys[0] -= 20
+	elif dirs==3:xs[0] -= 20
+	s.fill((255, 255, 255))
+	for i in range(0, len(xs)):
+		s.blit(img, (xs[i], ys[i]))
+	s.blit(appleimage, applepos);t=f.render(str(score), True, (0, 0, 0));s.blit(t, (10, 10));pygame.display.update()
 
 </textarea>
 <pre id="output"></pre>
 
 <script>
-    var basePath = 'https://rawgit.com/Petlja/pygame4skulpt/refaktorizacija/pygame/';
+    var basePath = 'pygame/';
     Sk.externalLibraries = {
         'pygame': {
             path: basePath + '__init__.js',
@@ -103,6 +95,103 @@ pg.quit()
 
     };
 
+    function resetTarget() {
+        var selector = Sk.TurtleGraphics.target;
+        var target = typeof selector === "string" ? document.getElementById(selector) : selector;
+        // clear canvas container
+        while (target.firstChild) {
+            target.removeChild(target.firstChild);
+        }
+        return target;
+    }
+
+    function createArrows(div) {
+        var arrows = new Array(4);
+        var direction = ["left", "right", "up", "down"];
+        $(div).addClass("d-flex justify-content-center");
+        for (var i = 0; i < 4; i++) {
+            arrows[i] = document.createElement("span");
+            div.appendChild(arrows[i]);
+            $(arrows[i]).addClass("btn btn-primary btn-arrow");
+            var ic = document.createElement("i");
+            $(ic).addClass("fas fa-arrow-" + direction[i]);
+            arrows[i].appendChild(ic);
+        }
+
+
+        var swapIcon = function (id) {
+            $(arrows[id]).click();
+            $(arrows[id].firstChild).removeClass("fa-arrow-" + direction[id]).addClass("fa-arrow-circle-" + direction[id]);
+        }
+
+        var returnIcon = function (id) {
+            $(arrows[id].firstChild).removeClass("fa-arrow-circle-" + direction[id]).addClass("fa-arrow-" + direction[id]);
+        }
+
+        $(arrows[0]).on('mousedown', function () {
+            Sk.insertEvent("left");
+            swapIcon(0);
+        });
+        $(arrows[0]).on('mouseup', function () {
+            returnIcon(0);
+        });
+        $(arrows[1]).on('mousedown', function () {
+            Sk.insertEvent("right");
+            swapIcon(1);
+        });
+        $(arrows[1]).on('mouseup', function () {
+            returnIcon(1);
+        });
+        $(arrows[2]).on('mousedown', function () {
+            Sk.insertEvent("up");
+            swapIcon(2);
+        });
+        $(arrows[2]).on('mouseup', function () {
+            returnIcon(2);
+        });
+        $(arrows[3]).on('mousedown', function () {
+            Sk.insertEvent("down");
+            swapIcon(3);
+        });
+        $(arrows[3]).on('mouseup', function () {
+            returnIcon(3);
+        });
+
+        $(document).keydown(function (e) {
+            switch (e.which) {
+                case 37:
+                    swapIcon(0);
+                    break;
+                case 38:
+                    swapIcon(2);
+                    break;
+                case 39:
+                    swapIcon(1);
+                    break;
+                case 40:
+                    swapIcon(3);
+                    break;
+            }
+        });
+
+        $(document).keyup(function (e) {
+            switch (e.which) {
+                case 37:
+                    returnIcon(0);
+                    break;
+                case 38:
+                    returnIcon(2);
+                    break;
+                case 39:
+                    returnIcon(1);
+                    break;
+                case 40:
+                    returnIcon(3);
+                    break;
+            }
+        });
+    };
+
     function printString(text) {
         var output = document.getElementById("output");
         text = text.replace(/</g, '&lt;');
@@ -120,8 +209,73 @@ pg.quit()
         return Sk.builtinFiles["files"][x];
     }
 
+    function addModal() {
+        $(Sk.main_canvas).css("border", "1px solid blue");
+        var currentTarget = resetTarget();
+
+        var div1 = document.createElement("div");
+        currentTarget.appendChild(div1);
+        $(div1).addClass("modal");
+        $(div1).css("text-align", "center");
+
+        var btn1 = document.createElement("span");
+        $(btn1).addClass("btn btn-primary btn-sm float-right");
+        var ic = document.createElement("i");
+        $(ic).addClass("fas fa-times");
+        btn1.appendChild(ic);
+
+        $(btn1).on('click', function (e) {
+            Sk.insertEvent("quit");
+        });
+
+        var div2 = document.createElement("div");
+        $(div2).addClass("modal-dialog modal-lg");
+        $(div2).css("display", "inline-block");
+        $(div2).width(self.width + 42);
+        $(div2).attr("role", "document");
+        div1.appendChild(div2);
+
+        var div3 = document.createElement("div");
+        $(div3).addClass("modal-content");
+        div2.appendChild(div3);
+
+        var div4 = document.createElement("div");
+        $(div4).addClass("modal-header d-flex justify-content-between");
+        var div5 = document.createElement("div");
+        $(div5).addClass("modal-body");
+        var div6 = document.createElement("div");
+        $(div6).addClass("modal-footer");
+        var div7 = document.createElement("div");
+        $(div7).addClass("col-md-8");
+        var div8 = document.createElement("div");
+        $(div8).addClass("col-md-4");
+        var header = document.createElement("h5");
+        $(header).addClass("modal-title");
+
+
+        div3.appendChild(div4);
+        div3.appendChild(div5);
+        div3.appendChild(div6);
+
+        div4.appendChild(header);
+        div4.appendChild(btn1);
+        // div7.appendChild(header);
+        // div8.appendChild(btn1);
+
+        div5.appendChild(Sk.main_canvas);
+
+        createArrows(div6);
+        $(div1).modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
     function runCode() {
+        Sk.main_canvas = document.createElement("canvas");
+        addModal();
         var prog = $("#code").text();
+
         Sk.misceval.asyncToPromise(function () {
             try {
                 return Sk.importMainWithBody("<stdin>", false, prog, true);

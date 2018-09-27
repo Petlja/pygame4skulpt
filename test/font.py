@@ -21,7 +21,7 @@ font.set_underline(True)
 # poruka koja će se ispisivati
 poruka = "Zdravo svete!"
 # gradimo sličicu koja predstavlja tu poruku ispisanu crnom bojom
-tekst = font.render(poruka, True, pg.Color("black"))
+tekst = font.render(poruka, True, pg.Color("yellow"))
 
 # određujemo veličinu tog teksta (da bismo mogli da ga centriramo)
 (sirina_teksta, visina_teksta) = (tekst.get_width(), tekst.get_height())

@@ -1,22 +1,31 @@
+// Queue interface for the frontend
+Sk.insertEvent = function (eventName) {
+    var e = [];
+    switch (eventName) {
+        case "left":
+            e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_LEFT}];
+            break;
+        case "right":
+            e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_RIGHT}];
+            break;
+        case "up":
+            e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_UP}];
+            break;
+        case "down":
+            e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_DOWN}];
+            break;
+        case "quit":
+            e = [PygameLib.constants.QUIT, {key: PygameLib.constants.K_ESCAPE}];
+            break;
+    }
+    PygameLib.eventQueue.unshift(e);
+};
+
 var PygameLib = {};
 
 PygameLib.running = false;
-PygameLib.useModal = false;
+PygameLib.useModal = true;
 
-PygameLib.endProgram = function () {
-    PygameLib.running = false;
-    $('.modal').modal('hide');
-}
-
-PygameLib.hideModal = function () {
-    PygameLib.useModal = false;
-}
-
-PygameLib.showModal = function () {
-    PygameLib.useModal = true;
-}
-
-//converts color argument to js type
 PygameLib.extract_color = function (color) {
     var color_js = [0, 0, 0, 0];
     if (Sk.abstr.typeName(color) === "Color") {
@@ -24,8 +33,7 @@ PygameLib.extract_color = function (color) {
         color_js[1] = Sk.ffi.remapToJs(Sk.abstr.gattr(color, 'g', false));
         color_js[2] = Sk.ffi.remapToJs(Sk.abstr.gattr(color, 'b', false));
         color_js[3] = Sk.ffi.remapToJs(Sk.abstr.gattr(color, 'a', false));
-    }
-    else {
+    } else {
         color_js = Sk.ffi.remapToJs(color);
         if (color_js.length === 3) color_js.push(1);
     }
@@ -39,20 +47,18 @@ PygameLib.extract_rect = function (rect) {
         rect_js[1] = Sk.ffi.remapToJs(Sk.abstr.gattr(rect, 'top', false));
         rect_js[2] = Sk.ffi.remapToJs(Sk.abstr.gattr(rect, 'width', false));
         rect_js[3] = Sk.ffi.remapToJs(Sk.abstr.gattr(rect, 'height', false));
-    }
-    else {
+    } else {
         rect_js = Sk.ffi.remapToJs(rect);
     }
     return rect_js;
 };
+
 var createKeyboardEvent = function (event) {
     var e;
-
     var keyPGConstant;
     if (event.type === "keyup") {
         keyPGConstant = PygameLib.constants.KEYUP;
     } else if (event.type === "keydown") {
-        // setTimeout(function(){ alert("Hello"); }, 3000);
         keyPGConstant = PygameLib.constants.KEYDOWN;
     }
     switch (event.which) {
@@ -79,8 +85,6 @@ var createKeyboardEvent = function (event) {
 
 function keyEventListener(event) {
     var e = createKeyboardEvent(event);
-    // Uncaught TypeError: Cannot read property 'unshift' of undefined
-    // Before executing the pygame_init() method
     if (PygameLib.eventQueue) {
         if (PygameLib.repeatKeys) {
             PygameLib.eventQueue.unshift(e);
@@ -1017,46 +1021,6 @@ PygameLib.Colors = {
     'brown1': [255, 64, 64, 255],
 };
 
-PygameLib.keyToName = ['unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key',
-    'unknown key', 'unknown key', 'backspace', 'tab', 'unknown key', 'unknown key', 'clear', 'return', 'unknown key',
-    'unknown key', 'unknown key', 'unknown key', 'unknown key', 'pause', 'unknown key', 'unknown key', 'unknown key',
-    'unknown key', 'unknown key', 'unknown key', 'unknown key', 'escape', 'unknown key', 'unknown key', 'unknown key',
-    'unknown key', 'space', '!', '"', '#', '$', 'unknown key', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/', '0',
-    '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?', '@', 'unknown key', 'unknown key',
-    'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key',
-    'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key',
-    'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key',
-    'unknown key', 'unknown key', 'unknown key', '[', '\\', ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
-    'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'unknown key',
-    'unknown key', 'unknown key', 'unknown key', 'delete', 'unknown key', 'unknown key', 'unknown key', 'unknown key',
-    'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key',
-    'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key',
-    'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key',
-    'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key', 'unknown key',
-    'world 0', 'world 1', 'world 2', 'world 3', 'world 4', 'world 5', 'world 6', 'world 7', 'world 8', 'world 9',
-    'world 10', 'world 11', 'world 12', 'world 13', 'world 14', 'world 15', 'world 16', 'world 17', 'world 18',
-    'world 19', 'world 20', 'world 21', 'world 22', 'world 23', 'world 24', 'world 25', 'world 26', 'world 27',
-    'world 28', 'world 29', 'world 30', 'world 31', 'world 32', 'world 33', 'world 34', 'world 35', 'world 36',
-    'world 37', 'world 38', 'world 39', 'world 40', 'world 41', 'world 42', 'world 43', 'world 44', 'world 45',
-    'world 46', 'world 47', 'world 48', 'world 49', 'world 50', 'world 51', 'world 52', 'world 53', 'world 54',
-    'world 55', 'world 56', 'world 57', 'world 58', 'world 59', 'world 60', 'world 61', 'world 62', 'world 63',
-    'world 64', 'world 65', 'world 66', 'world 67', 'world 68', 'world 69', 'world 70', 'world 71', 'world 72',
-    'world 73', 'world 74', 'world 75', 'world 76', 'world 77', 'world 78', 'world 79', 'world 80', 'world 81',
-    'world 82', 'world 83', 'world 84', 'world 85', 'world 86', 'world 87', 'world 88', 'world 89', 'world 90',
-    'world 91', 'world 92', 'world 93', 'world 94', 'world 95', '[0]', '[1]', '[2]', '[3]', '[4]', '[5]', '[6]',
-    '[7]', '[8]', '[9]', '[.]', '[/]', '[*]', '[-]', '[+]', 'enter', 'equals', 'up', 'down', 'right', 'left', 'insert',
-    'home', 'end', 'page up', 'page down', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12',
-    'f13', 'f14', 'f15', 'unknown key', 'unknown key', 'unknown key', 'numlock', 'caps lock', 'scroll lock',
-    'right shift', 'left shift', 'right ctrl', 'left ctrl', 'right alt', 'left alt', 'right meta', 'left meta',
-    'left super', 'right super', 'alt gr', 'compose', 'help', 'print screen', 'sys req', 'break', 'menu', 'power',
-    'euro', 'undo', 'unknown key'];
-
-PygameLib.keyboardModifierKeys = [PygameLib.constants.K_LSHIFT, PygameLib.constants.K_RSHIFT, 0, 0, 0, 0,
-    PygameLib.constants.K_LCTRL, PygameLib.constants.K_RCTRL, PygameLib.constants.K_LALT, PygameLib.constants.K_RALT,
-    PygameLib.constants.K_LMETA, PygameLib.constants.K_RMETA, 0, PygameLib.constants.K_CAPSLOCK,
-    PygameLib.constants.K_NUMLOCK, PygameLib.constants.K_MODE];
-
-
 var $builtinmodule = function (name) {
     var mod = {};
     for (k in PygameLib.constants) {
@@ -1071,7 +1035,10 @@ var $builtinmodule = function (name) {
     mod.Rect = Sk.misceval.buildClass(mod, rect_type_f, 'Rect', []);
     PygameLib.RectType = mod.Rect;
     mod.quit = new Sk.builtin.func(function () {
-        PygameLib.endProgram();
+        PygameLib.running = false;
+        if (Sk.quitHandler) {
+            Sk.quitHandler();
+        }
     });
     mod.error = new Sk.builtin.func(function (description) {
         if (Sk.abstr.typeName(description) !== "str") {
@@ -1123,130 +1090,12 @@ function pygame_init() {
     pygame_m.$d['event'] = display_m.$d['event'];
     pygame_m.$d['draw'] = display_m.$d['draw'];
     pygame_m.$d['image'] = display_m.$d['image'];
-    // testiranja radi stavili smo nešto u queue na početku
     PygameLib.eventQueue = [];
     PygameLib.eventTimer = {};
     PygameLib.running = true;
     PygameLib.repeatKeys = false;
     PygameLib.mouseData = {"button": [0, 0, 0], "pos": [0, 0], "rel": [0, 0]};
 }
-
-function resetTarget() {
-    var selector = Sk.TurtleGraphics.target;
-    var target = typeof selector === "string" ?
-        document.getElementById(selector) :
-        selector;
-    // clear canvas container
-    while (target.firstChild) {
-        target.removeChild(target.firstChild);
-    }
-    return target;
-}
-
-function createArrows(div) {
-    var arrows = new Array(4);
-    var direction = ["left", "right", "up", "down"];
-    $(div).addClass("d-flex justify-content-center");
-    for (var i = 0; i < 4; i++) {
-        arrows[i] = document.createElement("span");
-        div.appendChild(arrows[i]);
-        $(arrows[i]).addClass("btn btn-primary btn-arrow");
-        var ic = document.createElement("i");
-        $(ic).addClass("fas fa-arrow-" + direction[i]);
-        arrows[i].appendChild(ic);
-    }
-
-    var insertEvent = function (dir) {
-        var e = [];
-        switch (dir) {
-            case 0:
-                e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_LEFT}];
-                break;
-            case 1:
-                e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_RIGHT}];
-                break;
-            case 2:
-                e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_UP}];
-                break;
-            case 3:
-                e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_DOWN}];
-                break;
-        }
-        PygameLib.eventQueue.unshift(e);
-    }
-
-    var swapIcon = function (id) {
-        $(arrows[id]).click();
-        $(arrows[id].firstChild).removeClass("fa-arrow-" + direction[id]).addClass("fa-arrow-circle-" + direction[id]);
-    }
-
-    var returnIcon = function (id) {
-        $(arrows[id].firstChild).removeClass("fa-arrow-circle-" + direction[id]).addClass("fa-arrow-" + direction[id]);
-    }
-
-    $(arrows[0]).on('mousedown', function () {
-        insertEvent(0);
-        swapIcon(0);
-    });
-    $(arrows[0]).on('mouseup', function () {
-        returnIcon(0);
-    });
-    $(arrows[1]).on('mousedown', function () {
-        insertEvent(1);
-        swapIcon(1);
-    });
-    $(arrows[1]).on('mouseup', function () {
-        returnIcon(1);
-    });
-    $(arrows[2]).on('mousedown', function () {
-        insertEvent(2);
-        swapIcon(2);
-    });
-    $(arrows[2]).on('mouseup', function () {
-        returnIcon(2);
-    });
-    $(arrows[3]).on('mousedown', function () {
-        insertEvent(3);
-        swapIcon(3);
-    });
-    $(arrows[3]).on('mouseup', function () {
-        returnIcon(3);
-    });
-
-    $(document).keydown(function (e) {
-        switch (e.which) {
-            case 37:
-                swapIcon(0);
-                break;
-            case 38:
-                swapIcon(2);
-                break;
-            case 39:
-                swapIcon(1);
-                break;
-            case 40:
-                swapIcon(3);
-                break;
-        }
-    });
-
-    $(document).keyup(function (e) {
-        switch (e.which) {
-            case 37:
-                returnIcon(0);
-                break;
-            case 38:
-                returnIcon(2);
-                break;
-            case 39:
-                returnIcon(1);
-                break;
-            case 40:
-                returnIcon(3);
-                break;
-        }
-    });
-};
 
 var mouseEventListener = function (event) {
     var totalOffsetX = 0;
@@ -1314,20 +1163,21 @@ var init$1 = function $__init__123$(self, size, fullscreen = false, main = false
     self.height = Math.round(tuple_js[1]);
     self.main_canvas = document.createElement("canvas");
 
-
     if (main) {
+        self.main_canvas = Sk.main_canvas;
         self.main_canvas.addEventListener('mousedown', mouseEventListener);
         self.main_canvas.addEventListener('mouseup', mouseEventListener);
         self.main_canvas.addEventListener('mousemove', mouseEventListener);
         window.addEventListener("keydown", keyEventListener);
         window.addEventListener("keyup", keyEventListener);
+
         if (fullscreen) {
             self.width = window.innerWidth;
             self.height = window.innerHeight;
-            $(self.main_canvas).css("z-index", "100");
-            $(self.main_canvas).css("position", "absolute");
-            $(self.main_canvas).css("top", "0");
-            $(self.main_canvas).css("left", "0");
+            self.main_canvas.style["z-index"] = "100";
+            self.main_canvas.style["position"] = "absolute";
+            self.main_canvas.style["top"] = "0";
+            self.main_canvas.style["left"] = "0";
             document.body.appendChild(self.main_canvas);
             window.onresize = function (event) {
                 self.width = window.innerWidth;
@@ -1339,73 +1189,6 @@ var init$1 = function $__init__123$(self, size, fullscreen = false, main = false
                 self.offscreen_canvas.height = self.height;
                 self.context2d.drawImage(self.main_canvas, 0, 0);
             };
-        } else {
-            $(self.main_canvas).css("border", "1px solid blue");
-            var currentTarget = resetTarget();
-            if (PygameLib.useModal) {
-
-                var div1 = document.createElement("div");
-                currentTarget.appendChild(div1);
-                PygameLib.modalDiv = div1;
-                $(div1).addClass("modal");
-                $(div1).css("text-align", "center");
-
-                var btn1 = document.createElement("span");
-                $(btn1).addClass("btn btn-primary btn-sm float-right");
-                var ic = document.createElement("i");
-                $(ic).addClass("fas fa-times");
-                btn1.appendChild(ic);
-
-                $(btn1).on('click', function (e) {
-                    var e = [PygameLib.constants.QUIT, {key: "Escape"}];
-                    PygameLib.eventQueue.unshift(e);
-                });
-
-                var div2 = document.createElement("div");
-                $(div2).addClass("modal-dialog modal-lg");
-                $(div2).css("display", "inline-block");
-                $(div2).width(self.width + 42);
-                $(div2).attr("role", "document");
-                div1.appendChild(div2);
-
-                var div3 = document.createElement("div");
-                $(div3).addClass("modal-content");
-                div2.appendChild(div3);
-
-                var div4 = document.createElement("div");
-                $(div4).addClass("modal-header d-flex justify-content-between");
-                var div5 = document.createElement("div");
-                $(div5).addClass("modal-body");
-                var div6 = document.createElement("div");
-                $(div6).addClass("modal-footer");
-                var div7 = document.createElement("div");
-                $(div7).addClass("col-md-8");
-                var div8 = document.createElement("div");
-                $(div8).addClass("col-md-4");
-                var header = document.createElement("h5");
-                $(header).addClass("modal-title");
-                $(header).html(PygameLib.caption);
-
-                div3.appendChild(div4);
-                div3.appendChild(div5);
-                div3.appendChild(div6);
-
-                div4.appendChild(header);
-                div4.appendChild(btn1);
-                // div7.appendChild(header);
-                // div8.appendChild(btn1);
-
-                div5.appendChild(self.main_canvas);
-
-                createArrows(div6);
-
-                $(div1).modal({
-                    backdrop: 'static',
-                    keyboard: false
-                });
-            } else {
-                currentTarget.appendChild(self.main_canvas);
-            }
         }
     }
     self.main_canvas.width = self.width;
@@ -1427,7 +1210,7 @@ var init$1 = function $__init__123$(self, size, fullscreen = false, main = false
 function fillBlack(ctx, w, h) {
     ctx.beginPath();
     ctx.rect(0, 0, w, h);
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.01)";
     ctx.fill();
 }
 

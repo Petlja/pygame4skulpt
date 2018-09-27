@@ -28,7 +28,7 @@ var draw_rect = function (surface, color, rect, width = 0) {
     var ctx = surface.context2d;
     var color_js = PygameLib.extract_color(color);
     var width_js = Sk.ffi.remapToJs(width);
-    var rect_js = extract_rect(rect);
+    var rect_js = PygameLib.extract_rect(rect);
 
     var left = rect_js[0];
     var top = rect_js[1];
@@ -92,11 +92,11 @@ var draw_oval = function (surface, color, rect, start_angle, stop_angle, width, 
     var ctx = surface.context2d;
     var width_js = Sk.ffi.remapToJs(width);
     var color_js = PygameLib.extract_color(color);
-    var rect_js = PygameLib.extract_color(rect);
-    var angles = [0, 0]
-    angles[0] = Sk.ffi.remapToJs(start_angle)
-    angles[1] = Sk.ffi.remapToJs(stop_angle)
-    var center = [0, 0]
+    var rect_js = PygameLib.extract_rect(rect);
+    var angles = [0, 0];
+    angles[0] = Sk.ffi.remapToJs(start_angle);
+    angles[1] = Sk.ffi.remapToJs(stop_angle);
+    var center = [0, 0];
     center[0] = rect_js[0] + rect_js[2] / 2;
     center[1] = rect_js[1] + rect_js[3] / 2;
 

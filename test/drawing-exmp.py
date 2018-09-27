@@ -1,8 +1,8 @@
-import turtle
 import pygame
 import math
 import time
 pygame.init()
+
 s = pygame.Surface([300, 300])
 print("sirina ", s.get_width())
 print("visina ", s.get_height())

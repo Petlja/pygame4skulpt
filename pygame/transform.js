@@ -114,7 +114,7 @@ var $builtinmodule = function (name) {
         if (Sk.abstr.typeName(rect) !== "Rect") {
             throw new Sk.builtin.TypeError("Wrong arguments");
         }
-        var rr = extract_rect(rect);
+        var rr = PygameLib.extract_rect(rect);
         var x1 = rr[0];
         var y1 = rr[1];
         var x2 = rr[0] + rr[2];

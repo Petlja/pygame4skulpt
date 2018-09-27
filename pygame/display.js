@@ -38,8 +38,10 @@ var $builtinmodule = function (name) {
         Sk.misceval.callsim(mod.surface.update, mod.surface);
     });
     mod.set_caption = new Sk.builtin.func(function (caption) {
-        if ($('.modal-title')) $('.modal-title').html(Sk.ffi.remapToJs(caption));
         PygameLib.caption = Sk.ffi.remapToJs(caption);
+        if (Sk.title_container) {
+            Sk.title_container.innerText = PygameLib.caption;
+        }
     });
     mod.get_caption = new Sk.builtin.func(function () {
         return Sk.ffi.remapToPy(PygameLib.caption);
