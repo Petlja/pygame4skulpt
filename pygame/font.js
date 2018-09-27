@@ -101,7 +101,7 @@ function fontSize(self, text) {
     // Create a dummy canvas in order to exploit its measureText() method
     var t = Sk.builtin.tuple([w, h]);
     var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
-    var ctx = s.main_canvas.getContext("2d");
+    var ctx = s.offscreen_canvas.getContext("2d");
     ctx.font = fontName;
     return new Sk.builtin.tuple([ctx.measureText(msg).width, h]);
 }
@@ -127,18 +127,18 @@ function renderFont(self, text, antialias, color, background) {
     // Create a dummy canvas in order to exploit its measureText() method
     var t = Sk.builtin.tuple([w, h]);
     var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
-    var ctx = s.main_canvas.getContext("2d");
+    var ctx = s.offscreen_canvas.getContext("2d");
     ctx.font = fontName;
     w = ctx.measureText(msg).width;
 
     t = Sk.builtin.tuple([w, h]);
     s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
-    ctx = s.main_canvas.getContext("2d");
+    ctx = s.offscreen_canvas.getContext("2d");
     if (background !== undefined) {
         var background_js = PygameLib.extract_color(background);
         ctx.fillStyle = 'rgba(' + background_js[0] + ', ' + background_js[1] + ', ' + background_js[2] + ', '
             + background_js[3] + ')';
-        ctx.fillRect(0, 0, s.main_canvas.width, s.main_canvas.height);
+        ctx.fillRect(0, 0, s.offscreen_canvas.width, s.offscreen_canvas.height);
     }
     ctx.font = fontName;
     var color_js = PygameLib.extract_color(color);
@@ -147,6 +147,7 @@ function renderFont(self, text, antialias, color, background) {
     if (underline) {
         ctx.strokeStyle = 'rgba(' + color_js[0] + ', ' + color_js[1] + ', ' + color_js[2] + ', ' + color_js[3] + ')';
         ctx.lineWidth = 1;
+        ctx.beginPath();
         ctx.moveTo(0, h - 1);
         ctx.lineTo(w, h - 1);
         ctx.stroke();

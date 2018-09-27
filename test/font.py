@@ -1,26 +1,16 @@
-# -*- acsection: general-init -*-
 import pygame as pg
 
-# uključivanje rada biblioteke PyGame
 pg.init()
 
-# podešavamo naslov prozora
-pg.display.set_caption("Zdravo svete!")
-# otvaramo prozor dimenzije 300x300
 (sirina, visina) = (600, 600)
 prozor = pg.display.set_mode((sirina, visina))
-# -*- acsection: main -*-
 
-# bojimo pozadinu prozora u belo
 prozor.fill(pg.Color("white"))
 
-# font kojim će biti prikazan tekst
 font = pg.font.SysFont("consolas", 40)
 font.set_underline(True)
 
-# poruka koja će se ispisivati
 poruka = "Zdravo svete!"
-# gradimo sličicu koja predstavlja tu poruku ispisanu crnom bojom
 tekst = font.render(poruka, True, pg.Color("yellow"))
 
 # određujemo veličinu tog teksta (da bismo mogli da ga centriramo)

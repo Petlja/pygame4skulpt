@@ -12,7 +12,7 @@ font.set_underline(False)
 poruka = "Zdravo svete!"
 tekst1 = font.render(poruka, True, pg.Color("black"))
 tekst2 = font.render(poruka, True, pg.Color("yellow"))
-tekst2.convert_alpha()
+# tekst2.convert_alpha()
 tekst3 = tekst2.copy()
 tekst1.blit(tekst3, (0, 0))
 tekst1.set_at((1, 1), pg.Color("yellow"))
