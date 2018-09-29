@@ -1,76 +1,85 @@
-import pygame, random, sys
+import pygame as pg
+from random import randint
 
-pygame.init()
+pg.init()
+side = 30
+w = 17
+h = 15
+disp = pg.display.set_mode((w * side, h * side))
+
+game_running = 0
+
+dirs = [pg.K_RIGHT, pg.K_DOWN, pg.K_LEFT, pg.K_UP]
+dx = [1, 0, -1, 0]
+dy = [0, 1, 0, -1]
+snake = [(7, 3), (7, 4)]
+direction = 0
+
+def place_apple():
+    a = (randint(0, w - 1), randint(0, h - 1))
+    while a in snake:
+        a = (randint(w - 1), randint(h - 1))
+    return a
 
 
-def collide(x1, x2, y1, y2, w1, w2, h1, h2):
-    if x1 + w1 > x2 and x1 < x2 + w2 and y1 + h1 > y2 and y1 < y2 + h2:
-        return True
-    else:
-        return False
+apple = place_apple()
 
 
-def die(screen, score):
-    f = pygame.font.SysFont('Arial', 30);
-    t = f.render('Your score was: ' + str(score), True, (0, 0, 0));
-    screen.blit(t, (10, 270));
-    pygame.display.update();
-    pygame.time.wait(2000);
-    sys.exit(0)
 
 
-xs = [290, 290, 290, 290, 290]
-ys = [290, 270, 250, 230, 210]
-dirs = 0
-score = 0
-applepos = (random.randint(0, 590), random.randint(0, 590))
-pygame.init()
-s = pygame.display.set_mode((600, 600))
-pygame.display.set_caption('Snake')
-appleimage = pygame.Surface((10, 10))
-appleimage.fill((0, 255, 0))
-img = pygame.Surface((20, 20))
-img.fill((255, 0, 0))
-f = pygame.font.SysFont('Arial', 20);
-clock = pygame.time.Clock()
+def check_collisions():
+    head = snake[-1]
+    for i in range(len(snake) - 1):
+        if head == snake[i]:
+            return 2
+    if head[0] >= w or head[0] < 0:
+        return 3
+    if head[1] >= h or head[1] < 0:
+        return 3
+    if head == apple:
+        return 1
+    return 0
+
+
+clock = pg.time.Clock()
+f = pg.font.SysFont('console', 24, True)
+
 while True:
     clock.tick(10)
-    for e in pygame.event.get():
-        if e.type == pygame.QUIT:
-            sys.exit(0)
-        elif e.type == pygame.KEYDOWN:
-            if e.key == pygame.K_UP and dirs != 0:
-                dirs = 2
-            elif e.key == pygame.K_DOWN and dirs != 2:
-                dirs = 0
-            elif e.key == pygame.K_LEFT and dirs != 1:
-                dirs = 3
-            elif e.key == pygame.K_RIGHT and dirs != 3:
-                dirs = 1
-    i = len(xs) - 1
-    while i >= 2:
-        if collide(xs[0], xs[i], ys[0], ys[i], 20, 20, 20, 20): die(s, score)
-        i -= 1
-    if collide(xs[0], applepos[0], ys[0], applepos[1], 20, 10, 20, 10): score += 1;xs.append(700);ys.append(
-        700);applepos = (random.randint(0, 590), random.randint(0, 590))
-    if xs[0] < 0 or xs[0] > 580 or ys[0] < 0 or ys[0] > 580: die(s, score)
-    i = len(xs) - 1
-    while i >= 1:
-        xs[i] = xs[i - 1]
-        ys[i] = ys[i - 1]
-        i -= 1
-    if dirs == 0:
-        ys[0] += 20
-    elif dirs == 1:
-        xs[0] += 20
-    elif dirs == 2:
-        ys[0] -= 20
-    elif dirs == 3:
-        xs[0] -= 20
-    s.fill((255, 255, 255))
-    for i in range(0, len(xs)):
-        s.blit(img, (xs[i], ys[i]))
-    s.blit(appleimage, applepos);
-    t = f.render(str(score), True, (0, 0, 0));
-    s.blit(t, (10, 10));
-    pygame.display.update()
+    for e in pg.event.get():
+        if e.type == pg.QUIT:
+            pg.quit()
+            break
+        if e.type == pg.KEYDOWN:
+            if game_running == 0:
+                game_runnig = 1
+            if e.key == pg.K_SPACE:
+                game_running = 0
+                snake = [(7, 3), (7, 4)]
+                direction = 0
+                apple = place_apple()
+            for i in range(4):
+                if e.key == dirs[i] and direction != (i + 2) % 4:
+                    direction = i
+    if game_running == 2:
+        disp.fill(pg.Color("black"))
+        disp.blit(f.render("Game over!", False, pg.Color("blue")), (3 * side, 3 * side))
+        pg.display.update()
+        game_running = 3
+    if game_running == 3:
+        continue
+    snake.append((snake[-1][0] + dx[direction], snake[-1][1] + dy[direction]))
+    coll = check_collisions()
+    if coll >= 2:
+        game_running = 2
+        pass
+    elif coll == 1:
+        apple = place_apple()
+        pass
+    elif coll == 0:
+        snake.pop(0)
+    disp.fill(pg.Color("black"))
+    for i in range(len(snake)):
+        pg.draw.rect(disp, pg.Color("green"), pg.Rect(snake[i][0] * side, snake[i][1] * side, side, side))
+    pg.draw.rect(disp, pg.Color("red"), pg.Rect(apple[0] * side, apple[1] * side, side, side))
+    pg.display.update()
