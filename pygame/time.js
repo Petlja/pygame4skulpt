@@ -50,6 +50,7 @@ function time_Clock($gbl, $loc) {
     $loc.__init__.co_name = new Sk.builtins['str']('__init__');
 
     $loc.tick = new Sk.builtin.func(function (self, framerate) {
+
         var currTime = Date.now();
         var mills = 0;
         if (Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'prevTime', false)) !== null) {
@@ -74,11 +75,12 @@ function time_Clock($gbl, $loc) {
                 new Promise(function (resolve) {
                     var f = function () {
                         Sk.abstr.sattr(self, 'rawTime', Sk.ffi.remapToPy(Date.now() - currTime), false);
-                        while (currTime + timeout >= Date.now()) {
-                        }
                         resolve(mills);
                     };
-                    Sk.setTimeout(f, 1);
+
+                    if (PygameLib.running) {
+                        Sk.setTimeout(f, timeout);
+                    }
                 }));
         }
         Sk.abstr.sattr(self, 'rawTime', Sk.ffi.remapToPy(Date.now() - currTime), false);
@@ -104,11 +106,11 @@ function time_Clock($gbl, $loc) {
                 new Promise(function (resolve) {
                     var f = function () {
                         Sk.abstr.sattr(self, 'rawTime', Sk.ffi.remapToPy(Date.now() - currTime), false);
-                        while (currTime + timeout >= Date.now()) {
-                        }
                         resolve(mills);
                     };
-                    Sk.setTimeout(f, 1);
+                    if (PygameLib.running) {
+                        Sk.setTimeout(f, timeout);
+                    }
                 }));
         }
         Sk.abstr.sattr(self, 'rawTime', Sk.ffi.remapToPy(Date.now() - currTime), false);

@@ -24,7 +24,7 @@ Sk.insertEvent = function (eventName) {
 var PygameLib = {};
 
 PygameLib.running = false;
-PygameLib.useModal = true;
+
 
 PygameLib.extract_color = function (color) {
     var color_js = [0, 0, 0, 0];
@@ -1098,6 +1098,7 @@ function pygame_init() {
 }
 
 var mouseEventListener = function (event) {
+
     var totalOffsetX = 0;
     var totalOffsetY = 0;
     var canvasX = 0;

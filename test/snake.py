@@ -15,16 +15,15 @@ dy = [0, 1, 0, -1]
 snake = [(7, 3), (7, 4)]
 direction = 0
 
+
 def place_apple():
     a = (randint(0, w - 1), randint(0, h - 1))
     while a in snake:
-        a = (randint(w - 1), randint(h - 1))
+        a = (randint(0, w - 1), randint(0, h - 1))
     return a
 
 
 apple = place_apple()
-
-
 
 
 def check_collisions():
