@@ -1,7 +1,89 @@
 # Pygame module for Skulpt
+An example of the module can be found on [pygame4skulpt.github.io](pygame4skulpt.github.io).
 ## How to use
+In order to use the module, you will probably want to have files served by a http server as in [run-example.sh](https://github.com/Petlja/pygame4skulpt/blob/master/run-example.sh) and [run-example.bat](https://github.com/Petlja/pygame4skulpt/blob/master/run-example.bat).
+Our Pygame module can be imported as follows:
+~~~
+    var basePath = 'pygame/';
+    Sk.externalLibraries = {
+        'pygame': {
+            path: basePath + '__init__.js',
+        },
+        'pygame.display': {
+            path: basePath + 'display.js',
+        },
+        'pygame.draw': {
+            path: basePath + 'draw.js',
+        },
+        'pygame.event': {
+            path: basePath + 'event.js',
+        },
+        'pygame.font': {
+            path: basePath + 'font.js',
+        },
+        'pygame.image': {
+            path: basePath + 'image.js',
+        },
+        'pygame.key': {
+            path: basePath + 'key.js',
+        },
+        'pygame.mouse': {
+            path: basePath + 'mouse.js',
+        },
+        'pygame.time': {
+            path: basePath + 'time.js',
+        },
+        'pygame.transform': {
+            path: basePath + 'transform.js',
+        },
+        'pygame.version': {
+            path: basePath + 'version.js',
+        },
+    };
+~~~
+Base path should correspond to the location where you put the Pygame module. A CDN version can be found at 
+[https://cdn.rawgit.com/Petlja/pygame4skulpt/f40421ad/pygame/__init__.js](https://cdn.rawgit.com/Petlja/pygame4skulpt/f40421ad/pygame/__init__.js).
 
-## 
+### API
+#### Sk.main_canvas
+Since the Pygame module relies heavily on the graphics and event handling, we provide several functionalities for 
+communicating with the module. First and the most important one is registering your canvas. Basically, Pygame module 
+needs to have a reference to the canvas to be used for rendering graphics. In order to register your canvas, use the following:
+~~~
+Sk.main_canvas = document.createElement("canvas");
+~~~
+or
+~~~
+Sk.main_canvas = document.getElementById("myCanvas");
+~~~
+
+#### Sk.insertEvent
+Pygame module has mouse and keyboard event listeners added to canvas and window. If you want to have an additional way of 
+inserting the events (eg. you want to add the arrows that create keydown events) you can use Sk.insertEvent function as follows:
+~~~
+Sk.insertEvent("left");
+~~~
+Currently, the only supported events are:
+- "up" corresponding to ```KEYDOWN``` event with ```K_UP``` key.
+- "down" corresponding to ```KEYDOWN``` event with ```K_DOWN``` key.
+- "right" corresponding to ```KEYDOWN``` event with ```K_RIGHT``` key.
+- "left" corresponding to ```KEYDOWN``` event with ```K_LEFT``` key.
+- "quit" corresponding to ```QUIT``` event with ```K_ESCAPE``` key.
+
+#### Sk.title_container
+If you want to have an element where the title is going to be shown, make use of the following:
+~~~
+Sk.title_container = ...
+~~~
+
+#### Sk.quitHandler
+After running the Pygame code, you want to make sure that everything got cleaned up. For that reason, there exists 
+```Sk.quitHandler``` which gets called by pygame.quit() method. An possible example is:
+~~~
+Sk.quitHandler = function () {
+    $('.modal').modal('hide');
+};
+~~~
 ## Implemented parts
 ###### Most useful stuff: 
 -[x] Color
@@ -232,3 +314,20 @@
     -[x] pygame.version.ver	—	version number as a string
     -[x] pygame.version.vernum	—	tupled integers of the version
     -[x] pygame.version.rev	—	repository revision of the build
+    
+## Contributing
+If you want to contribute, take a look at the [issues](https://github.com/Petlja/pygame4skulpt/issues).
+Contribution workflow is a standard [fork and pull](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).
+General Skulpt contribution tutorial can be found [here](https://github.com/skulpt/skulpt/blob/master/HACKING.md), and the 
+coding style guide [here](https://github.com/skulpt/skulpt/blob/master/CONTRIBUTING.md#coding-style-and-conventions).
+
+In addition to your functionality, make sure to add a unit test into the [test](https://github.com/Petlja/pygame4skulpt/tree/master/test) directory. 
+If adding a functionality that is to be tested by running an example, you can add a Pygame program that exposes it. 
+A good example is [test/tick_clock.py](https://github.com/Petlja/pygame4skulpt/blob/master/test/tick_clock.py). 
+Otherwise, you can make use of the ```unittest``` library as in [test/version_test.py](https://github.com/Petlja/pygame4skulpt/blob/master/test/version_test.py). 
+You might find useful to run the test using the index page. All you have to do is to run it with a query string representing
+the filename of your test. 
+~~~
+http://localhost:8888/index.html?tick_clock.py
+~~~
+
