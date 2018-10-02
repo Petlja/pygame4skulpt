@@ -1,0 +1,302 @@
+<html>
+<head>
+    <script src="skulpt_dist/skulpt.min.js" type="text/javascript"></script>
+    <script src="skulpt_dist/skulpt-stdlib.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css"
+          integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<a href="https://github.com/Petlja/pygame4skulpt"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <img src="./logo.png" height="100" alt="logo">
+    </div>
+    <div class="col-md-4"></div>
+
+</div>
+<div class="col-md-2"></div>
+<div class="col-md-8">
+    <div id="mycanvas"></div>
+    <div class="row">
+        <div class="col-xs-6" id="editorsplace">
+             <div id="editor" style="border: 1px solid black"></div>
+        </div>
+        <div class="col-xs-6">
+            <pre id="output" class="text-left"></pre>
+        </div>
+    </div>
+    <div class="col-md-5"></div>
+    <a class="btn btn-primary col-md-2" id="runbutton">Run code<span class="glyphicon glyphicon-play" aria-hidden="true"></span></a>
+    <div class="col-md-5"></div>
+
+</div>
+<div class="col-md-2"></div>
+<script src="http://ajaxorg.github.io/ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/chrome");
+    editor.session.setMode("ace/mode/python");
+</script>
+
+
+<script>
+    document.getElementById("editor").style['width'] = document.getElementById("editorsplace").offsetWidth;
+    document.getElementById("editor").style['height'] = 0.8 * window.innerHeight;
+    document.getElementById("editor").style['margin'] = "0 auto";
+    document.getElementById("output").style['height'] = 0.8 * window.innerHeight;
+</script>
+<script>
+    var basePath = 'pygame/';
+    Sk.externalLibraries = {
+        'pygame': {
+            path: basePath + '__init__.js',
+        },
+        'pygame.display': {
+            path: basePath + 'display.js',
+        },
+        'pygame.draw': {
+            path: basePath + 'draw.js',
+        },
+        'pygame.event': {
+            path: basePath + 'event.js',
+        },
+        'pygame.font': {
+            path: basePath + 'font.js',
+        },
+        'pygame.image': {
+            path: basePath + 'image.js',
+        },
+        'pygame.key': {
+            path: basePath + 'key.js',
+        },
+        'pygame.mouse': {
+            path: basePath + 'mouse.js',
+        },
+        'pygame.time': {
+            path: basePath + 'time.js',
+        },
+        'pygame.transform': {
+            path: basePath + 'transform.js',
+        },
+        'pygame.version': {
+            path: basePath + 'version.js',
+        },
+    };
+
+    function resetTarget() {
+        var selector = Sk.TurtleGraphics.target;
+        var target = typeof selector === "string" ? document.getElementById(selector) : selector;
+        // clear canvas container
+        while (target.firstChild) {
+            target.removeChild(target.firstChild);
+        }
+        return target;
+    }
+
+    function createArrows(div) {
+        var arrows = new Array(4);
+        var direction = ["left", "right", "up", "down"];
+        $(div).addClass("d-flex justify-content-center");
+        for (var i = 0; i < 4; i++) {
+            arrows[i] = document.createElement("span");
+            div.appendChild(arrows[i]);
+            $(arrows[i]).addClass("btn btn-primary btn-arrow");
+            var ic = document.createElement("i");
+            $(ic).addClass("fas fa-arrow-" + direction[i]);
+            arrows[i].appendChild(ic);
+        }
+
+
+        var swapIcon = function (id) {
+            $(arrows[id]).click();
+            $(arrows[id].firstChild).removeClass("fa-arrow-" + direction[id]).addClass("fa-arrow-circle-" + direction[id]);
+        }
+
+        var returnIcon = function (id) {
+            $(arrows[id].firstChild).removeClass("fa-arrow-circle-" + direction[id]).addClass("fa-arrow-" + direction[id]);
+        }
+
+        $(arrows[0]).on('mousedown', function () {
+            Sk.insertEvent("left");
+            swapIcon(0);
+        });
+        $(arrows[0]).on('mouseup', function () {
+            returnIcon(0);
+        });
+        $(arrows[1]).on('mousedown', function () {
+            Sk.insertEvent("right");
+            swapIcon(1);
+        });
+        $(arrows[1]).on('mouseup', function () {
+            returnIcon(1);
+        });
+        $(arrows[2]).on('mousedown', function () {
+            Sk.insertEvent("up");
+            swapIcon(2);
+        });
+        $(arrows[2]).on('mouseup', function () {
+            returnIcon(2);
+        });
+        $(arrows[3]).on('mousedown', function () {
+            Sk.insertEvent("down");
+            swapIcon(3);
+        });
+        $(arrows[3]).on('mouseup', function () {
+            returnIcon(3);
+        });
+
+        $(document).keydown(function (e) {
+            switch (e.which) {
+                case 37:
+                    swapIcon(0);
+                    break;
+                case 38:
+                    swapIcon(2);
+                    break;
+                case 39:
+                    swapIcon(1);
+                    break;
+                case 40:
+                    swapIcon(3);
+                    break;
+            }
+        });
+
+        $(document).keyup(function (e) {
+            switch (e.which) {
+                case 37:
+                    returnIcon(0);
+                    break;
+                case 38:
+                    returnIcon(2);
+                    break;
+                case 39:
+                    returnIcon(1);
+                    break;
+                case 40:
+                    returnIcon(3);
+                    break;
+            }
+        });
+    };
+
+    function printString(text) {
+        var output = document.getElementById("output");
+        text = text.replace(/</g, '&lt;');
+        output.innerHTML = output.innerHTML + text;
+    }
+
+    function clearOutput() {
+        var output = document.getElementById("output");
+        output.innerHTML = '';
+    }
+
+    function builtinRead(x) {
+        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+            throw "File not found: '" + x + "'";
+        return Sk.builtinFiles["files"][x];
+    }
+
+    function addModal() {
+        $(Sk.main_canvas).css("border", "1px solid blue");
+        var currentTarget = resetTarget();
+
+        var div1 = document.createElement("div");
+        currentTarget.appendChild(div1);
+        $(div1).addClass("modal");
+        $(div1).css("text-align", "center");
+
+        var btn1 = document.createElement("span");
+        $(btn1).addClass("btn btn-primary btn-sm pull-right");
+        var ic = document.createElement("i");
+        $(ic).addClass("fas fa-times");
+        btn1.appendChild(ic);
+
+        $(btn1).on('click', function (e) {
+            Sk.insertEvent("quit");
+        });
+
+        var div2 = document.createElement("div");
+        $(div2).addClass("modal-dialog modal-lg");
+        $(div2).css("display", "inline-block");
+        $(div2).width(self.width + 42);
+        $(div2).attr("role", "document");
+        div1.appendChild(div2);
+
+        var div3 = document.createElement("div");
+        $(div3).addClass("modal-content");
+        div2.appendChild(div3);
+
+        var div4 = document.createElement("div");
+        $(div4).addClass("modal-header d-flex justify-content-between");
+        var div5 = document.createElement("div");
+        $(div5).addClass("modal-body");
+        var div6 = document.createElement("div");
+        $(div6).addClass("modal-footer");
+        var div7 = document.createElement("div");
+        $(div7).addClass("col-md-8");
+        var div8 = document.createElement("div");
+        $(div8).addClass("col-md-4");
+        var header = document.createElement("h5");
+        Sk.title_container = header;
+        $(header).addClass("modal-title");
+
+
+        div3.appendChild(div4);
+        div3.appendChild(div5);
+        div3.appendChild(div6);
+
+        div4.appendChild(header);
+        div4.appendChild(btn1);
+        // div7.appendChild(header);
+        // div8.appendChild(btn1);
+
+        div5.appendChild(Sk.main_canvas);
+
+        createArrows(div6);
+        $(div1).modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+    function runCode() {
+        Sk.main_canvas = document.createElement("canvas");
+        Sk.quitHandler = function () {
+            $('.modal').modal('hide');
+        };
+        addModal();
+        var prog = ace.edit("editor").getValue();
+
+        Sk.misceval.asyncToPromise(function () {
+            try {
+                return Sk.importMainWithBody("<stdin>", false, prog, true);
+            } catch (e) {
+                alert(e)
+            }
+        });
+    }
+
+    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+    Sk.configure({read: builtinRead, output: printString});
+    $("#runbutton").click(function() {
+        runCode();
+    });
+    var sourcePath = "./test/snake.py";
+    if (window.location.search.substring(1).length > 0) {
+        sourcePath = "./test/" + window.location.search.substring(1)
+
+    }
+    $.get(sourcePath, function (data) {
+        editor.setValue(data, -1);
+    });
+
+</script>
+</body>
+</html>
+

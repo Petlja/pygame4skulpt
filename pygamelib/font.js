@@ -1,1 +1,0 @@
-var $builtinmodule = PygameLib.font_module;
