@@ -42,7 +42,7 @@ Our Pygame module can be imported as follows:
     };
 ~~~
 Base path should correspond to the location where you put the Pygame module. A CDN version can be found at 
-[https://cdn.rawgit.com/Petlja/pygame4skulpt/f40421ad/pygame/__init__.js](https://cdn.rawgit.com/Petlja/pygame4skulpt/f40421ad/pygame/__init__.js).
+[https://cdn.rawgit.com/Petlja/pygame4skulpt/3435847b/pygame/__init__.js](https://cdn.rawgit.com/Petlja/pygame4skulpt/3435847b/pygame/__init__.js).
 
 ### API
 #### Sk.main_canvas
