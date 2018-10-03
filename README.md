@@ -1,5 +1,5 @@
 # Pygame module for Skulpt
-An example of the module can be found on [pygame4skulpt.github.io](pygame4skulpt.github.io).
+An example of the module can be found on [http://petlja.github.io/pygame4skulpt](http://petlja.github.io/pygame4skulpt).
 ## How to use
 In order to use the module, you will probably want to have files served by a http server as in [run-example.sh](https://github.com/Petlja/pygame4skulpt/blob/master/run-example.sh) and [run-example.bat](https://github.com/Petlja/pygame4skulpt/blob/master/run-example.bat).
 Our Pygame module can be imported as follows:
@@ -41,13 +41,13 @@ Our Pygame module can be imported as follows:
         },
     };
 ~~~
-Base path should correspond to the location where you put the Pygame module. A CDN version can be found at 
+Base path should correspond to the location where you put the Pygame module. A CDN version can be found at
 [https://cdn.rawgit.com/Petlja/pygame4skulpt/3435847b/pygame/__init__.js](https://cdn.rawgit.com/Petlja/pygame4skulpt/3435847b/pygame/__init__.js).
 
 ### API
 #### Sk.main_canvas
-Since the Pygame module relies heavily on the graphics and event handling, we provide several functionalities for 
-communicating with the module. First and the most important one is registering your canvas. Basically, Pygame module 
+Since the Pygame module relies heavily on the graphics and event handling, we provide several functionalities for
+communicating with the module. First and the most important one is registering your canvas. Basically, Pygame module
 needs to have a reference to the canvas to be used for rendering graphics. In order to register your canvas, use the following:
 ~~~
 Sk.main_canvas = document.createElement("canvas");
@@ -58,7 +58,7 @@ Sk.main_canvas = document.getElementById("myCanvas");
 ~~~
 
 #### Sk.insertEvent
-Pygame module has mouse and keyboard event listeners added to canvas and window. If you want to have an additional way of 
+Pygame module has mouse and keyboard event listeners added to canvas and window. If you want to have an additional way of
 inserting the events (eg. you want to add the arrows that create keydown events) you can use Sk.insertEvent function as follows:
 ~~~
 Sk.insertEvent("left");
@@ -77,7 +77,7 @@ Sk.title_container = ...
 ~~~
 
 #### Sk.quitHandler
-After running the Pygame code, you want to make sure that everything got cleaned up. For that reason, there exists 
+After running the Pygame code, you want to make sure that everything got cleaned up. For that reason, there exists
 ```Sk.quitHandler``` which gets called by pygame.quit() method. An possible example is:
 ~~~
 Sk.quitHandler = function () {
@@ -85,7 +85,7 @@ Sk.quitHandler = function () {
 };
 ~~~
 ## Implemented parts
-###### Most useful stuff: 
+###### Most useful stuff:
 - [x] Color
     - [x] pygame.Color.r	—	Gets or sets the red value of the Color.
     - [x] pygame.Color.g	—	Gets or sets the green value of the Color.
@@ -274,7 +274,7 @@ Sk.quitHandler = function () {
     - [ ] pygame.encode_string	—	Encode a Unicode or bytes object
     - [ ] pygame.encode_file_path	—	Encode a Unicode or bytes object as a file system path
 
-###### Advanced stuff: 
+###### Advanced stuff:
 - [ ] cursors
 - [ ] joystick
 - [ ] mask
@@ -304,7 +304,7 @@ Sk.quitHandler = function () {
 - [ ] surfarray
 - [ ] math
 
-###### Other: 
+###### Other:
 - [ ] camera
 - [ ] cdrom
 - [ ] examples
@@ -314,5 +314,3 @@ Sk.quitHandler = function () {
     - [x] pygame.version.ver	—	version number as a string
     - [x] pygame.version.vernum	—	tupled integers of the version
     - [x] pygame.version.rev	—	repository revision of the build
-    
-
