@@ -44,7 +44,7 @@ clock = pg.time.Clock()
 f = pg.font.SysFont('console', 24, True)
 
 while True:
-    clock.tick(10)
+    clock.tick(8)
     for e in pg.event.get():
         if e.type == pg.QUIT:
             pg.quit()
