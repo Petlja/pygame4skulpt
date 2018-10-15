@@ -13,11 +13,11 @@ pg.display.set_caption("setanje broda")
 
 # otvaramo prozor dimenzije 400x400 piksela
 (sirina, visina) = (400, 400)
-prozor = pg.display.set_mode((sirina, visina), pg.FULLSCREEN)
+prozor = pg.display.set_mode((sirina, visina))
 
 # -*- acsection: main -*-
 # učitavamo sliku svemirskog broda
-brod = pg.image.load('spaceship.png')
+brod = pg.image.load('./test/spaceship.png')
 # očitavamo dimenzije slike
 brod_sirina = brod.get_width()
 brod_visina = brod.get_height()

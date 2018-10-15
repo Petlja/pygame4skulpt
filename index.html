@@ -10,7 +10,9 @@
 </head>
 
 <body>
-<a href="https://github.com/Petlja/pygame4skulpt"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+<a href="https://github.com/Petlja/pygame4skulpt"><img style="position: absolute; top: 0; left: 0; border: 0;"
+                                                       src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png"
+                                                       alt="Fork me on GitHub"></a>
 <div class="row">
     <div class="col-md-4"></div>
     <div class="col-md-4">
@@ -24,14 +26,32 @@
     <div id="mycanvas"></div>
     <div class="row">
         <div class="col-xs-6" id="editorsplace">
-             <div id="editor" style="border: 1px solid black"></div>
+            <div id="editor" style="border: 1px solid black"></div>
         </div>
         <div class="col-xs-6">
             <pre id="output" class="text-left"></pre>
         </div>
     </div>
     <div class="col-md-5"></div>
-    <a class="btn btn-primary col-md-2" id="runbutton">Run code<span class="glyphicon glyphicon-play" aria-hidden="true"></span></a>
+    <a class="btn btn-primary col-md-2" id="runbutton">Run code<span class="glyphicon glyphicon-play"
+                                                                     aria-hidden="true"></span></a>
+    <div class="container">
+            <div class="btn-group">
+
+                <div class="btn-group dropup">
+                        <button type="button" class="btn btn-small btn-default dropdown-toggle" data-toggle="dropdown">
+                            Select an example
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href=".?snake.py">Snake</a></li>
+                            <li><a href=".?spirograph.py">Spirograph</a></li>
+                            <li><a href=".?spaceship.py">Spaceship</a></li>
+                            <li><a href=".?draw.py">Drawing</a></li>
+                        </ul>
+                </div>
+            </div>
+        </div>
     <div class="col-md-5"></div>
 
 </div>
@@ -46,9 +66,9 @@
 
 <script>
     document.getElementById("editor").style['width'] = document.getElementById("editorsplace").offsetWidth;
-    document.getElementById("editor").style['height'] = 0.8 * window.innerHeight;
+    document.getElementById("editor").style['height'] = 0.7 * window.innerHeight;
     document.getElementById("editor").style['margin'] = "0 auto";
-    document.getElementById("output").style['height'] = 0.8 * window.innerHeight;
+    document.getElementById("output").style['height'] = 0.7 * window.innerHeight;
 </script>
 <script>
     var basePath = 'https://cdn.rawgit.com/Petlja/pygame4skulpt/3435847b/pygame/';
@@ -283,13 +303,13 @@
 
     (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
     Sk.configure({read: builtinRead, output: printString});
-    $("#runbutton").click(function() {
+    $("#runbutton").click(function () {
         runCode();
     });
+
     var sourcePath = "./test/snake.py";
     if (window.location.search.substring(1).length > 0) {
         sourcePath = "./test/" + window.location.search.substring(1)
-
     }
     $.get(sourcePath, function (data) {
         editor.setValue(data, -1);
