@@ -1,17 +1,28 @@
 var $builtinmodule = function (name) {
     mod = {};
     mod.load = new Sk.builtin.func(function (filename) {
-        return new Sk.misceval.promiseToSuspension(new Promise(function (resolve) {
-            var img = new Image();
-            img.src = Sk.ffi.remapToJs(filename);
-            img.onload = function () {
-                var t = Sk.builtin.tuple([img.width, img.height]);
-                var s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
-                var ctx = s.offscreen_canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0);
-                resolve(s);
-            }
-        }));
+        function imageExists(imageUrl) {
+            var http = new XMLHttpRequest();
+            http.open('HEAD', imageUrl, false);
+            http.send();
+            return http.status != 404;
+        }
+
+        if (imageExists(Sk.imgPath + Sk.ffi.remapToJs(filename))) {
+            return Sk.misceval.promiseToSuspension(new Promise(function (resolve) {
+                var img = new Image();
+                img.src = Sk.imgPath + Sk.ffi.remapToJs(filename);
+                img.onload = function () {
+                    var t = Sk.builtin.tuple([img.width, img.height]);
+                    var s = Sk.misceval.callsim(PygameLib.SurfaceType, t);
+                    var ctx = s.offscreen_canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0);
+                    resolve(s);
+                };
+            }));
+        }
+        else
+            throw new Sk.builtin.RuntimeError("Image does not exist.");
     });
     mod.get_extended = new Sk.builtin.func(function () {
         return Sk.ffi.remapToPy(false);
