@@ -5,7 +5,7 @@ var $builtinmodule = function (name) {
             var http = new XMLHttpRequest();
             http.open('HEAD', imageUrl, false);
             http.send();
-            return http.status != 404;
+            return http.status == 200;
         }
 
         if (imageExists(Sk.imgPath + Sk.ffi.remapToJs(filename))) {
