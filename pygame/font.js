@@ -1,23 +1,28 @@
 $builtinmodule = function (name) {
+    const namePyStr = new Sk.builtin.str('name'),
+        szPyStr = new Sk.builtin.str('sz'),
+        boldPyStr = new Sk.builtin.str('bold'),
+        italicPyStr = new Sk.builtin.str('italic'),
+        underlinePyStr = new Sk.builtin.str('underline');
     mod = {};
     mod.__is_initialized = false;
     mod.Font = Sk.misceval.buildClass(mod, font_Font, "FontType", []);
     PygameLib.FontType = mod.Font;
     mod.SysFont = new Sk.builtin.func(function (name, size, bold, italic) {
         var font = Sk.misceval.callsim(PygameLib.FontType, size);
-        Sk.abstr.sattr(font, 'name', name, false);
-        Sk.abstr.sattr(font, 'sz', size, false);
+        Sk.abstr.sattr(font, namePyStr, name, false);
+        Sk.abstr.sattr(font, szPyStr, size, false);
         if (bold === undefined) {
-            Sk.abstr.sattr(font, 'bold', Sk.ffi.remapToPy(false), false);
+            Sk.abstr.sattr(font, boldPyStr, Sk.ffi.remapToPy(false), false);
         } else {
-            Sk.abstr.sattr(font, 'bold', bold, false);
+            Sk.abstr.sattr(font, boldPyStr, bold, false);
         }
         if (italic === undefined) {
-            Sk.abstr.sattr(font, 'italic', Sk.ffi.remapToPy(false), false);
+            Sk.abstr.sattr(font, italicPyStr, Sk.ffi.remapToPy(false), false);
         } else {
-            Sk.abstr.sattr(font, 'italic', italic, false);
+            Sk.abstr.sattr(font, italicPyStr, italic, false);
         }
-        Sk.abstr.sattr(font, 'underline', Sk.ffi.remapToPy(false), false);
+        Sk.abstr.sattr(font, underlinePyStr, Sk.ffi.remapToPy(false), false);
         return font;
     });
     mod.init = new Sk.builtin.func(function () {
@@ -45,12 +50,17 @@ $builtinmodule = function (name) {
 };
 
 function font_Font($gbl, $loc) {
+    const namePyStr = new Sk.builtin.str('name'),
+        szPyStr = new Sk.builtin.str('sz'),
+        boldPyStr = new Sk.builtin.str('bold'),
+        italicPyStr = new Sk.builtin.str('italic'),
+        underlinePyStr = new Sk.builtin.str('underline');
     $loc.__init__ = new Sk.builtin.func(function (self, filename, size) {
-        Sk.abstr.sattr(self, 'name', name, false);
-        Sk.abstr.sattr(self, 'sz', size, false);
-        Sk.abstr.sattr(self, 'bold', Sk.ffi.remapToPy(false), false);
-        Sk.abstr.sattr(self, 'italic', Sk.ffi.remapToPy(false), false);
-        Sk.abstr.sattr(self, 'underline', Sk.ffi.remapToPy(false), false);
+        Sk.abstr.sattr(self, namePyStr, name, false);
+        Sk.abstr.sattr(self, szPyStr, size, false);
+        Sk.abstr.sattr(self, boldPyStr, Sk.ffi.remapToPy(false), false);
+        Sk.abstr.sattr(self, italicPyStr, Sk.ffi.remapToPy(false), false);
+        Sk.abstr.sattr(self, underlinePyStr, Sk.ffi.remapToPy(false), false);
         return Sk.builtin.none.none$;
     });
     $loc.render = new Sk.builtin.func(renderFont, $gbl);
@@ -62,37 +72,41 @@ function font_Font($gbl, $loc) {
     $loc.size.co_name = new Sk.builtins['str']('size');
 
     $loc.set_underline = new Sk.builtin.func(function (self, bool) {
-        Sk.abstr.sattr(self, 'underline', bool, false);
+        Sk.abstr.sattr(self, underlinePyStr, bool, false);
     }, $gbl);
     $loc.get_underline = new Sk.builtin.func(function (self) {
-        return Sk.abstr.gattr(self, 'underline', false);
+        return Sk.abstr.gattr(self, underlinePyStr, false);
     }, $gbl);
 
     $loc.set_italic = new Sk.builtin.func(function (self, bool) {
-        Sk.abstr.sattr(self, 'italic', bool, false);
+        Sk.abstr.sattr(self, italicPyStr, bool, false);
     }, $gbl);
     $loc.get_italic = new Sk.builtin.func(function (self) {
-        return Sk.abstr.gattr(self, 'italic', false);
+        return Sk.abstr.gattr(self, italicPyStr, false);
     }, $gbl);
 
     $loc.set_bold = new Sk.builtin.func(function (self, bool) {
-        Sk.abstr.sattr(self, 'bold', bool, false);
+        Sk.abstr.sattr(self, boldPyStr, bool, false);
     }, $gbl);
     $loc.get_bold = new Sk.builtin.func(function (self) {
-        return Sk.abstr.gattr(self, 'bold', false);
+        return Sk.abstr.gattr(self, boldPyStr, false);
     }, $gbl);
 }
 
 function fontSize(self, text) {
+    const namePyStr = new Sk.builtin.str('name'),
+        szPyStr = new Sk.builtin.str('sz'),
+        boldPyStr = new Sk.builtin.str('bold'),
+        italicPyStr = new Sk.builtin.str('italic');
     var msg = Sk.ffi.remapToJs(text);
-    var h = 1.01 * Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'sz', false));
-    var fontName = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'name', false));
+    var h = 1.01 * Sk.ffi.remapToJs(Sk.abstr.gattr(self, szPyStr, false));
+    var fontName = Sk.ffi.remapToJs(Sk.abstr.gattr(self, namePyStr, false));
     fontName = "" + h + "px " + fontName;
-    var bold = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'bold', false));
+    var bold = Sk.ffi.remapToJs(Sk.abstr.gattr(self, boldPyStr, false));
     if (bold) {
         fontName = 'bold ' + fontName;
     }
-    var italic = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'italic', false));
+    var italic = Sk.ffi.remapToJs(Sk.abstr.gattr(self, italicPyStr, false));
     if (italic) {
         fontName = 'italic ' + fontName;
     }
@@ -107,20 +121,29 @@ function fontSize(self, text) {
 }
 
 function renderFont(self, text, antialias, color, background) {
+    const namePyStr = new Sk.builtin.str('name'),
+        szPyStr = new Sk.builtin.str('sz'),
+        boldPyStr = new Sk.builtin.str('bold'),
+        italicPyStr = new Sk.builtin.str('italic'),
+        underlinePyStr = new Sk.builtin.str('underline');
     var msg = Sk.ffi.remapToJs(text);
     var STRETCH_CONST = 1.1;
-    var h = STRETCH_CONST * Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'sz', false));
-    var fontName = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'name', false));
+    var h = STRETCH_CONST * Sk.ffi.remapToJs(Sk.abstr.gattr(self, szPyStr, false));
+    var fontName = Sk.ffi.remapToJs(Sk.abstr.gattr(self, namePyStr, false));
+    if (fontName === "") {
+        fontName = "console"
+    }
     fontName = "" + h + "px " + fontName;
-    var bold = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'bold', false));
+    var bold = Sk.ffi.remapToJs(Sk.abstr.gattr(self, boldPyStr, false));
     if (bold) {
         fontName = 'bold ' + fontName;
     }
-    var italic = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'italic', false));
+    console.log("fontName:", fontName);
+    var italic = Sk.ffi.remapToJs(Sk.abstr.gattr(self, italicPyStr, false));
     if (italic) {
         fontName = 'italic ' + fontName;
     }
-    var underline = Sk.ffi.remapToJs(Sk.abstr.gattr(self, 'underline', false));
+    var underline = Sk.ffi.remapToJs(Sk.abstr.gattr(self, underlinePyStr, false));
 
     var w = 300;
 
