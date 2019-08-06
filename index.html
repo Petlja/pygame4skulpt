@@ -73,6 +73,7 @@
 <script>
     $(function () {
         const basePath = './pygame_dist/';
+        // const basePath = './pygame/';
         const externalLibs = {
             './pygame.js': {
                 path: basePath + '__init__.js',
@@ -113,6 +114,9 @@
             'pygame/locals.js': {
                 path: basePath + 'locals.js'
             },
+            'pygame/sprite.py': {
+                path: basePath + 'sprite.py'
+            },
         };
 
         function resetTarget() {
@@ -141,11 +145,11 @@
 
             var swapIcon = function (id) {
                 $(arrows[id].firstChild).removeClass("fa-arrow-" + direction[id]).addClass("fa-arrow-circle-" + direction[id]);
-            }
+            };
 
             var returnIcon = function (id) {
                 $(arrows[id].firstChild).removeClass("fa-arrow-circle-" + direction[id]).addClass("fa-arrow-" + direction[id]);
-            }
+            };
 
             $(arrows[0]).on('mousedown', function () {
                 Sk.insertEvent("left");
@@ -209,7 +213,7 @@
                         break;
                 }
             });
-        };
+        }
 
         function printString(text) {
             var output = document.getElementById("output");
@@ -225,10 +229,11 @@
         function builtinRead(filename) {
             if (filename in externalLibs) {
                 const tmpPath = externalLibs[filename]["path"];
-                if (filename === "./pygame.js") {
+                if (filename === "./pygame.js" || filename === "sprite.py") {
                     return Sk.misceval.promiseToSuspension(
                         fetch(tmpPath)
                             .then(r => r.text()))
+
                 } else {
                     let request = new XMLHttpRequest();
                     request.open("GET", tmpPath, false);

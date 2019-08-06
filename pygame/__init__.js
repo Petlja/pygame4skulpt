@@ -1285,9 +1285,18 @@ update.co_varnames = ['self'];
 
 function blit(self, other, pos) {
     // other, pos;
-    var target_pos_js = Sk.ffi.remapToJs(pos);
-
-
+    let target_pos_js;
+    if (Sk.misceval.isTrue(Sk.builtin.isinstance(pos, Sk.builtin.tuple))||
+        Sk.misceval.isTrue(Sk.builtin.isinstance(pos, Sk.builtin.list))
+    ){
+        target_pos_js = Sk.ffi.remapToJs(pos);
+    } else if (Sk.misceval.isTrue(Sk.builtin.isinstance(pos, PygameLib.RectType))) {
+        // debugger;
+        const tmpName = Sk.builtin.str("topleft");
+        target_pos_js = Sk.ffi.remapToJs(Sk.builtin.getattr(pos, tmpName))
+    } else {
+        target_pos_js = [0, 0]
+    }
     self.context2d.drawImage(other.offscreen_canvas, target_pos_js[0], target_pos_js[1]);
     return Sk.misceval.callsim(PygameLib.RectType,
         Sk.builtin.tuple([0, 0]), Sk.builtin.tuple([other.offscreen_canvas.width, other.offscreen_canvas.height]))
