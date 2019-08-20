@@ -92,3 +92,4 @@ var keyboardModifierKeys = [PygameLib.constants.K_LSHIFT, PygameLib.constants.K_
     PygameLib.constants.K_LCTRL, PygameLib.constants.K_RCTRL, PygameLib.constants.K_LALT, PygameLib.constants.K_RALT,
     PygameLib.constants.K_LMETA, PygameLib.constants.K_RMETA, 0, PygameLib.constants.K_CAPSLOCK,
     PygameLib.constants.K_NUMLOCK, PygameLib.constants.K_MODE];
+    

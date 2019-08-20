@@ -3,19 +3,19 @@ Sk.insertEvent = function (eventName) {
     var e = [];
     switch (eventName) {
         case "left":
-            e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_LEFT}];
+            e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_LEFT }];
             break;
         case "right":
-            e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_RIGHT}];
+            e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_RIGHT }];
             break;
         case "up":
-            e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_UP}];
+            e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_UP }];
             break;
         case "down":
-            e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_DOWN}];
+            e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_DOWN }];
             break;
         case "quit":
-            e = [PygameLib.constants.QUIT, {key: PygameLib.constants.K_ESCAPE}];
+            e = [PygameLib.constants.QUIT, { key: PygameLib.constants.K_ESCAPE }];
             break;
     }
     PygameLib.eventQueue.unshift(e);
@@ -61,26 +61,25 @@ var createKeyboardEvent = function (event) {
     } else if (event.type === "keydown") {
         keyPGConstant = PygameLib.constants.KEYDOWN;
     }
+    var keyId = event.which;
+
     switch (event.which) {
         case 27:
-            e = [PygameLib.constants.QUIT, {key: PygameLib.constants.K_ESCAPE}];
-            break;
+            return [PygameLib.constants.QUIT, { key: PygameLib.constants.K_ESCAPE }];
         case 37:
-            e = [keyPGConstant, {key: PygameLib.constants.K_LEFT}];
-            break;
+            return [keyPGConstant, { key: PygameLib.constants.K_LEFT }];
         case 38:
-            e = [keyPGConstant, {key: PygameLib.constants.K_UP}];
-            break;
+            return [keyPGConstant, { key: PygameLib.constants.K_UP }];
         case 39:
-            e = [keyPGConstant, {key: PygameLib.constants.K_RIGHT}];
-            break;
+            return [keyPGConstant, { key: PygameLib.constants.K_RIGHT }];
         case 40:
-            e = [keyPGConstant, {key: PygameLib.constants.K_DOWN}];
-            break;
+            return [keyPGConstant, { key: PygameLib.constants.K_DOWN }];
         default:
-            e = [keyPGConstant, {key: event.which}];
+            var difference = 0;
+            if ((event.which <= 90) || (event.which >= 65))
+                difference = 32;
+            return [keyPGConstant, { key: (event.which + difference)}];
     }
-    return e;
 };
 
 function keyEventListener(event) {
@@ -1094,12 +1093,14 @@ function pygame_init() {
     pygame_m.$d['event'] = display_m.$d['event'];
     pygame_m.$d['draw'] = display_m.$d['draw'];
     pygame_m.$d['image'] = display_m.$d['image'];
+    delete PygameLib.eventQueue;
+    delete PygameLib.eventTimer;
     PygameLib.eventQueue = [];
     PygameLib.pressedKeys = {}
     PygameLib.eventTimer = {};
     PygameLib.running = true;
     PygameLib.repeatKeys = false;
-    PygameLib.mouseData = {"button": [0, 0, 0], "pos": [0, 0], "rel": [0, 0]};
+    PygameLib.mouseData = { "button": [0, 0, 0], "pos": [0, 0], "rel": [0, 0] };
 }
 
 var mouseEventListener = function (event) {
@@ -1149,12 +1150,12 @@ var mouseEventListener = function (event) {
             middleButton = 1;
         }
         var e = [PygameLib.constants.MOUSEMOTION,
-            {
-                key: PygameLib.constants.MOUSEMOTION,
-                pos: [canvasX, canvasY],
-                rel: [event.movementX, event.movementY],
-                buttons: [leftButton, middleButton, rightButton]
-            }];
+        {
+            key: PygameLib.constants.MOUSEMOTION,
+            pos: [canvasX, canvasY],
+            rel: [event.movementX, event.movementY],
+            buttons: [leftButton, middleButton, rightButton]
+        }];
         PygameLib.mouseData["pos"] = [canvasX, canvasY];
         PygameLib.mouseData["rel"] = [event.movementX, event.movementY];
     }
@@ -1162,7 +1163,7 @@ var mouseEventListener = function (event) {
 };
 
 // Surface((width, height))
-var init$1 = function $__init__123$(self, size, fullscreen = false, main = false) {
+var init$1 = function $__init__123$(self, size, fullscreen = false, main = true) {
     Sk.builtin.pyCheckArgs('__init__', arguments, 2, 5, false, false);
     var tuple_js = Sk.ffi.remapToJs(size);
     self.width = Math.round(tuple_js[0]);
@@ -1177,7 +1178,7 @@ var init$1 = function $__init__123$(self, size, fullscreen = false, main = false
         window.addEventListener("keydown", keyEventListener);
         window.addEventListener("keyup", keyEventListener);
 
-        if (fullscreen) {
+        /*if (fullscreen) {
             self.width = window.innerWidth;
             self.height = window.innerHeight;
             self.main_canvas.style["z-index"] = "100";
@@ -1195,7 +1196,7 @@ var init$1 = function $__init__123$(self, size, fullscreen = false, main = false
                 self.offscreen_canvas.height = self.height;
                 self.context2d.drawImage(self.main_canvas, 0, 0);
             };
-        }
+        } */
     }
     self.main_canvas.width = self.width;
     self.main_canvas.height = self.height;
@@ -1208,14 +1209,16 @@ var init$1 = function $__init__123$(self, size, fullscreen = false, main = false
     self.offscreen_canvas.height = self.height;
     self.main_canvas.setAttribute('width', self.width);
     self.main_canvas.setAttribute('height', self.height);
+    self.main_canvas.setAttribute('style', "border: 1px solid darkgray;");
     fillBlack(self.main_context, self.main_canvas.width, self.main_canvas.height);
     fillBlack(self.context2d, self.width, self.height);
     return Sk.builtin.none.none$;
+
 };
 
 function fillBlack(ctx, w, h) {
     ctx.beginPath();
-    ctx.rect(0, 0, w-1, h-1);
+    ctx.rect(0, 0, w - 1, h - 1);
     ctx.fillStyle = "rgba(0, 0, 0, 0.0)";
     ctx.fill();
 }
@@ -1356,7 +1359,7 @@ function color_type_f($gbl, $loc) {
     $loc.__init__ = new Sk.builtin.func(function (self, r, g, b, a) {
         Sk.builtin.pyCheckArgs('__init__', arguments, 2, 5, false, false);
         var r_js = Sk.ffi.remapToJs(r);
-        if (typeof(r_js) == 'string') {
+        if (typeof (r_js) == 'string') {
             var color_name = r_js;
             r = Sk.ffi.remapToPy(PygameLib.Colors[color_name][0]);
             g = Sk.ffi.remapToPy(PygameLib.Colors[color_name][1]);
