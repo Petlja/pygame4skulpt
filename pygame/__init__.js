@@ -85,6 +85,10 @@ var createKeyboardEvent = function (event) {
 
 function keyEventListener(event) {
     var e = createKeyboardEvent(event);
+    if(e[0] == PygameLib.constants.KEYDOWN)
+        PygameLib.pressedKeys[e[1].key] = true
+    else if ((e[0] == PygameLib.constants.KEYUP))
+        delete PygameLib.pressedKeys[e[1].key]
     if (PygameLib.eventQueue) {
         if (PygameLib.repeatKeys) {
             PygameLib.eventQueue.unshift(e);
@@ -1091,6 +1095,7 @@ function pygame_init() {
     pygame_m.$d['draw'] = display_m.$d['draw'];
     pygame_m.$d['image'] = display_m.$d['image'];
     PygameLib.eventQueue = [];
+    PygameLib.pressedKeys = {}
     PygameLib.eventTimer = {};
     PygameLib.running = true;
     PygameLib.repeatKeys = false;
@@ -1113,13 +1118,13 @@ var mouseEventListener = function (event) {
     canvasX = event.clientX - totalOffsetX;
     canvasY = event.clientY - totalOffsetY;
 
-    var button = event.button + 1;
+    var button = event.button;
     if (event.type === "mousedown") {
         var e = [PygameLib.constants.MOUSEBUTTONDOWN,
             {
                 key: PygameLib.constants.MOUSEBUTTONDOWN,
                 pos: [canvasX, canvasY],
-                button: button
+                button: button + 1
             }];
         PygameLib.mouseData["button"][button] = 1;
     } else if (event.type === "mouseup") {
@@ -1127,7 +1132,7 @@ var mouseEventListener = function (event) {
             {
                 key: PygameLib.constants.MOUSEBUTTONUP,
                 pos: [canvasX, canvasY],
-                button: button
+                button: button + 1 
             }];
         PygameLib.mouseData["button"][button] = 0;
     } else if (event.type === "mousemove") {
