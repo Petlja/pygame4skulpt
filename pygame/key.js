@@ -18,9 +18,10 @@ var $builtinmodule = function (name) {
         return Sk.ffi.remapToPy(document.hasFocus());
     });
     mod.get_pressed = new Sk.builtin.func(function () {
-        var pressed = new Array(323).fill(false);
-        for (var i = 0; i < PygameLib.eventQueue.length; i++) {
-            pressed[PygameLib.eventQueue[i][1].key] = true;
+        var pressed = new Array(PygameLib.constants.K_LAST+1).fill(false);
+        for(var key = 0; key< pressed.length; key ++) {
+            if(PygameLib.pressedKeys[key])
+                pressed[key] = true
         }
         return Sk.ffi.remapToPy(pressed);
     });
