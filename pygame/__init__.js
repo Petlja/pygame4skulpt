@@ -76,7 +76,7 @@ var createKeyboardEvent = function (event) {
             return [keyPGConstant, { key: PygameLib.constants.K_DOWN }];
         default:
             var difference = 0;
-            if ((event.which <= 90) || (event.which >= 65))
+            if ((event.which <= 90) && (event.which >= 65))
                 difference = 32;
             return [keyPGConstant, { key: (event.which + difference)}];
     }
