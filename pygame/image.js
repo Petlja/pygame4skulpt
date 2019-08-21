@@ -3,7 +3,7 @@ var $builtinmodule = function (name) {
     mod.load = new Sk.builtin.func(function (filename) {
         function imageExists(imageUrl) {
             var http = new XMLHttpRequest();
-            http.open('HEAD', imageUrl, false);
+            http.open('HEAD', imageUrl, true);
             http.send();
             return http.status === 200;
         }
@@ -11,6 +11,7 @@ var $builtinmodule = function (name) {
         if (imageExists(Sk.imgPath + Sk.ffi.remapToJs(filename))) {
             return Sk.misceval.promiseToSuspension(new Promise(function (resolve) {
                 var img = new Image();
+                img.crossOrigin='';
                 img.src = Sk.imgPath + Sk.ffi.remapToJs(filename);
                 img.onload = function () {
                     var t = Sk.builtin.tuple([img.width, img.height]);
