@@ -1224,8 +1224,9 @@ var init$1 = function $__init__123$(self, size, fullscreen = false, main = false
 
 function fillBlack(ctx, w, h) {
     ctx.beginPath();
-    ctx.rect(0, 0, w - 1, h - 1);
-    ctx.fillStyle = "rgba(0, 0, 0, 0.0)";
+    ctx.rect(0, 0, w, h);
+    // ctx.fillStyle = "rgba(100, 100, 100, 0.0)";
+    ctx.fillStyle = "black";
     ctx.fill();
 }
 

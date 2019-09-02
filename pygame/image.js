@@ -3,7 +3,7 @@ var $builtinmodule = function (name) {
     mod.load = new Sk.builtin.func(function (filename) {
         function imageExists(imageUrl) {
             var http = new XMLHttpRequest();
-            http.open('HEAD', imageUrl, true);
+            http.open('HEAD', imageUrl, false);
             http.send();
             return http.status === 200;
         }
@@ -46,6 +46,7 @@ var $builtinmodule = function (name) {
                     can.height = height;
                     return can;
                 }
+
                 var newImage = canvas(img.width, img.height); // create new image
                 newImage.ctx = newImage.getContext("2d");  // get image context
                 newImage.ctx.drawImage(image, 0, 0); // draw the image onto the canvas

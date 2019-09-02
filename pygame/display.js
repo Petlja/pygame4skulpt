@@ -24,7 +24,6 @@ var $builtinmodule = function (name) {
         } else {
             mod.surface = Sk.misceval.callsim(PygameLib.SurfaceType, size, false, true);
         }
-
         PygameLib.surface = mod.surface;
         return mod.surface;
     });

@@ -72,8 +72,8 @@
 </script>
 <script>
     $(function () {
-        const basePath = './pygame_dist/';
-        // const basePath = './pygame/';
+        // const basePath = './pygame_dist/';
+        const basePath = './pygame/';
         const externalLibs = {
             './pygame.js': {
                 path: basePath + '__init__.js',
@@ -336,9 +336,9 @@
             };
             Sk.abstr.setUpInheritance("KeyboardInterrupt", Sk.builtin.KeyboardInterrupt, Sk.builtin.BaseException);
             Sk.configure({
-                python3: true,
                 killableWhile: killWhileAndForBool,
                 killableFor: killWhileAndForBool,
+                __future__: Sk.python3,
             });
         }
 
