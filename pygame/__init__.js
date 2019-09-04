@@ -1172,7 +1172,7 @@ var mouseEventListener = function (event) {
 };
 
 // Surface((width, height))
-var init$1 = function $__init__123$(self, size, fullscreen = false, main = false, background = true) {
+var init$1 = function $__init__123$(self, size, fullscreen = false, main = false) {
     Sk.builtin.pyCheckArgs('__init__', arguments, 2, 5, false, false);
     var tuple_js = Sk.ffi.remapToJs(size);
     self.width = Math.round(tuple_js[0]);
