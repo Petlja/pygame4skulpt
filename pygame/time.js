@@ -150,3 +150,4 @@ function time_Clock($gbl, $loc) {
 }
 
 time_Clock.co_name = new Sk.builtin.str('Clock');
+

@@ -3,19 +3,19 @@ Sk.insertEvent = function (eventName) {
     var e = [];
     switch (eventName) {
         case "left":
-            e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_LEFT}];
+            e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_LEFT }];
             break;
         case "right":
-            e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_RIGHT}];
+            e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_RIGHT }];
             break;
         case "up":
-            e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_UP}];
+            e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_UP }];
             break;
         case "down":
-            e = [PygameLib.constants.KEYDOWN, {key: PygameLib.constants.K_DOWN}];
+            e = [PygameLib.constants.KEYDOWN, { key: PygameLib.constants.K_DOWN }];
             break;
         case "quit":
-            e = [PygameLib.constants.QUIT, {key: PygameLib.constants.K_ESCAPE}];
+            e = [PygameLib.constants.QUIT, { key: PygameLib.constants.K_ESCAPE }];
             break;
     }
     PygameLib.eventQueue.unshift(e);
@@ -72,6 +72,7 @@ var createKeyboardEvent = function (event) {
     }
     var keyId = event.which;
 
+
     switch (keyId) {
         case 27:
             return [PygameLib.constants.QUIT, {key: PygameLib.constants.K_ESCAPE}];
@@ -93,6 +94,7 @@ var createKeyboardEvent = function (event) {
 
 function keyEventListener(event) {
     var e = createKeyboardEvent(event);
+  
     if (e[0] === PygameLib.constants.KEYDOWN)
         PygameLib.pressedKeys[e[1].key] = true;
     else if ((e[0] === PygameLib.constants.KEYUP))
@@ -1115,7 +1117,6 @@ function pygame_init() {
     PygameLib.repeatKeys = false;
     PygameLib.mouseData = {"button": [0, 0, 0], "pos": [0, 0], "rel": [0, 0]};
     // }
-
 }
 
 var mouseEventListener = function (event) {
@@ -1165,12 +1166,12 @@ var mouseEventListener = function (event) {
             middleButton = 1;
         }
         var e = [PygameLib.constants.MOUSEMOTION,
-            {
-                key: PygameLib.constants.MOUSEMOTION,
-                pos: [canvasX, canvasY],
-                rel: [event.movementX, event.movementY],
-                buttons: [leftButton, middleButton, rightButton]
-            }];
+        {
+            key: PygameLib.constants.MOUSEMOTION,
+            pos: [canvasX, canvasY],
+            rel: [event.movementX, event.movementY],
+            buttons: [leftButton, middleButton, rightButton]
+        }];
         PygameLib.mouseData["pos"] = [canvasX, canvasY];
         PygameLib.mouseData["rel"] = [event.movementX, event.movementY];
     }
@@ -1192,6 +1193,7 @@ var init$1 = function $__init__123$(self, size, fullscreen = false, main = true)
         self.main_canvas.addEventListener('mousemove', mouseEventListener);
         window.addEventListener("keydown", keyEventListener);
         window.addEventListener("keyup", keyEventListener);
+
 
         /*if (Sk.ffi.remapToJs(fullscreen)) {
             self.width = window.innerWidth;
@@ -1224,12 +1226,12 @@ var init$1 = function $__init__123$(self, size, fullscreen = false, main = true)
     self.main_canvas.setAttribute('width', self.width);
     self.main_canvas.setAttribute('height', self.height);
     self.main_canvas.setAttribute('style', "border: 1px solid darkgray;");
-
     fillBlack(self.main_context, self.main_canvas.width, self.main_canvas.height);
     fillBlack(self.context2d, self.width, self.height);
 
 
     return Sk.builtin.none.none$;
+
 };
 
 function fillBlack(ctx, w, h) {
