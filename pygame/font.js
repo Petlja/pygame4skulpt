@@ -127,18 +127,18 @@ function renderFont(self, text, antialias, color, background) {
         italicPyStr = new Sk.builtin.str('italic'),
         underlinePyStr = new Sk.builtin.str('underline');
     var msg = Sk.ffi.remapToJs(text);
-    var STRETCH_CONST = 1.1;
+    var STRETCH_CONST = 1;
+    const realFontSize = 0.64;
     var h = STRETCH_CONST * Sk.ffi.remapToJs(Sk.abstr.gattr(self, szPyStr, false));
     var fontName = Sk.ffi.remapToJs(Sk.abstr.gattr(self, namePyStr, false));
     if (fontName === "") {
         fontName = "console"
     }
-    fontName = "" + h + "px " + fontName;
+    fontName = "" + h.toFixed(2) + "px " + fontName;
     var bold = Sk.ffi.remapToJs(Sk.abstr.gattr(self, boldPyStr, false));
     if (bold) {
         fontName = 'bold ' + fontName;
     }
-    console.log("fontName:", fontName);
     var italic = Sk.ffi.remapToJs(Sk.abstr.gattr(self, italicPyStr, false));
     if (italic) {
         fontName = 'italic ' + fontName;
@@ -152,21 +152,25 @@ function renderFont(self, text, antialias, color, background) {
     var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
     var ctx = s.offscreen_canvas.getContext("2d");
     ctx.font = fontName;
+    console.log("fontName:", fontName.split(" "));
     w = ctx.measureText(msg).width;
-
-    t = Sk.builtin.tuple([w, h]);
+    t = Sk.builtin.tuple([w, h / realFontSize]);
     s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
     ctx = s.offscreen_canvas.getContext("2d");
+    // clear the canvas,don't need background color
+    ctx.clearRect(0, 0, s.offscreen_canvas.width, s.offscreen_canvas.height);
+    fontName = fontName.replace(/\d+.*px/g, (realFontSize * h).toFixed(2)+"px");
+    ctx.font = fontName;
+
     if (background !== undefined) {
         var background_js = PygameLib.extract_color(background);
         ctx.fillStyle = 'rgba(' + background_js[0] + ', ' + background_js[1] + ', ' + background_js[2] + ', '
             + background_js[3] + ')';
         ctx.fillRect(0, 0, s.offscreen_canvas.width, s.offscreen_canvas.height);
     }
-    ctx.font = fontName;
     var color_js = PygameLib.extract_color(color);
     ctx.fillStyle = 'rgba(' + color_js[0] + ', ' + color_js[1] + ', ' + color_js[2] + ', ' + color_js[3] + ')';
-    ctx.fillText(msg, 0, 1 / STRETCH_CONST * h);
+    ctx.fillText(msg, 0, 1 / (STRETCH_CONST + 0.2) * h * realFontSize);
     if (underline) {
         ctx.strokeStyle = 'rgba(' + color_js[0] + ', ' + color_js[1] + ', ' + color_js[2] + ', ' + color_js[3] + ')';
         ctx.lineWidth = 1;

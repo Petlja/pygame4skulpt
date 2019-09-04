@@ -1172,7 +1172,7 @@ var mouseEventListener = function (event) {
 };
 
 // Surface((width, height))
-var init$1 = function $__init__123$(self, size, fullscreen = false, main = false) {
+var init$1 = function $__init__123$(self, size, fullscreen = false, main = false, background = true) {
     Sk.builtin.pyCheckArgs('__init__', arguments, 2, 5, false, false);
     var tuple_js = Sk.ffi.remapToJs(size);
     self.width = Math.round(tuple_js[0]);
@@ -1217,8 +1217,11 @@ var init$1 = function $__init__123$(self, size, fullscreen = false, main = false
     self.offscreen_canvas.height = self.height;
     self.main_canvas.setAttribute('width', self.width);
     self.main_canvas.setAttribute('height', self.height);
+
     fillBlack(self.main_context, self.main_canvas.width, self.main_canvas.height);
     fillBlack(self.context2d, self.width, self.height);
+
+
     return Sk.builtin.none.none$;
 };
 
@@ -1287,9 +1290,9 @@ update.co_varnames = ['self'];
 function blit(self, other, pos) {
     // other, pos;
     let target_pos_js;
-    if (Sk.misceval.isTrue(Sk.builtin.isinstance(pos, Sk.builtin.tuple))||
+    if (Sk.misceval.isTrue(Sk.builtin.isinstance(pos, Sk.builtin.tuple)) ||
         Sk.misceval.isTrue(Sk.builtin.isinstance(pos, Sk.builtin.list))
-    ){
+    ) {
         target_pos_js = Sk.ffi.remapToJs(pos);
     } else if (Sk.misceval.isTrue(Sk.builtin.isinstance(pos, PygameLib.RectType))) {
         // debugger;
