@@ -152,7 +152,6 @@ function renderFont(self, text, antialias, color, background) {
     var s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
     var ctx = s.offscreen_canvas.getContext("2d");
     ctx.font = fontName;
-    console.log("fontName:", fontName.split(" "));
     w = ctx.measureText(msg).width;
     t = Sk.builtin.tuple([w, h / realFontSize]);
     s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
