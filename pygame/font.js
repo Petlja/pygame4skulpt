@@ -153,11 +153,9 @@ function renderFont(self, text, antialias, color, background) {
     var ctx = s.offscreen_canvas.getContext("2d");
     ctx.font = fontName;
     w = ctx.measureText(msg).width;
-    t = Sk.builtin.tuple([w, h / realFontSize]);
+    t = Sk.builtin.tuple([w * realFontSize, h * realFontSize * 1.2]);
     s = Sk.misceval.callsim(PygameLib.SurfaceType, t, false);
     ctx = s.offscreen_canvas.getContext("2d");
-    // clear the canvas,don't need background color
-    ctx.clearRect(0, 0, s.offscreen_canvas.width, s.offscreen_canvas.height);
     fontName = fontName.replace(/\d+.*px/g, (realFontSize * h).toFixed(2)+"px");
     ctx.font = fontName;
 

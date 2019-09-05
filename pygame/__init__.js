@@ -94,7 +94,7 @@ var createKeyboardEvent = function (event) {
 
 function keyEventListener(event) {
     var e = createKeyboardEvent(event);
-  
+
     if (e[0] === PygameLib.constants.KEYDOWN)
         PygameLib.pressedKeys[e[1].key] = true;
     else if ((e[0] === PygameLib.constants.KEYUP))
@@ -1156,13 +1156,13 @@ var mouseEventListener = function (event) {
         var leftButton = 0;
         var rightButton = 0;
         var middleButton = 0;
-        if (event.buttons & (1 << 0)) {
+        if (event.buttons && (1 << 0)) {
             leftButton = 1;
         }
-        if (event.buttons & (1 << 1)) {
+        if (event.buttons && (1 << 1)) {
             rightButton = 1;
         }
-        if (event.buttons & (1 << 2)) {
+        if (event.buttons && (1 << 2)) {
             middleButton = 1;
         }
         var e = [PygameLib.constants.MOUSEMOTION,
@@ -1185,8 +1185,8 @@ var init$1 = function $__init__123$(self, size, fullscreen = false, main = true)
     self.width = Math.round(tuple_js[0]);
     self.height = Math.round(tuple_js[1]);
     self.main_canvas = document.createElement("canvas");
-
-    if (Sk.ffi.remapToJs(main)) {
+    main = Sk.ffi.remapToJs(main);
+    if (main) {
         self.main_canvas = Sk.main_canvas;
         self.main_canvas.addEventListener('mousedown', mouseEventListener);
         self.main_canvas.addEventListener('mouseup', mouseEventListener);
@@ -1226,19 +1226,22 @@ var init$1 = function $__init__123$(self, size, fullscreen = false, main = true)
     self.main_canvas.setAttribute('width', self.width);
     self.main_canvas.setAttribute('height', self.height);
     self.main_canvas.setAttribute('style', "border: 1px solid darkgray;");
-    fillBlack(self.main_context, self.main_canvas.width, self.main_canvas.height);
-    fillBlack(self.context2d, self.width, self.height);
-
+    fillBlack(self.main_context, self.main_canvas.width, self.main_canvas.height, main);
+    fillBlack(self.context2d, self.width, self.height, main);
 
     return Sk.builtin.none.none$;
 
 };
 
-function fillBlack(ctx, w, h) {
+function fillBlack(ctx, w, h, main = false) {
     ctx.beginPath();
     ctx.rect(0, 0, w, h);
-    // ctx.fillStyle = "rgba(100, 100, 100, 0.0)";
-    ctx.fillStyle = "black";
+    console.log("main:", main);
+    if (main){
+        ctx.fillStyle = "black";
+    } else {
+        ctx.fillStyle = "rgba(100, 100, 100, 0.0)";
+    }
     ctx.fill();
 }
 
