@@ -1,4 +1,5 @@
 .vscode/
 .idea/
 venv/
+.venv/
 .DS_Store
