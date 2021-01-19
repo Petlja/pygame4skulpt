@@ -1,7 +1,14 @@
 # Pygame module for Skulpt
 An example of the module can be found on [http://petlja.github.io/pygame4skulpt](http://petlja.github.io/pygame4skulpt).
 ## How to use
-In order to use the module, you will probably want to have files served by a http server as in [run-example.sh](https://github.com/Petlja/pygame4skulpt/blob/master/run-example.sh) and [run-example.bat](https://github.com/Petlja/pygame4skulpt/blob/master/run-example.bat).
+In order to use the module, you will probably want to have files served by a http server as in [run-example.sh](https://github.com/Petlja/pygame4skulpt/blob/master/run-example.sh) and [run-example.bat](https://github.com/Petlja/pygame4skulpt/blob/master/run-example.bat).  
+else:
+use `python compress_js.py` to compress js files.  
+this command needs environment:   
+`npm`  
+`python3.5+`  
+You need install:  
+```npm i install babel uglifyjs -g```  
 Our Pygame module can be imported as follows:
 ~~~
     var basePath = 'pygame/';

@@ -5,8 +5,8 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css"
           integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -36,27 +36,27 @@
     <a class="btn btn-primary col-md-2" id="runbutton">Run code<span class="glyphicon glyphicon-play"
                                                                      aria-hidden="true"></span></a>
     <div class="container">
-            <div class="btn-group">
+        <div class="btn-group">
 
-                <div class="btn-group dropup">
-                        <button type="button" class="btn btn-small btn-default dropdown-toggle" data-toggle="dropdown">
-                            Select an example
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href=".?snake.py">Snake</a></li>
-                            <li><a href=".?spirograph.py">Spirograph</a></li>
-                            <li><a href=".?spaceship.py">Spaceship</a></li>
-                            <li><a href=".?draw.py">Drawing</a></li>
-                        </ul>
-                </div>
+            <div class="btn-group dropup">
+                <button type="button" class="btn btn-small btn-default dropdown-toggle" data-toggle="dropdown">
+                    Select an example
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href=".?snake.py">Snake</a></li>
+                    <li><a href=".?spirograph.py">Spirograph</a></li>
+                    <li><a href=".?spaceship.py">Spaceship</a></li>
+                    <li><a href=".?draw.py">Drawing</a></li>
+                </ul>
             </div>
         </div>
+    </div>
     <div class="col-md-5"></div>
 
 </div>
 <div class="col-md-2"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="./js/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/chrome");
@@ -71,249 +71,315 @@
     document.getElementById("output").style['height'] = 0.7 * window.innerHeight;
 </script>
 <script>
-    var basePath = 'https://cdn.rawgit.com/Petlja/pygame4skulpt/3435847b/pygame/';
-    Sk.externalLibraries = {
-        'pygame': {
-            path: basePath + '__init__.js',
-        },
-        'pygame.display': {
-            path: basePath + 'display.js',
-        },
-        'pygame.draw': {
-            path: basePath + 'draw.js',
-        },
-        'pygame.event': {
-            path: basePath + 'event.js',
-        },
-        'pygame.font': {
-            path: basePath + 'font.js',
-        },
-        'pygame.image': {
-            path: basePath + 'image.js',
-        },
-        'pygame.key': {
-            path: basePath + 'key.js',
-        },
-        'pygame.mouse': {
-            path: basePath + 'mouse.js',
-        },
-        'pygame.time': {
-            path: basePath + 'time.js',
-        },
-        'pygame.transform': {
-            path: basePath + 'transform.js',
-        },
-        'pygame.version': {
-            path: basePath + 'version.js',
-        },
-    };
-
-    function resetTarget() {
-        var selector = Sk.TurtleGraphics.target;
-        var target = typeof selector === "string" ? document.getElementById(selector) : selector;
-        // clear canvas container
-        while (target.firstChild) {
-            target.removeChild(target.firstChild);
-        }
-        return target;
-    }
-
-    function createArrows(div) {
-        var arrows = new Array(4);
-        var direction = ["left", "right", "up", "down"];
-        $(div).addClass("d-flex justify-content-center");
-        for (var i = 0; i < 4; i++) {
-            arrows[i] = document.createElement("span");
-            div.appendChild(arrows[i]);
-            $(arrows[i]).addClass("btn btn-primary btn-arrow");
-            var ic = document.createElement("i");
-            $(ic).addClass("fas fa-arrow-" + direction[i]);
-            arrows[i].appendChild(ic);
-        }
-
-
-        var swapIcon = function (id) {
-            $(arrows[id].firstChild).removeClass("fa-arrow-" + direction[id]).addClass("fa-arrow-circle-" + direction[id]);
-        }
-
-        var returnIcon = function (id) {
-            $(arrows[id].firstChild).removeClass("fa-arrow-circle-" + direction[id]).addClass("fa-arrow-" + direction[id]);
-        }
-
-        $(arrows[0]).on('mousedown', function () {
-            Sk.insertEvent("left");
-            swapIcon(0);
-        });
-        $(arrows[0]).on('mouseup', function () {
-            returnIcon(0);
-        });
-        $(arrows[1]).on('mousedown', function () {
-            Sk.insertEvent("right");
-            swapIcon(1);
-        });
-        $(arrows[1]).on('mouseup', function () {
-            returnIcon(1);
-        });
-        $(arrows[2]).on('mousedown', function () {
-            Sk.insertEvent("up");
-            swapIcon(2);
-        });
-        $(arrows[2]).on('mouseup', function () {
-            returnIcon(2);
-        });
-        $(arrows[3]).on('mousedown', function () {
-            Sk.insertEvent("down");
-            swapIcon(3);
-        });
-        $(arrows[3]).on('mouseup', function () {
-            returnIcon(3);
-        });
-
-        $(document).keydown(function (e) {
-            switch (e.which) {
-                case 37:
-                    swapIcon(0);
-                    break;
-                case 38:
-                    swapIcon(2);
-                    break;
-                case 39:
-                    swapIcon(1);
-                    break;
-                case 40:
-                    swapIcon(3);
-                    break;
-            }
-        });
-
-        $(document).keyup(function (e) {
-            switch (e.which) {
-                case 37:
-                    returnIcon(0);
-                    break;
-                case 38:
-                    returnIcon(2);
-                    break;
-                case 39:
-                    returnIcon(1);
-                    break;
-                case 40:
-                    returnIcon(3);
-                    break;
-            }
-        });
-    };
-
-    function printString(text) {
-        var output = document.getElementById("output");
-        text = text.replace(/</g, '&lt;');
-        output.innerHTML = output.innerHTML + text;
-    }
-
-    function clearOutput() {
-        var output = document.getElementById("output");
-        output.innerHTML = '';
-    }
-
-    function builtinRead(x) {
-        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-            throw "File not found: '" + x + "'";
-        return Sk.builtinFiles["files"][x];
-    }
-
-    function addModal() {
-        $(Sk.main_canvas).css("border", "1px solid blue");
-        var currentTarget = resetTarget();
-
-        var div1 = document.createElement("div");
-        currentTarget.appendChild(div1);
-        $(div1).addClass("modal");
-        $(div1).css("text-align", "center");
-
-        var btn1 = document.createElement("span");
-        $(btn1).addClass("btn btn-primary btn-sm pull-right");
-        var ic = document.createElement("i");
-        $(ic).addClass("fas fa-times");
-        btn1.appendChild(ic);
-
-        $(btn1).on('click', function (e) {
-            Sk.insertEvent("quit");
-        });
-
-        var div2 = document.createElement("div");
-        $(div2).addClass("modal-dialog modal-lg");
-        $(div2).css("display", "inline-block");
-        $(div2).width(self.width + 42);
-        $(div2).attr("role", "document");
-        div1.appendChild(div2);
-
-        var div3 = document.createElement("div");
-        $(div3).addClass("modal-content");
-        div2.appendChild(div3);
-
-        var div4 = document.createElement("div");
-        $(div4).addClass("modal-header d-flex justify-content-between");
-        var div5 = document.createElement("div");
-        $(div5).addClass("modal-body");
-        var div6 = document.createElement("div");
-        $(div6).addClass("modal-footer");
-        var div7 = document.createElement("div");
-        $(div7).addClass("col-md-8");
-        var div8 = document.createElement("div");
-        $(div8).addClass("col-md-4");
-        var header = document.createElement("h5");
-        Sk.title_container = header;
-        $(header).addClass("modal-title");
-
-
-        div3.appendChild(div4);
-        div3.appendChild(div5);
-        div3.appendChild(div6);
-
-        div4.appendChild(header);
-        div4.appendChild(btn1);
-        // div7.appendChild(header);
-        // div8.appendChild(btn1);
-
-        div5.appendChild(Sk.main_canvas);
-
-        createArrows(div6);
-        $(div1).modal({
-            backdrop: 'static',
-            keyboard: false
-        });
-    }
-
-    function runCode() {
-        Sk.main_canvas = document.createElement("canvas");
-        Sk.quitHandler = function () {
-            $('.modal').modal('hide');
+    $(function () {
+        // const basePath = './pygame_dist/';
+        const basePath = './pygame/';
+        const externalLibs = {
+            './pygame.js': {
+                path: basePath + '__init__.js',
+            },
+            'pygame/display.js': {
+                path: basePath + 'display.js',
+            },
+            'pygame/display': {
+                path: basePath + 'display.js',
+            },
+            'pygame/draw.js': {
+                path: basePath + 'draw.js',
+            },
+            'pygame/event.js': {
+                path: basePath + 'event.js',
+            },
+            'pygame/font.js': {
+                path: basePath + 'font.js',
+            },
+            'pygame/image.js': {
+                path: basePath + 'image.js',
+            },
+            'pygame/key.js': {
+                path: basePath + 'key.js',
+            },
+            'pygame/mouse.js': {
+                path: basePath + 'mouse.js',
+            },
+            'pygame/time.js': {
+                path: basePath + 'time.js',
+            },
+            'pygame/transform.js': {
+                path: basePath + 'transform.js',
+            },
+            'pygame/version.js': {
+                path: basePath + 'version.js',
+            },
+            'pygame/locals.js': {
+                path: basePath + 'locals.js'
+            },
+            'pygame/sprite.py': {
+                path: basePath + 'sprite.py'
+            },
         };
-        addModal();
-        var prog = ace.edit("editor").getValue();
 
-        Sk.misceval.asyncToPromise(function () {
-            try {
-                return Sk.importMainWithBody("<stdin>", false, prog, true);
-            } catch (e) {
-                alert(e)
+        function resetTarget() {
+            var selector = Sk.TurtleGraphics.target;
+            var target = typeof selector === "string" ? document.getElementById(selector) : selector;
+            // clear canvas container
+            while (target.firstChild) {
+                target.removeChild(target.firstChild);
             }
+            return target;
+        }
+
+        function createArrows(div) {
+            var arrows = new Array(4);
+            var direction = ["left", "right", "up", "down"];
+            $(div).addClass("d-flex justify-content-center");
+            for (var i = 0; i < 4; i++) {
+                arrows[i] = document.createElement("span");
+                div.appendChild(arrows[i]);
+                $(arrows[i]).addClass("btn btn-primary btn-arrow");
+                var ic = document.createElement("i");
+                $(ic).addClass("fas fa-arrow-" + direction[i]);
+                arrows[i].appendChild(ic);
+            }
+
+
+            var swapIcon = function (id) {
+                $(arrows[id].firstChild).removeClass("fa-arrow-" + direction[id]).addClass("fa-arrow-circle-" + direction[id]);
+            };
+
+            var returnIcon = function (id) {
+                $(arrows[id].firstChild).removeClass("fa-arrow-circle-" + direction[id]).addClass("fa-arrow-" + direction[id]);
+            };
+
+            $(arrows[0]).on('mousedown', function () {
+                Sk.insertEvent("left");
+                swapIcon(0);
+            });
+            $(arrows[0]).on('mouseup', function () {
+                returnIcon(0);
+            });
+            $(arrows[1]).on('mousedown', function () {
+                Sk.insertEvent("right");
+                swapIcon(1);
+            });
+            $(arrows[1]).on('mouseup', function () {
+                returnIcon(1);
+            });
+            $(arrows[2]).on('mousedown', function () {
+                Sk.insertEvent("up");
+                swapIcon(2);
+            });
+            $(arrows[2]).on('mouseup', function () {
+                returnIcon(2);
+            });
+            $(arrows[3]).on('mousedown', function () {
+                Sk.insertEvent("down");
+                swapIcon(3);
+            });
+            $(arrows[3]).on('mouseup', function () {
+                returnIcon(3);
+            });
+
+            $(document).keydown(function (e) {
+                switch (e.which) {
+                    case 37:
+                        swapIcon(0);
+                        break;
+                    case 38:
+                        swapIcon(2);
+                        break;
+                    case 39:
+                        swapIcon(1);
+                        break;
+                    case 40:
+                        swapIcon(3);
+                        break;
+                }
+            });
+
+            $(document).keyup(function (e) {
+                switch (e.which) {
+                    case 37:
+                        returnIcon(0);
+                        break;
+                    case 38:
+                        returnIcon(2);
+                        break;
+                    case 39:
+                        returnIcon(1);
+                        break;
+                    case 40:
+                        returnIcon(3);
+                        break;
+                }
+            });
+        }
+
+        function printString(text) {
+            var output = document.getElementById("output");
+            text = text.replace(/</g, '&lt;');
+            output.innerHTML = output.innerHTML + text;
+        }
+
+        function clearOutput() {
+            var output = document.getElementById("output");
+            output.innerHTML = '';
+        }
+
+        function builtinRead(filename) {
+            if (filename in externalLibs) {
+                const tmpPath = externalLibs[filename]["path"];
+                if (filename === "./pygame.js" || filename === "sprite.py") {
+                    return Sk.misceval.promiseToSuspension(
+                        fetch(tmpPath)
+                            .then(r => r.text()))
+
+                } else {
+                    let request = new XMLHttpRequest();
+                    request.open("GET", tmpPath, false);
+                    request.send();
+                    if (request.status !== 200) {
+                        return void 0
+                    }
+                    return request.responseText
+                }
+            }
+            if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][filename] === undefined)
+                throw "File not found: '" + filename + "'";
+            return Sk.builtinFiles["files"][filename];
+        }
+
+        function addModal() {
+            $(Sk.main_canvas).css("border", "1px solid blue");
+            var currentTarget = resetTarget();
+
+            var div1 = document.createElement("div");
+            currentTarget.appendChild(div1);
+            $(div1).addClass("modal");
+            $(div1).css("text-align", "center");
+
+            var btn1 = document.createElement("span");
+            $(btn1).addClass("btn btn-primary btn-sm pull-right");
+            var ic = document.createElement("i");
+            $(ic).addClass("fas fa-times");
+            btn1.appendChild(ic);
+
+            $(btn1).on('click', function (e) {
+                Sk.insertEvent("quit");
+            });
+
+            var div2 = document.createElement("div");
+            $(div2).addClass("modal-dialog modal-lg");
+            $(div2).css("display", "inline-block");
+            $(div2).width(self.width + 42);
+            $(div2).attr("role", "document");
+            div1.appendChild(div2);
+
+            var div3 = document.createElement("div");
+            $(div3).addClass("modal-content");
+            div2.appendChild(div3);
+
+            var div4 = document.createElement("div");
+            $(div4).addClass("modal-header d-flex justify-content-between");
+            var div5 = document.createElement("div");
+            $(div5).addClass("modal-body");
+            var div6 = document.createElement("div");
+            $(div6).addClass("modal-footer");
+            var div7 = document.createElement("div");
+            $(div7).addClass("col-md-8");
+            var div8 = document.createElement("div");
+            $(div8).addClass("col-md-4");
+            var header = document.createElement("h5");
+            Sk.title_container = header;
+            $(header).addClass("modal-title");
+
+
+            div3.appendChild(div4);
+            div3.appendChild(div5);
+            div3.appendChild(div6);
+
+            div4.appendChild(header);
+            div4.appendChild(btn1);
+            // div7.appendChild(header);
+            // div8.appendChild(btn1);
+
+            div5.appendChild(Sk.main_canvas);
+
+            createArrows(div6);
+            $(div1).modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+        }
+
+        function interruptHandler(susp) {
+            if (Sk.hardInterrupt === true) {
+                throw new Sk.builtin.KeyboardInterrupt('aborted execution');
+            } else {
+                return null; // should perform default action
+            }
+        }
+
+        function initInterpreter() {
+            const killWhileAndForBool = true;
+            Sk.imgPath = "";
+            Sk.hardInterrupt = false;
+            Sk.main_canvas = document.createElement("canvas");
+            Sk.builtin.KeyboardInterrupt = function (args) {
+                var o;
+                if (!(this instanceof Sk.builtin.KeyboardInterrupt)) {
+                    o = Object.create(Sk.builtin.KeyboardInterrupt.prototype);
+                    o.constructor.apply(o, arguments);
+                    return o;
+                }
+                Sk.builtin.BaseException.apply(this, arguments);
+            };
+            Sk.abstr.setUpInheritance("KeyboardInterrupt", Sk.builtin.KeyboardInterrupt, Sk.builtin.BaseException);
+            Sk.configure({
+                killableWhile: killWhileAndForBool,
+                killableFor: killWhileAndForBool,
+                __future__: Sk.python3,
+            });
+        }
+
+        function runCode() {
+            initInterpreter();
+            Sk.quitHandler = function () {
+                $('.modal').modal('hide');
+            };
+            addModal();
+            var prog = ace.edit("editor").getValue();
+
+            let myPromise = Sk.misceval.asyncToPromise(function () {
+                return Sk.importMainWithBody("<stdin>", false, prog, true)
+            }, {"*": interruptHandler});
+            myPromise.then(function (mod) {
+                    console.log("success")
+                },
+                function (err) {
+                    if (err.tp$name === "KeyboardInterrupt"){
+                        return null;
+                    }else {
+                        alert(err.toString())
+                    }
+                })
+        }
+
+        (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+        Sk.configure({read: builtinRead, output: printString});
+        $("#runbutton").click(function () {
+            runCode();
         });
-    }
 
-    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
-    Sk.configure({read: builtinRead, output: printString});
-    $("#runbutton").click(function () {
-        runCode();
-    });
+        var sourcePath = "./test/snake.py";
+        if (window.location.search.substring(1).length > 0) {
+            sourcePath = "./test/" + window.location.search.substring(1)
+        }
+        $.get(sourcePath, function (data) {
+            editor.setValue(data, -1);
+        });
 
-    var sourcePath = "./test/snake.py";
-    if (window.location.search.substring(1).length > 0) {
-        sourcePath = "./test/" + window.location.search.substring(1)
-    }
-    $.get(sourcePath, function (data) {
-        editor.setValue(data, -1);
-    });
+    })
 
 </script>
 </body>

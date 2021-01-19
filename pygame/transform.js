@@ -1,5 +1,5 @@
-var $builtinmodule = function (name) {
-    mod = {};
+let $builtinmodule = function (name) {
+    let mod = {};
     mod.flip = new Sk.builtin.func(function (surf, xbool, ybool) {
         if (Sk.abstr.typeName(surf) !== "Surface") {
             throw new Sk.builtin.TypeError("Wrong arguments");
@@ -7,13 +7,13 @@ var $builtinmodule = function (name) {
         if (Sk.abstr.typeName(xbool) !== "bool" || Sk.abstr.typeName(ybool) !== "bool") {
             throw new Sk.builtin.TypeError("Wrong arguments");
         }
-        var t = Sk.builtin.tuple([surf.width, surf.height]);
-        var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
+        let t = Sk.builtin.tuple([surf.width, surf.height]);
+        let ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
         ret.context2d.save();
-        var xb = Sk.ffi.remapToJs(xbool);
-        var xflip = xb ? -1 : 1;
-        var yb = Sk.ffi.remapToJs(ybool);
-        var yflip = yb ? -1 : 1;
+        let xb = Sk.ffi.remapToJs(xbool);
+        let xflip = xb ? -1 : 1;
+        let yb = Sk.ffi.remapToJs(ybool);
+        let yflip = yb ? -1 : 1;
         ret.context2d.scale(xflip, yflip);
         ret.context2d.drawImage(surf.offscreen_canvas, -surf.width, 0, surf.width, surf.height);
         ret.context2d.restore();
@@ -27,19 +27,19 @@ var $builtinmodule = function (name) {
         if (Sk.abstr.typeName(size) !== "tuple") {
             throw new Sk.builtin.TypeError("Wrong arguments");
         }
-        var sz = Sk.ffi.remapToJs(size);
-        var w = Math.round(sz[0]);
-        var h = Math.round(sz[1]);
+        let sz = Sk.ffi.remapToJs(size);
+        let w = Math.round(sz[0]);
+        let h = Math.round(sz[1]);
         if (w === 0 || h === 0) {
             if (dest !== undefined && dest !== Sk.builtins.none.none$) {
                 dest.context2d.drawImage(surf.offscreen_canvas, 0, 0);
             }
             return surf;
         }
-        var t = Sk.builtin.tuple([w, h]);
-        var xs = w / surf.width;
-        var ys = h / surf.height;
-        var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
+        let t = Sk.builtin.tuple([w, h]);
+        let xs = w / surf.width;
+        let ys = h / surf.height;
+        let ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
         ret.context2d.save();
         ret.context2d.scale(xs, ys);
         ret.context2d.drawImage(surf.offscreen_canvas, 0, 0);
@@ -56,11 +56,11 @@ var $builtinmodule = function (name) {
         if (Sk.abstr.typeName(surf) !== "Surface") {
             throw new Sk.builtin.TypeError("Wrong arguments");
         }
-        var a = Sk.ffi.remapToJs(angle);
-        var w = surf.width;
-        var h = surf.height;
-        var t = Sk.builtin.tuple([1.5 * w, 1.5 * h]);
-        var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
+        let a = Sk.ffi.remapToJs(angle);
+        let w = surf.width;
+        let h = surf.height;
+        let t = Sk.builtin.tuple([1.5 * w, 1.5 * h]);
+        let ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
         ret.context2d.save();
         ret.context2d.translate(w / 2, h / 2);
         ret.context2d.rotate(-a * Math.PI / 180);
@@ -73,12 +73,12 @@ var $builtinmodule = function (name) {
         if (Sk.abstr.typeName(surf) !== "Surface") {
             throw new Sk.builtin.TypeError("Wrong arguments");
         }
-        var scale = Sk.ffi.remapToJs(sc);
-        var a = Sk.ffi.remapToJs(angle);
-        var w = surf.width;
-        var h = surf.height;
-        var t = Sk.builtin.tuple([2 * scale * w, 2 * scale * h]);
-        var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
+        let scale = Sk.ffi.remapToJs(sc);
+        let a = Sk.ffi.remapToJs(angle);
+        let w = surf.width;
+        let h = surf.height;
+        let t = Sk.builtin.tuple([2 * scale * w, 2 * scale * h]);
+        let ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
         ret.context2d.save();
         ret.context2d.scale(scale, scale);
         w *= scale;
@@ -94,10 +94,10 @@ var $builtinmodule = function (name) {
         if (Sk.abstr.typeName(surf) !== "Surface") {
             throw new Sk.builtin.TypeError("Wrong arguments");
         }
-        var w = surf.width;
-        var h = surf.height;
-        var t = Sk.builtin.tuple([2 * w, 2 * h]);
-        var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
+        let w = surf.width;
+        let h = surf.height;
+        let t = Sk.builtin.tuple([2 * w, 2 * h]);
+        let ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
         ret.context2d.save();
         ret.context2d.scale(2, 2);
         ret.context2d.drawImage(surf.offscreen_canvas, 0, 0);
@@ -114,17 +114,17 @@ var $builtinmodule = function (name) {
         if (Sk.abstr.typeName(rect) !== "Rect") {
             throw new Sk.builtin.TypeError("Wrong arguments");
         }
-        var rr = PygameLib.extract_rect(rect);
-        var x1 = rr[0];
-        var y1 = rr[1];
-        var x2 = rr[0] + rr[2];
-        var y2 = rr[1] + rr[3];
-        var w = surf.width;
-        var h = surf.height;
-        var rw = w - x2;
-        var rh = h - y2;
-        var t = Sk.builtin.tuple([w, h]);
-        var ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
+        let rr = PygameLib.extract_rect(rect);
+        let x1 = rr[0];
+        let y1 = rr[1];
+        let x2 = rr[0] + rr[2];
+        let y2 = rr[1] + rr[3];
+        let w = surf.width;
+        let h = surf.height;
+        let rw = w - x2;
+        let rh = h - y2;
+        let t = Sk.builtin.tuple([w, h]);
+        let ret = Sk.misceval.callsim(PygameLib.SurfaceType, t);
         ret.context2d.drawImage(surf.offscreen_canvas, 0, 0, x1, y1, 0, 0, x1, y1);
         ret.context2d.drawImage(surf.offscreen_canvas, 0, y2, x1, rh, 0, y1, x1, rh);
         ret.context2d.drawImage(surf.offscreen_canvas, x2, 0, rw, y1, x1, 0, rw, y1);

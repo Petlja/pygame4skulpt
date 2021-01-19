@@ -5,12 +5,13 @@ var $builtinmodule = function (name) {
             var http = new XMLHttpRequest();
             http.open('HEAD', imageUrl, false);
             http.send();
-            return http.status == 200;
+            return http.status === 200;
         }
 
         if (imageExists(Sk.imgPath + Sk.ffi.remapToJs(filename))) {
             return Sk.misceval.promiseToSuspension(new Promise(function (resolve) {
                 var img = new Image();
+                img.crossOrigin='';
                 img.src = Sk.imgPath + Sk.ffi.remapToJs(filename);
                 img.onload = function () {
                     var t = Sk.builtin.tuple([img.width, img.height]);
@@ -44,7 +45,8 @@ var $builtinmodule = function (name) {
                     can.width = width;
                     can.height = height;
                     return can;
-                };
+                }
+
                 var newImage = canvas(img.width, img.height); // create new image
                 newImage.ctx = newImage.getContext("2d");  // get image context
                 newImage.ctx.drawImage(image, 0, 0); // draw the image onto the canvas

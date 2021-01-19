@@ -18,10 +18,10 @@ var $builtinmodule = function (name) {
         return Sk.ffi.remapToPy(document.hasFocus());
     });
     mod.get_pressed = new Sk.builtin.func(function () {
-        var pressed = new Array(PygameLib.constants.K_LAST+1).fill(false);
-        for(var key = 0; key< pressed.length; key ++) {
-            if(PygameLib.pressedKeys[key])
-                pressed[key] = true
+        var pressed = new Array(PygameLib.constants.K_LAST + 1).fill(false);
+        for (var key = 0; key < pressed.length; key++) {
+            if (PygameLib.pressedKeys[key])
+                pressed[key] = true;
         }
         return Sk.ffi.remapToPy(pressed);
     });
@@ -92,4 +92,4 @@ var keyboardModifierKeys = [PygameLib.constants.K_LSHIFT, PygameLib.constants.K_
     PygameLib.constants.K_LCTRL, PygameLib.constants.K_RCTRL, PygameLib.constants.K_LALT, PygameLib.constants.K_RALT,
     PygameLib.constants.K_LMETA, PygameLib.constants.K_RMETA, 0, PygameLib.constants.K_CAPSLOCK,
     PygameLib.constants.K_NUMLOCK, PygameLib.constants.K_MODE];
-    
+
